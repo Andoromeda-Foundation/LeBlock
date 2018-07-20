@@ -75,24 +75,11 @@ contract LeBlockInterface is  ERC721, ERC721Receiver {
 
 }
 
-contract ERC20Interface {
-    function totalSupply() public view returns (uint256);
-    function balanceOf(address tokenOwner) public view returns (uint256 balance);
-    function allowance(address tokenOwner, address spender) public view returns (uint256 remaining);
-    function transfer(address to, uint256 tokens) public returns (bool success);
-    function approve(address spender, uint256 tokens) public returns (bool success);
-    function transferFrom(address from, address to, uint256 tokens) public returns (bool success);
-
-    event Transfer(address indexed from, address indexed to, uint256 tokens);
-    event Approval(address indexed tokenOwner, address indexed spender, uint256 tokens);
-}
-
-contract ApproveAndCallFallBack {
-    function receiveApproval(address from, uint256 tokens, address token, bytes data) public;
-}
-
-contract exchange is ERC20Interface {    
-    function recievedEth() payable public;
-    function recievedTAT() public returns (bool);
+contract recharge {       
+    function setPrice(uint256 _price) public;
+    function setTatAddress(address _address) public;
+    function rechargeEth() public payable;
+    function withdrawTatAmount (uint256 _amount) public;
+	function withdrawAll() public;
 }
 

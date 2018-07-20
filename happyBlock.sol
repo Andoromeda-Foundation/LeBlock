@@ -347,6 +347,7 @@ contract Pausable is Owned {
         emit Unpause();
     }
 }
+
 /**
  * @title ERC721 Non-Fungible Token Standard basic implementation
  * @dev see https://github.com/ethereum/EIPs/blob/master/EIPS/eip-721.md
@@ -908,7 +909,7 @@ contract LeBlock is ERC721Token {
 	// 乐块类型
 	enum blockTypes { type1, type2, type3, type4, type5 }
     // 矿机状态
-    enum minerState- { increase, decrease, steady }
+    enum minerState { increase, decrease, steady }
 	// 用户当前算力
 	mapping (address => uint256) userMinerPower;
 	// 用户押金室TAT数量
@@ -919,54 +920,40 @@ contract LeBlock is ERC721Token {
 	mapping (address => uint256) userMinerStrength;
     // 用户矿机状态
     mapping (address => minerState) userMinerState;
-    // 用户算力
 	// 用户不同种类的乐块的数量
-	mapping (address => mapping (blockTypes => uint256)) userBlockAmount;
+	mapping (address => mapping (uint256 => uint256)) userBlockAmount;
 	// 用户注册排名
 	mapping (address => uint256) userRegistrationRank;
 	// 乐块id对应是哪个种类
 	mapping (uint256 => blockTypes) blockType;
 	// 某个种类有多少乐块
-	mapping (blockTypes => uint256) typesTotalBlock;
+	mapping (uint256 => uint256) typesTotalBlock;
 	// 总用户数
 	uint256 totalplayers;   
 
     // 算力瞬时提供比例，单位：%
     uint256 initialRise;
     // 算力每小时提升比例，单位：%/h
-    uint256 risePerHour;
-
-	ERC20Interface private TATtoken;
-	
+    uint256 risePerHour;	
 
     constructor (string _name, string _symbol) public ERC721Token(_name, _symbol)  {
     }
 
-	// 充值模块
-	// 设置TATtoken地址
-	function setTATAddress(address _address) whenNotPaused onlyAdmins public {
-		TATtoken = ERC20Interface(_address);
-	}
-
-	// 用户充TAT到游戏账户
-    // 用户充值TAT是调用TAT合约，该合约是无法得到Event，准备用脚本监听对应Event， 
-    // 然后用脚本去调用这个函数。脚本里有admin的账户密码
 	function recharge(address _user, uint256 _amount) whenNotPaused onlyAdmins public {
-		TATtoken.transferFrom(_user, address(this), _amount);
         userTatAmount[_user] = userTatAmount[_user].add(_amount);
 
-        event Recharge(_user, _amount);
+        emit Recharge(_user, _amount);
 	}
 
     // 用户将TAT放入押金室
-    // 由于solidity不支持浮点，算力值统一乘上一百，前端得到数据后再除以100显示。
-
+    // 由于solidity不支持小数，算力值统一乘上一百，前端得到数据后再除以100显示。
     // 矿机强度马上提示到算力最大值，算力提升到 原算力 + 总增长算力*_initial%
     function pawn(uint256 _amount) whenNotPaused public {
+        require(_amount != 0);
         require(_amount <= userTatAmount[msg.sender]);
         require(_amount.div(10).mul(10) == _amount);
 
-        uint256 _increasePower = _amount.div(10).mul(100);
+        uint256 _increasePower = _amount.mul(100).div(10);
         uint256 _initIncreasePower = _increasePower.mul(initialRise).div(100);
 
         userTatAmount[msg.sender] = userTatAmount[msg.sender].sub(_amount);
@@ -981,39 +968,27 @@ contract LeBlock is ERC721Token {
         initialRise = _initialRise;
         risePerHour = _risePerHour;
     }
-
-
-    function issues(uint256 _tokenId) public whenNotPaused  {
-
-    }
 	
-	// 用户矿机算力变化
-	function user
+	// 用户矿机算力增长模型，这里只算百分比
+	function _computeCurrentMinerPower(
+        uint256 _startingMinerPower,
+        uint256 _endingMinerPower,
+        uint256 _duration,
+        uint256 _secondsPassed
+    ) 
+        internal 
+        pure 
+        returns (uint256) 
+    {
+        if(_secondsPassed >= _duration) {
+            return _endingMinerPower;
+        } else {
+            int256 totalMinerPowerChange = int256(_endingMinerPower) - int256(_startingMinerPower);
+            int256 currentMinerPowerChange = totalMinerPowerChange * int256(_secondsPassed) / int256(_duration);
+            int256 currentMinerPower = int256(_startingMinerPower) + currentMinerPowerChange;
 
-
-
-	// 提币模块
-    function withdrawTATAmount (uint256 _amount) onlyOwner public {
-        TATtoken.transfer(msg.sender, _amount);    
+            return uint256(currentMinerPower);
+        }
     }
-
-	function withdrawAll() onlyOwner public {
-        msg.sender.transfer(this.balance);
-    }
-
-    function withdrawAmount (uint256 _amount) onlyOwner public {
-        msg.sender.transfer(_amount);
-    }
+    
 }
-
-interface ERC20Interface {
-    function totalSupply() public view returns (uint256);
-    function balanceOf(address tokenOwner) public view returns (uint256 balance);
-    function allowance(address tokenOwner, address spender) public view returns (uint256 remaining);
-    function transfer(address to, uint256 tokens) public returns (bool success);
-    function approve(address spender, uint256 tokens) public returns (bool success);
-    function transferFrom(address from, address to, uint256 tokens) public returns (bool success);
-
-    event Transfer(address indexed from, address indexed to, uint256 tokens);
-    event Approval(address indexed tokenOwner, address indexed spender, uint256 tokens);
-} 

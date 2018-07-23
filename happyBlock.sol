@@ -929,12 +929,31 @@ contract LeBlock is ERC721Token {
 	// 某个种类有多少乐块
 	mapping (uint256 => uint256) typesTotalBlock;
 	// 总用户数
-	uint256 totalplayers;   
+	uint256 totalplayers; 
+	// 全网总算力
+	uint256 totalMinerPower;
+
+	// 矿机参数
+	struct Miner {
+		address owner;
+		// 矿机押金室TAT变动后的那一刻的算力值
+		uint256 minerPower;
+		// 矿机当前押金室TAT数量
+		uint256 depositAmount;
+		// 矿机强度
+		uint256 minerStrength;
+		// 矿机状态
+		minerState state;
+		// 上次充值到矿机押金室的时间
+		uint256 lastPawnTime;
+	}
+
+	mapping (address => Miner) ownerToMiner;
 
     // 算力瞬时提供比例，单位：%
     uint256 initialRise;
-    // 算力每小时提升比例，单位：%/h
-    uint256 risePerHour;	
+    // 算力每小时提升比例，单位：%/s
+    uint256 risePerSecond;	
 
     constructor (string _name, string _symbol) public ERC721Token(_name, _symbol)  {
     }
@@ -963,12 +982,13 @@ contract LeBlock is ERC721Token {
     }
 
     // 设置算力相关参数,单位 %
-    function setVariable(uint256 _initialRise, uint256 _risePerHour) whenNotPaused onlyAdmins public {
-        require(_initialRise.add(_risePerHour) <= 100);
+    function setVariable(uint256 _initialRise, uint256 _risePerSecond) whenNotPaused onlyAdmins public {
+        require(_initialRise.add(_risePerSecond) <= 100);
         initialRise = _initialRise;
-        risePerHour = _risePerHour;
+        risePerSecond = _risePerSecond;
     }
 	
+
 	// 用户矿机算力增长模型，这里只算百分比
 	function _computeCurrentMinerPower(
         uint256 _startingMinerPower,
@@ -990,5 +1010,84 @@ contract LeBlock is ERC721Token {
             return uint256(currentMinerPower);
         }
     }
-    
+
+	function _currentMinerPower(Miner storage _miner)
+		internal
+		view
+		returns (uint256)
+	{
+		uint256 secondsPassed = now - _miner.lastPawnTime;
+		uint256 duration = uint256(_miner.minerStrength - _miner.minerPower).mul(risePerSecond);
+		return _computeCurrentMinerPower(
+			_miner.minerPower,
+			_miner.minerStrength,
+			duration,
+			secondsPassed
+		);
+	}
+
+	// 一定算力每小时能够得到多少乐块
+	function _blockPerHour(
+		uint256 _minerPower, 
+		uint256 _totalPower, 
+		uint256 supplyPerHour
+		) 
+		internal 
+		pure 
+		returns (uint256)
+	{
+		return _minerPower.mul(supplyPerHour).div(_totalPower);
+	}
+
+	// 产品文档的挖矿算法
+	// 得到随机乐块礼包ID
+	function _miner(
+		// 礼包个数
+		uint256 _packageAmount,
+		uint256 _totalPower
+		)
+		internal
+		view
+		returns (uint256[])
+	{
+		uint256 random;
+		uint256 result;
+		uint256[] memory packageId = new uint256[](_packageAmount);
+
+		for (uint256 i = 0; i < _packageAmount; i++) {
+			random = uint256(keccak256(abi.encodePacked(block.timestamp + block.difficulty + i))); // assume result is the random number
+			result = random % _totalPower;
+			packageId[i] = result;
+		}
+		 
+		return packageId;
+	}
+
+	// 给定玩家算力段和乐块礼包ID得出玩家能都到几个乐块礼包
+	function _getpackage(
+		// 玩家算力段
+		uint256[] storage _userMinerPower,
+		// 乐块礼包ID
+		uint256[] storage _packageId
+		)
+		internal
+		view
+		returns (uint256)
+	{
+		uint256 calculator = 0;
+		bool[] memory tempArray = new bool[](_userMinerPower.length);
+		for (uint256 i = 0; i < _userMinerPower.length; i++) {
+			tempArray[_userMinerPower[i]] = true;
+		}
+
+		for (uint256 k = 0; k < _packageId.length; k++) {
+			if (tempArray[_packageId[i]] == true) {
+				calculator++;
+			}
+		}
+		return calculator;
+	}
+
+	// 维护全网算力
+	
 }

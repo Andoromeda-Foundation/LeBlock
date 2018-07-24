@@ -51,6 +51,51 @@ library SafeMath {
 }
 
 /**
+ * @title SafeMathInt
+ * @dev Math operations with safety checks that throw on error
+ * @dev SafeMath adapted for int256
+ */
+library SafeMathInt {
+	function mul(int256 a, int256 b) internal pure returns (int256) {
+		// Prevent overflow when multiplying INT256_MIN with -1
+		// https://github.com/RequestNetwork/requestNetwork/issues/43
+		assert(!(a == - 2**255 && b == -1) && !(b == - 2**255 && a == -1));
+
+		int256 c = a * b;
+		assert((b == 0) || (c / b == a));
+		return c;
+	}
+
+	function div(int256 a, int256 b) internal pure returns (int256) {
+		// Prevent overflow when dividing INT256_MIN by -1
+		// https://github.com/RequestNetwork/requestNetwork/issues/43
+		assert(!(a == - 2**255 && b == -1));
+
+		// assert(b > 0); // Solidity automatically throws when dividing by 0
+		int256 c = a / b;
+		// assert(a == b * c + a % b); // There is no case in which this doesn't hold
+		return c;
+	}
+
+	function sub(int256 a, int256 b) internal pure returns (int256) {
+		assert((b >= 0 && a - b <= a) || (b < 0 && a - b > a));
+
+		return a - b;
+	}
+
+	function add(int256 a, int256 b) internal pure returns (int256) {
+		int256 c = a + b;
+		assert((b >= 0 && c >= a) || (b < 0 && c < a));
+		return c;
+	}
+
+	function toUint256Safe(int256 a) internal pure returns (uint256) {
+		assert(a>=0);
+		return uint256(a);
+	}
+}
+
+/**
  * Utility library of inline functions on addresses
  */
 library AddressUtils {
@@ -684,7 +729,7 @@ contract ERC721BasicToken is SupportsInterfaceWithLookup, ERC721Basic, Pausable 
         uint256 _tokenId,
         bytes _data
     )
-        internal
+        internal	
         returns (bool)
     {
         if (!_to.isContract()) {
@@ -903,7 +948,46 @@ contract ERC721Token is SupportsInterfaceWithLookup, ERC721BasicToken, ERC721 {
     }
 }
 
-contract LeBlock is ERC721Token {
+contract queue {
+    struct Queue {
+        address[] data;
+        uint256 front;
+        uint256 back;
+    }
+    /// @dev the number of elements stored in the queue.
+    function length(Queue storage q) view internal returns (uint256) {
+        return q.back - q.front;
+    }
+    /// @dev the number of elements this queue can hold
+    function capacity(Queue storage q) view internal returns (uint256) {
+        return q.data.length - 1;
+    }
+	/// @dev the number of element at the front of the queue
+	function query(Queue storage q) view internal returns (address) {
+		if (q.back == q.front) 
+			return;
+		return q.data[q.front]; 
+	}
+    /// @dev push a new element to the back of the queue
+    function push(Queue storage q, address data) internal
+    {
+        if ((q.back + 1) % q.data.length == q.front)
+            return; // throw;
+        q.data[q.back] = data;
+        q.back = (q.back + 1) % q.data.length;
+    }
+    /// @dev remove and return the element at the front of the queue
+    function pop(Queue storage q) internal 
+    {
+        if (q.back == q.front)
+            return; // throw;
+        delete q.data[q.front];
+        q.front = (q.front + 1) % q.data.length;
+    }
+}
+
+contract LeBlock is ERC721Token, queue {
+	using SafeMathInt for int256;
     event Recharge(address indexed _user, uint256 indexed _amount);
 
 	// 乐块类型
@@ -912,14 +996,8 @@ contract LeBlock is ERC721Token {
     enum minerState { increase, decrease, steady }
 	// 用户当前算力
 	mapping (address => uint256) userMinerPower;
-	// 用户押金室TAT数量
-	mapping (address => uint256) userDepositAmount;
 	// 用户游戏账号TAT数量
 	mapping (address => uint256) userTatAmount;
-	// 用户的矿机强度
-	mapping (address => uint256) userMinerStrength;
-    // 用户矿机状态
-    mapping (address => minerState) userMinerState;
 	// 用户不同种类的乐块的数量
 	mapping (address => mapping (uint256 => uint256)) userBlockAmount;
 	// 用户注册排名
@@ -932,6 +1010,10 @@ contract LeBlock is ERC721Token {
 	uint256 totalplayers; 
 	// 全网总算力
 	uint256 totalMinerPower;
+	// 维护一个矿机算力变化的最后时间队列
+	Queue lastTime;
+	// 用户矿机算力达到恒温预期时刻
+	mapping (address => uint256) userLastTime;
 
 	// 矿机参数
 	struct Miner {
@@ -944,9 +1026,10 @@ contract LeBlock is ERC721Token {
 		uint256 minerStrength;
 		// 矿机状态
 		minerState state;
-		// 上次充值到矿机押金室的时间
-		uint256 lastPawnTime;
+		// 上次矿机押金室押金变化的时刻
+		uint256 lastChangeTime;
 	}
+
 
 	mapping (address => Miner) ownerToMiner;
 
@@ -955,7 +1038,8 @@ contract LeBlock is ERC721Token {
     // 算力每小时提升比例，单位：%/s
     uint256 risePerSecond;	
 
-    constructor (string _name, string _symbol) public ERC721Token(_name, _symbol)  {
+    constructor (string _name, string _symbol, uint256 _length) public ERC721Token(_name, _symbol)  {
+		lastTime.data.length = _length;
     }
 
 	function recharge(address _user, uint256 _amount) whenNotPaused onlyAdmins public {
@@ -963,6 +1047,7 @@ contract LeBlock is ERC721Token {
 
         emit Recharge(_user, _amount);
 	}
+
 
     // 用户将TAT放入押金室
     // 由于solidity不支持小数，算力值统一乘上一百，前端得到数据后再除以100显示。
@@ -976,9 +1061,13 @@ contract LeBlock is ERC721Token {
         uint256 _initIncreasePower = _increasePower.mul(initialRise).div(100);
 
         userTatAmount[msg.sender] = userTatAmount[msg.sender].sub(_amount);
-        userDepositAmount[msg.sender] = userDepositAmount[msg.sender].add(_amount);
+        ownerToMiner[msg.sender].depositAmount = ownerToMiner[msg.sender].depositAmount.add(_amount);
 
-        userMinerPower[msg.sender] = userMinerPower[msg.sender].add(_initIncreasePower);
+		ownerToMiner[msg.sender].minerPower = ownerToMiner[msg.sender].minerPower.add(_initIncreasePower);
+		ownerToMiner[msg.sender].minerStrength = ownerToMiner[msg.sender].minerStrength.add(_increasePower);
+
+		// 更新最后时间
+		ownerToMiner[msg.sender].lastChangeTime = now;
     }
 
     // 设置算力相关参数,单位 %
@@ -998,27 +1087,29 @@ contract LeBlock is ERC721Token {
     ) 
         internal 
         pure 
-        returns (uint256) 
+        returns (uint256, int256) 
     {
         if(_secondsPassed >= _duration) {
-            return _endingMinerPower;
+            return (_endingMinerPower,0);
         } else {
-            int256 totalMinerPowerChange = int256(_endingMinerPower) - int256(_startingMinerPower);
-            int256 currentMinerPowerChange = totalMinerPowerChange * int256(_secondsPassed) / int256(_duration);
-            int256 currentMinerPower = int256(_startingMinerPower) + currentMinerPowerChange;
+            int256 totalMinerPowerChange = int256(_endingMinerPower).sub(int256(_startingMinerPower));
+            int256 currentMinerPowerChange = totalMinerPowerChange.mul(int256(_secondsPassed)).div(int256(_duration));
+            int256 currentMinerPower = int256(_startingMinerPower).add(currentMinerPowerChange);
 
-            return uint256(currentMinerPower);
+            return (currentMinerPower.toUint256Safe(), currentMinerPowerChange);
         }
     }
 
 	function _currentMinerPower(Miner storage _miner)
 		internal
 		view
-		returns (uint256)
+		returns (uint256, int256)
 	{
-		uint256 secondsPassed = now - _miner.lastPawnTime;
+		uint256 secondsPassed = now - _miner.lastChangeTime;
 		uint256 duration = uint256(_miner.minerStrength - _miner.minerPower).mul(risePerSecond);
-		return _computeCurrentMinerPower(
+		uint256 currentMinterPower;
+		int256 minterPowerChange;
+		(currentMinterPower, minterPowerChange) = _computeCurrentMinerPower(
 			_miner.minerPower,
 			_miner.minerStrength,
 			duration,
@@ -1089,5 +1180,29 @@ contract LeBlock is ERC721Token {
 	}
 
 	// 维护全网算力
-	
+	// 用户充值押金的时候维护
+	function _getTotalPower() pure internal  {
+		
+	}
+
+	// 更新最后时间队列
+	function _updateQueue(
+		address _address
+		)
+		internal
+	{
+		address _addr = query(lastTime);
+		while (userLastTime[_addr] <= now) {
+			// 更新这个用户算力以及全网算力
+			// 更新队列
+			int256 temp;
+			(userMinerPower[_addr],temp) = _currentMinerPower(ownerToMiner[_addr]);
+			totalMinerPower = uint256(int256(totalMinerPower).add(temp));
+			pop(lastTime);
+			push(lastTime, _address);
+			_addr = query(lastTime);
+		}
+	}
+
+	//
 }

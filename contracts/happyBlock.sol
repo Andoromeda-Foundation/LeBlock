@@ -7,13 +7,19 @@ pragma solidity ^0.4.24;
 library SafeMath {
 
     /**
-    * @dev Multiplies two numbers, throws on overflow.
-    */
-    function mul(uint256 a, uint256 b) internal pure returns (uint256 c) {
-        // Gas optimization: this is cheaper than asserting 'a' not being zero, but the
-        // benefit is lost if 'b' is also tested.
-        // See: https://github.com/OpenZeppelin/openzeppelin-solidity/pull/522
-        if (a == 0) {
+     * @dev Multiplies two numbers, throws on overflow.
+     */
+    function mul(uint256 a, uint256 b) 
+        internal 
+        pure 
+        returns (uint256 c) 
+    {
+		/**
+         * @dev Gas optimization: this is cheaper than asserting 'a' not being zero, but the
+         * benefit is lost if 'b' is also tested.
+         * See: https://github.com/OpenZeppelin/openzeppelin-solidity/pull/522
+         */
+		if (a == 0) {
             return 0;
         }
 
@@ -25,7 +31,11 @@ library SafeMath {
     /**
     * @dev Integer division of two numbers, truncating the quotient.
     */
-    function div(uint256 a, uint256 b) internal pure returns (uint256) {
+    function div(uint256 a, uint256 b) 
+        internal 
+        pure 
+        returns (uint256) 
+    {
         // assert(b > 0); // Solidity automatically throws when dividing by 0
         // uint256 c = a / b;
         // assert(a == b * c + a % b); // There is no case in which this doesn't hold
@@ -35,7 +45,11 @@ library SafeMath {
     /**
     * @dev Subtracts two numbers, throws on overflow (i.e. if subtrahend is greater than minuend).
     */
-    function sub(uint256 a, uint256 b) internal pure returns (uint256) {
+    function sub(uint256 a, uint256 b) 
+        internal 
+        pure 
+        returns (uint256) 
+    {
         assert(b <= a);
         return a - b;
     }
@@ -43,7 +57,11 @@ library SafeMath {
     /**
     * @dev Adds two numbers, throws on overflow.
     */
-    function add(uint256 a, uint256 b) internal pure returns (uint256 c) {
+    function add(uint256 a, uint256 b) 
+        internal 
+        pure 
+        returns (uint256 c) 
+    {
         c = a + b;
         assert(c >= a);
         return c;
@@ -56,9 +74,15 @@ library SafeMath {
  * @dev SafeMath adapted for int256
  */
 library SafeMathInt {
-	function mul(int256 a, int256 b) internal pure returns (int256) {
-		// Prevent overflow when multiplying INT256_MIN with -1
-		// https://github.com/RequestNetwork/requestNetwork/issues/43
+	function mul(int256 a, int256 b) 
+        internal 
+        pure 
+        returns (int256) 
+    {
+		/**
+		 * @dev Prevent overflow when multiplying INT256_MIN with -1
+		 * https://github.com/RequestNetwork/requestNetwork/issues/43
+		 */
 		assert(!(a == - 2**255 && b == -1) && !(b == - 2**255 && a == -1));
 
 		int256 c = a * b;
@@ -67,36 +91,52 @@ library SafeMathInt {
 	}
 
 	function div(int256 a, int256 b) internal pure returns (int256) {
-		// Prevent overflow when dividing INT256_MIN by -1
-		// https://github.com/RequestNetwork/requestNetwork/issues/43
+		/**
+		 * @dev Prevent overflow when dividing INT256_MIN by -1
+		 * https://github.com/RequestNetwork/requestNetwork/issues/43
+		 */
 		assert(!(a == - 2**255 && b == -1));
-
-		// assert(b > 0); // Solidity automatically throws when dividing by 0
+		/**
+		 * @dev assert(b > 0); // Solidity automatically throws when dividing by 0
+		 * assert(a == b * c + a % b); // There is no case in which this doesn't hold
+		 */
 		int256 c = a / b;
-		// assert(a == b * c + a % b); // There is no case in which this doesn't hold
 		return c;
 	}
 
-	function sub(int256 a, int256 b) internal pure returns (int256) {
+	function sub(int256 a, int256 b) 
+		internal 
+		pure 
+		returns (int256) 
+	{
 		assert((b >= 0 && a - b <= a) || (b < 0 && a - b > a));
 
 		return a - b;
 	}
 
-	function add(int256 a, int256 b) internal pure returns (int256) {
+	function add(int256 a, int256 b) 
+		internal 
+		pure 
+		returns (int256) 
+	{
 		int256 c = a + b;
 		assert((b >= 0 && c >= a) || (b < 0 && c < a));
 		return c;
 	}
 
-	function toUint256Safe(int256 a) internal pure returns (uint256) {
+	function toUint256Safe(int256 a) 
+		internal 
+		pure 
+		returns (uint256) 
+	{
 		assert(a>=0);
 		return uint256(a);
 	}
 }
 
 /**
- * Utility library of inline functions on addresses
+ * @title AddressUtils
+ * @dev Utility library of inline functions on addresses
  */
 library AddressUtils {
 
@@ -107,10 +147,14 @@ library AddressUtils {
      * @param addr address to check
      * @return whether the target address is a contract
      */
-    function isContract(address addr) internal view returns (bool) {
+    function isContract(address addr) 
+		internal 
+		view 
+		returns (bool) 
+	{
         uint256 size;
-        // XXX Currently there is no better way to check if there is a contract in an address
-        // than to check the size of the code at that address.
+        /// @dev XXX Currently there is no better way to check if there is 
+		// a contract in an address than to check the size of the code at that address.
         // See https://ethereum.stackexchange.com/a/14016/36603
         // for more details about how this works.
         // TODO Check this again before the Serenity release, because all addresses will be
@@ -119,7 +163,6 @@ library AddressUtils {
         assembly { size := extcodesize(addr) }
         return size > 0;
     }
-
 }
 
 /**
@@ -174,8 +217,7 @@ contract ERC721Basic is ERC165 {
         public view returns (bool);
 
     function transferFrom(address _from, address _to, uint256 _tokenId) public;
-    function safeTransferFrom(address _from, address _to, uint256 _tokenId)
-        public;
+    function safeTransferFrom(address _from, address _to, uint256 _tokenId) public;
 
     function safeTransferFrom(
         address _from,
@@ -255,7 +297,10 @@ contract ERC721Receiver {
 }
 
 contract ERC721Holder is ERC721Receiver {
-    function onERC721Received(address, uint256, bytes) public returns(bytes4) {
+    function onERC721Received(address, uint256, bytes) 
+        public 
+        returns(bytes4) 
+    {
         return ERC721_RECEIVED;
     }
 }
@@ -317,7 +362,10 @@ contract Owned {
     address public newOwner;
     mapping (address => bool) public admins;
 
-    event OwnershipTransferred(address indexed _from, address indexed _to);
+    event OwnershipTransferred(
+        address indexed _from, 
+        address indexed _to
+    );
 
     modifier onlyOwner {
         require(msg.sender == owner);
@@ -329,20 +377,33 @@ contract Owned {
         _;
     }
 
-    function transferOwnership(address _newOwner) public onlyOwner {
+    function transferOwnership(address _newOwner) 
+        public 
+        onlyOwner 
+    {
         newOwner = _newOwner;
     }
-    function acceptOwnership() public {
+
+    function acceptOwnership() 
+        public 
+    {
         require(msg.sender == newOwner);
         emit OwnershipTransferred(owner, newOwner);
-         owner = newOwner;
+        owner = newOwner;
         newOwner = address(0);
     }
-    function addAdmin(address _admin) onlyOwner public {
+
+    function addAdmin(address _admin) 
+        onlyOwner 
+        public 
+    {
         admins[_admin] = true;
     }
 
-    function removeAdmin(address _admin) onlyOwner public {
+    function removeAdmin(address _admin) 
+        onlyOwner 
+        public 
+    {
         delete admins[_admin];
     }
 
@@ -379,7 +440,11 @@ contract Pausable is Owned {
     /**
      * @dev called by the owner to pause, triggers stopped state
      */
-    function pause() onlyAdmins whenNotPaused public {
+    function pause() 
+        onlyAdmins 
+        whenNotPaused 
+        public 
+    {
         paused = true;
         emit Pause();
     }
@@ -387,7 +452,11 @@ contract Pausable is Owned {
     /**
      * @dev called by the owner to unpause, returns to normal state
      */
-    function unpause() onlyAdmins whenPaused public {
+    function unpause() 
+        onlyAdmins 
+        whenPaused 
+        public 
+    {
         paused = false;
         emit Unpause();
     }
@@ -469,7 +538,11 @@ contract ERC721BasicToken is SupportsInterfaceWithLookup, ERC721Basic, Pausable 
      * @param _owner address to query the balance of
      * @return uint256 representing the amount owned by the passed address
      */
-    function balanceOf(address _owner) public view returns (uint256) {
+    function balanceOf(address _owner) 
+        public 
+        view 
+        returns (uint256) 
+    {
         require(_owner != address(0));
         return ownedTokensCount[_owner];
     }
@@ -479,7 +552,11 @@ contract ERC721BasicToken is SupportsInterfaceWithLookup, ERC721Basic, Pausable 
      * @param _tokenId uint256 ID of the token to query the owner of
      * @return owner address currently marked as the owner of the given token ID
      */
-    function ownerOf(uint256 _tokenId) public view returns (address) {
+    function ownerOf(uint256 _tokenId) 
+        public 
+        view 
+        returns (address) 
+    {
         address owner = tokenOwner[_tokenId];
         require(owner != address(0));
         return owner;
@@ -490,7 +567,11 @@ contract ERC721BasicToken is SupportsInterfaceWithLookup, ERC721Basic, Pausable 
      * @param _tokenId uint256 ID of the token to query the existence of
      * @return whether the token exists
      */
-    function exists(uint256 _tokenId) public view returns (bool) {
+    function exists(uint256 _tokenId) 
+        public 
+        view 
+        returns (bool) 
+    {
         address owner = tokenOwner[_tokenId];
         return owner != address(0);
     }
@@ -503,7 +584,10 @@ contract ERC721BasicToken is SupportsInterfaceWithLookup, ERC721Basic, Pausable 
      * @param _to address to be approved for the given token ID
      * @param _tokenId uint256 ID of the token to be approved
      */
-    function approve(address _to, uint256 _tokenId) public whenNotPaused {
+    function approve(address _to, uint256 _tokenId) 
+        public 
+        whenNotPaused 
+    {
         address owner = ownerOf(_tokenId);
         require(_to != owner);
         require(msg.sender == owner || isApprovedForAll(owner, msg.sender));
@@ -517,7 +601,11 @@ contract ERC721BasicToken is SupportsInterfaceWithLookup, ERC721Basic, Pausable 
      * @param _tokenId uint256 ID of the token to query the approval of
      * @return address currently approved for the given token ID
      */
-    function getApproved(uint256 _tokenId) public view returns (address) {
+    function getApproved(uint256 _tokenId) 
+        public 
+        view 
+        returns (address) 
+    {
         return tokenApprovals[_tokenId];
     }
 
@@ -527,7 +615,10 @@ contract ERC721BasicToken is SupportsInterfaceWithLookup, ERC721Basic, Pausable 
      * @param _to operator address to set the approval
      * @param _approved representing the status of the approval to be set
      */
-    function setApprovalForAll(address _to, bool _approved) public whenNotPaused {
+    function setApprovalForAll(address _to, bool _approved) 
+        public 
+        whenNotPaused 
+    {
         require(_to != msg.sender);
         operatorApprovals[msg.sender][_to] = _approved;
         emit ApprovalForAll(msg.sender, _to, _approved);
@@ -539,10 +630,7 @@ contract ERC721BasicToken is SupportsInterfaceWithLookup, ERC721Basic, Pausable 
      * @param _operator operator address which you want to query the approval of
      * @return bool whether the given operator is approved by the given owner
      */
-    function isApprovedForAll(
-        address _owner,
-        address _operator
-    )
+    function isApprovedForAll(address _owner, address _operator)
         public
         view
         returns (bool)
@@ -636,10 +724,7 @@ contract ERC721BasicToken is SupportsInterfaceWithLookup, ERC721Basic, Pausable 
      * @return bool whether the msg.sender is approved for the given token ID,
      *    is an operator of the owner, or is the owner of the token
      */
-    function isApprovedOrOwner(
-        address _spender,
-        uint256 _tokenId
-    )
+    function isApprovedOrOwner(address _spender, uint256 _tokenId)
         internal
         view
         returns (bool)
@@ -661,7 +746,9 @@ contract ERC721BasicToken is SupportsInterfaceWithLookup, ERC721Basic, Pausable 
      * @param _to The address that will own the minted token
      * @param _tokenId uint256 ID of the token to be minted by the msg.sender
      */
-    function _mint(address _to, uint256 _tokenId) internal {
+    function _mint(address _to, uint256 _tokenId) 
+        internal 
+    {
         require(_to != address(0));
         addTokenTo(_to, _tokenId);
         emit Transfer(address(0), _to, _tokenId);
@@ -672,7 +759,9 @@ contract ERC721BasicToken is SupportsInterfaceWithLookup, ERC721Basic, Pausable 
      * Reverts if the token does not exist
      * @param _tokenId uint256 ID of the token being burned by the msg.sender
      */
-    function _burn(address _owner, uint256 _tokenId) internal {
+    function _burn(address _owner, uint256 _tokenId) 
+        internal 
+    {
         clearApproval(_owner, _tokenId);
         removeTokenFrom(_owner, _tokenId);
         emit Transfer(_owner, address(0), _tokenId);
@@ -684,7 +773,9 @@ contract ERC721BasicToken is SupportsInterfaceWithLookup, ERC721Basic, Pausable 
      * @param _owner owner of the token
      * @param _tokenId uint256 ID of the token to be transferred
      */
-    function clearApproval(address _owner, uint256 _tokenId) internal {
+    function clearApproval(address _owner, uint256 _tokenId) 
+        internal 
+    {
         require(ownerOf(_tokenId) == _owner);
         if (tokenApprovals[_tokenId] != address(0)) {
             tokenApprovals[_tokenId] = address(0);
@@ -697,7 +788,9 @@ contract ERC721BasicToken is SupportsInterfaceWithLookup, ERC721Basic, Pausable 
      * @param _to address representing the new owner of the given token ID
      * @param _tokenId uint256 ID of the token to be added to the tokens list of the given address
      */
-    function addTokenTo(address _to, uint256 _tokenId) internal {
+    function addTokenTo(address _to, uint256 _tokenId) 
+        internal 
+    {
         require(tokenOwner[_tokenId] == address(0));
         tokenOwner[_tokenId] = _to;
         ownedTokensCount[_to] = ownedTokensCount[_to].add(1);
@@ -708,7 +801,9 @@ contract ERC721BasicToken is SupportsInterfaceWithLookup, ERC721Basic, Pausable 
      * @param _from address representing the previous owner of the given token ID
      * @param _tokenId uint256 ID of the token to be removed from the tokens list of the given address
      */
-    function removeTokenFrom(address _from, uint256 _tokenId) internal {
+    function removeTokenFrom(address _from, uint256 _tokenId) 
+        internal 
+    {
         require(ownerOf(_tokenId) == _from);
         ownedTokensCount[_from] = ownedTokensCount[_from].sub(1);
         tokenOwner[_tokenId] = address(0);
@@ -789,20 +884,26 @@ contract ERC721Token is SupportsInterfaceWithLookup, ERC721BasicToken, ERC721 {
     /**
      * @dev Constructor function
      */
-    constructor(string _name, string _symbol) public {
+    constructor(string _name, string _symbol) 
+        public 
+    {
     	name_ = _name;
     	symbol_ = _symbol;
 
     	// register the supported interfaces to conform to ERC721 via ERC165
     	_registerInterface(InterfaceId_ERC721Enumerable);
     	_registerInterface(InterfaceId_ERC721Metadata);
-  }
+    }
 
     /**
      * @dev Gets the token name
      * @return string representing the token name
      */
-    function name() external view returns (string) {
+    function name() 
+        external 
+        view 
+        returns (string) 
+    {
         return name_;
     }
 
@@ -810,7 +911,11 @@ contract ERC721Token is SupportsInterfaceWithLookup, ERC721BasicToken, ERC721 {
      * @dev Gets the token symbol
      * @return string representing the token symbol
      */
-    function symbol() external view returns (string) {
+    function symbol() 
+        external 
+        view 
+        returns (string) 
+    {
         return symbol_;
     }
 
@@ -819,7 +924,11 @@ contract ERC721Token is SupportsInterfaceWithLookup, ERC721BasicToken, ERC721 {
      * Throws if the token ID does not exist. May return an empty string.
      * @param _tokenId uint256 ID of the token to query
      */
-    function tokenURI(uint256 _tokenId) public view returns (string) {
+    function tokenURI(uint256 _tokenId) 
+        public 
+        view 
+        returns (string) 
+    {
         require(exists(_tokenId));
         return tokenURIs[_tokenId];
     }
@@ -846,7 +955,11 @@ contract ERC721Token is SupportsInterfaceWithLookup, ERC721BasicToken, ERC721 {
      * @dev Gets the total amount of tokens stored by the contract
      * @return uint256 representing the total amount of tokens
      */
-    function totalSupply() public view returns (uint256) {
+    function totalSupply() 
+        public 
+        view 
+        returns (uint256) 
+    {
         return allTokens.length;
     }
 
@@ -856,7 +969,11 @@ contract ERC721Token is SupportsInterfaceWithLookup, ERC721BasicToken, ERC721 {
      * @param _index uint256 representing the index to be accessed of the tokens list
      * @return uint256 token ID at the given index of the tokens list
      */
-    function tokenByIndex(uint256 _index) public view returns (uint256) {
+    function tokenByIndex(uint256 _index) 
+        public 
+        view 
+        returns (uint256) 
+    {
         require(_index < totalSupply());
         return allTokens[_index];
     }
@@ -867,7 +984,9 @@ contract ERC721Token is SupportsInterfaceWithLookup, ERC721BasicToken, ERC721 {
      * @param _tokenId uint256 ID of the token to set its URI
      * @param _uri string URI to assign
      */
-    function _setTokenURI(uint256 _tokenId, string _uri) internal {
+    function _setTokenURI(uint256 _tokenId, string _uri) 
+        internal 
+    {
         require(exists(_tokenId));
         tokenURIs[_tokenId] = _uri;
     }
@@ -877,7 +996,9 @@ contract ERC721Token is SupportsInterfaceWithLookup, ERC721BasicToken, ERC721 {
      * @param _to address representing the new owner of the given token ID
      * @param _tokenId uint256 ID of the token to be added to the tokens list of the given address
      */
-    function addTokenTo(address _to, uint256 _tokenId) internal {
+    function addTokenTo(address _to, uint256 _tokenId) 
+        internal 
+    {
         super.addTokenTo(_to, _tokenId);
         uint256 length = ownedTokens[_to].length;
         ownedTokens[_to].push(_tokenId);
@@ -889,7 +1010,9 @@ contract ERC721Token is SupportsInterfaceWithLookup, ERC721BasicToken, ERC721 {
      * @param _from address representing the previous owner of the given token ID
      * @param _tokenId uint256 ID of the token to be removed from the tokens list of the given address
      */
-    function removeTokenFrom(address _from, uint256 _tokenId) internal {
+    function removeTokenFrom(address _from, uint256 _tokenId) 
+        internal
+    {
         super.removeTokenFrom(_from, _tokenId);
 
         uint256 tokenIndex = ownedTokensIndex[_tokenId];
@@ -913,7 +1036,9 @@ contract ERC721Token is SupportsInterfaceWithLookup, ERC721BasicToken, ERC721 {
      * @param _to address the beneficiary that will own the minted token
      * @param _tokenId uint256 ID of the token to be minted by the msg.sender
      */
-    function _mint(address _to, uint256 _tokenId) internal {
+    function _mint(address _to, uint256 _tokenId) 
+        internal 
+    {
         super._mint(_to, _tokenId);
 
         allTokensIndex[_tokenId] = allTokens.length;
@@ -926,7 +1051,9 @@ contract ERC721Token is SupportsInterfaceWithLookup, ERC721BasicToken, ERC721 {
      * @param _owner owner of the token to burn
      * @param _tokenId uint256 ID of the token being burned by the msg.sender
      */
-    function _burn(address _owner, uint256 _tokenId) internal {
+    function _burn(address _owner, uint256 _tokenId) 
+        internal 
+    {
         super._burn(_owner, _tokenId);
 
         // Clear metadata (if any)
@@ -949,35 +1076,65 @@ contract ERC721Token is SupportsInterfaceWithLookup, ERC721BasicToken, ERC721 {
 }
 
 contract queue {
+
     struct Queue {
         address[] data;
         uint256 front;
         uint256 back;
     }
-    /// @dev the number of elements stored in the queue.
-    function length(Queue storage q) view internal returns (uint256) {
+
+    /** 
+     * @dev the number of elements stored in the queue.
+     */ 
+    function length(Queue storage q) 
+        view 
+        internal 
+        returns (uint256) 
+    {
         return q.back - q.front;
     }
-    /// @dev the number of elements this queue can hold
-    function capacity(Queue storage q) view internal returns (uint256) {
+
+    /**
+     * @dev the number of elements this queue can hold
+     */
+    function capacity(Queue storage q) 
+        view 
+        internal 
+        returns (uint256) 
+    {
         return q.data.length - 1;
     }
-	/// @dev the number of element at the front of the queue
-	function query(Queue storage q) view internal returns (address) {
+
+    /**
+     * @dev the number of element at the front of the queue
+     */
+	function query(Queue storage q)
+        view 
+        internal 
+        returns (address) 
+    {
 		if (q.back == q.front) 
 			return;
 		return q.data[q.front]; 
 	}
-    /// @dev push a new element to the back of the queue
-    function push(Queue storage q, address data) internal
+
+    /**
+     * @dev push a new element to the back of the queue
+     */
+    function push(Queue storage q, address data) 
+        internal
     {
         if ((q.back + 1) % q.data.length == q.front)
             return; // throw;
         q.data[q.back] = data;
         q.back = (q.back + 1) % q.data.length;
     }
-    /// @dev remove and return the element at the front of the queue
-    function pop(Queue storage q) internal 
+
+    /**
+     * @dev remove and return the element at the front of the queue
+     */
+    function pop(Queue storage q) 
+        internal 
     {
         if (q.back == q.front)
             return; // throw;
@@ -986,73 +1143,106 @@ contract queue {
     }
 }
 
-contract LeBlock is ERC721Token, queue {
-	using SafeMathInt for int256;
-    event Recharge(address indexed _user, uint256 indexed _amount);
+contract happyBlock is ERC721Token, queue {
 
-	// 乐块类型
+	using SafeMathInt for int256;
+    
+    event Recharge(
+        address indexed _user, 
+        uint256 indexed _amount
+    );
+
+	// LeBlock types
 	enum blockTypes { type1, type2, type3, type4, type5 }
-    // 矿机状态
+
+    // mining machine states
     enum minerState { increase, decrease, steady }
-	// 用户当前算力
+
+	// Mapping from player to mining machine's current miner power
 	mapping (address => uint256) userMinerPower;
-	// 用户游戏账号TAT数量
+
+	// Mapping from player to account balance.(TAT)
 	mapping (address => uint256) userTatAmount;
-	// 用户不同种类的乐块的数量
+
+	// Mapping from player to amounts of differnet types blocks
 	mapping (address => mapping (uint256 => uint256)) userBlockAmount;
-	// 用户注册排名
-	mapping (address => uint256) userRegistrationRank;
-	// 乐块id对应是哪个种类
+
+	// Mapping from player to rank of register memont
+    mapping (address => uint256) userRegistrationRank;
+	
+    // Mapping from blockid to blockType
 	mapping (uint256 => blockTypes) blockType;
-	// 某个种类有多少乐块
+
+	// Mapping from block type to amount
 	mapping (uint256 => uint256) typesTotalBlock;
-	// 总用户数
-	uint256 totalplayers; 
-	// 全网总算力
+
+	// totalPlayers
+	uint256 totalplayers;
+
+	// total miner machine power
 	uint256 totalMinerPower;
-	// 维护一个矿机算力变化的最后时间队列
+	
+	/** 
+	 * @title lastTime
+	 * @dev a queue to maintain the last power change moment of a mining machine
+	 */ 
 	Queue lastTime;
-	// 用户矿机算力达到恒温预期时刻
+
+	// Mapping from player to the moment of stability 
 	mapping (address => uint256) userLastTime;
 
-	// 矿机参数
+	// mining machine parameters
 	struct Miner {
 		address owner;
-		// 矿机押金室TAT变动后的那一刻的算力值
+		// the mining power after recharge deposit
 		uint256 minerPower;
-		// 矿机当前押金室TAT数量
+		// balance of TAT in deposit room
 		uint256 depositAmount;
-		// 矿机强度
+		// mining machine Strength, equal to power when machine is stable
 		uint256 minerStrength;
-		// 矿机状态
+		// mining machine state
 		minerState state;
-		// 上次矿机押金室押金变化的时刻
+		// the time of the last change in the deposit
 		uint256 lastChangeTime;
 	}
 
-
 	mapping (address => Miner) ownerToMiner;
 
-    // 算力瞬时提供比例，单位：%
+    
     uint256 initialRise;
-    // 算力每小时提升比例，单位：%/s
     uint256 risePerSecond;	
 
-    constructor (string _name, string _symbol, uint256 _length) public ERC721Token(_name, _symbol)  {
+	/**
+	 * @dev _length is the length of queue lastTime
+	 */
+    constructor (string _name, string _symbol, uint256 _length)
+		public
+		ERC721Token(_name, _symbol)
+	{
 		lastTime.data.length = _length;
     }
 
-	function recharge(address _user, uint256 _amount) whenNotPaused onlyAdmins public {
+	/**
+	 * @dev using gateway provided by loom or server
+	 */
+	function recharge(address _user, uint256 _amount)
+		whenNotPaused 
+		public
+	{
         userTatAmount[_user] = userTatAmount[_user].add(_amount);
 
         emit Recharge(_user, _amount);
 	}
 
-
-    // 用户将TAT放入押金室
-    // 由于solidity不支持小数，算力值统一乘上一百，前端得到数据后再除以100显示。
-    // 矿机强度马上提示到算力最大值，算力提升到 原算力 + 总增长算力*_initial%
-    function pawn(uint256 _amount) whenNotPaused public {
+	/**
+	 * @dev player recharge TAT to the deposit room
+	 * @dev power * 100 for no float number in solidity
+	 * @dev power = power + willRaisedPower * _initial%
+	 */
+    function pawn(uint256 _amount) 
+		whenNotPaused 
+		public 
+	{
         require(_amount != 0);
         require(_amount <= userTatAmount[msg.sender]);
         require(_amount.div(10).mul(10) == _amount);
@@ -1066,19 +1256,20 @@ contract LeBlock is ERC721Token, queue {
 		ownerToMiner[msg.sender].minerPower = ownerToMiner[msg.sender].minerPower.add(_initIncreasePower);
 		ownerToMiner[msg.sender].minerStrength = ownerToMiner[msg.sender].minerStrength.add(_increasePower);
 
-		// 更新最后时间
+		// update last change time
 		ownerToMiner[msg.sender].lastChangeTime = now;
     }
 
-    // 设置算力相关参数,单位 %
+    // set parameter
     function setVariable(uint256 _initialRise, uint256 _risePerSecond) whenNotPaused onlyAdmins public {
         require(_initialRise.add(_risePerSecond) <= 100);
         initialRise = _initialRise;
         risePerSecond = _risePerSecond;
     }
 	
-
-	// 用户矿机算力增长模型，这里只算百分比
+	/**
+	 * @return currentMinerPower,currentMinerPowerChange
+	 */
 	function _computeCurrentMinerPower(
         uint256 _startingMinerPower,
         uint256 _endingMinerPower,
@@ -1117,7 +1308,9 @@ contract LeBlock is ERC721Token, queue {
 		);
 	}
 
-	// 一定算力每小时能够得到多少乐块
+	/**
+	 * @dev power to mine block rate
+	 */
 	function _blockPerHour(
 		uint256 _minerPower, 
 		uint256 _totalPower, 
@@ -1130,8 +1323,9 @@ contract LeBlock is ERC721Token, queue {
 		return _minerPower.mul(supplyPerHour).div(_totalPower);
 	}
 
-	// 产品文档的挖矿算法
-	// 得到随机乐块礼包ID
+	/**
+	 * @return the random packageID 
+	 */
 	function _miner(
 		// 礼包个数
 		uint256 _packageAmount,
@@ -1154,11 +1348,11 @@ contract LeBlock is ERC721Token, queue {
 		return packageId;
 	}
 
-	// 给定玩家算力段和乐块礼包ID得出玩家能都到几个乐块礼包
+	/**
+	 * @dev distribute package
+	 */	
 	function _getpackage(
-		// 玩家算力段
 		uint256[] storage _userMinerPower,
-		// 乐块礼包ID
 		uint256[] storage _packageId
 		)
 		internal
@@ -1179,13 +1373,16 @@ contract LeBlock is ERC721Token, queue {
 		return calculator;
 	}
 
-	// 维护全网算力
-	// 用户充值押金的时候维护
+	/**
+	 * @dev 
+	 */
 	function _getTotalPower() pure internal  {
 		
 	}
 
-	// 更新最后时间队列
+	/**
+	 * @dev update queue, user power, total power
+	 */
 	function _updateQueue(
 		address _address
 		)
@@ -1193,8 +1390,6 @@ contract LeBlock is ERC721Token, queue {
 	{
 		address _addr = query(lastTime);
 		while (userLastTime[_addr] <= now) {
-			// 更新这个用户算力以及全网算力
-			// 更新队列
 			int256 temp;
 			(userMinerPower[_addr],temp) = _currentMinerPower(ownerToMiner[_addr]);
 			totalMinerPower = uint256(int256(totalMinerPower).add(temp));
@@ -1203,6 +1398,4 @@ contract LeBlock is ERC721Token, queue {
 			_addr = query(lastTime);
 		}
 	}
-
-	//
 }

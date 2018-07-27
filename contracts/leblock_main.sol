@@ -428,9 +428,9 @@ contract leblock_main is SupportsInterfaceWithLookup, Pausable, QueueStru {
         int256 indexed _amount
     );
 
-    // diff types leblock contract address
-    address[] leblock_addr;
-
+    // mapping from different types leblock to leblock contract address
+    mapping (uint256 => address) blockToken;
+    
     // Mapping from player to account balance.(TAT)
     mapping (address => uint256) userTatAmount;
 
@@ -466,6 +466,28 @@ contract leblock_main is SupportsInterfaceWithLookup, Pausable, QueueStru {
     mapping (address => Miner) ownerToMiner;
 
     constructor() public {
+    }
+
+    /**
+     * @dev admin set block address
+     */
+    function setTokenAddr(uint256 _tokenId, address _tokenAddr)
+        whenNotPaused
+        onlyAdmins
+        public
+    {
+        blockToken[_tokenId] = _tokenAddr;
+    }
+
+    /**
+     * @dev get block address
+     */
+    function getTokenAddr(uint256 _tokenId) 
+        view 
+        public
+        returns (address)
+    {
+        return blockToken[_tokenId];
     }
 
     /**

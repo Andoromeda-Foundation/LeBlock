@@ -6,48 +6,71 @@ pragma solidity ^0.4.24;
  */
 library SafeMath {
 
-	/**
-	* @dev Multiplies two numbers, throws on overflow.
-	*/
-	function mul(uint256 a, uint256 b) internal pure returns (uint256 c) {
-		if (a == 0) {
-		return 0;
-		}
-		c = a * b;
-		assert(c / a == b);
-		return c;
-	}
+    /**
+     * @dev Multiplies two numbers, throws on overflow.
+     */
+    function mul(uint256 a, uint256 b)
+        internal
+        pure
+        returns (uint256 c)
+    {
+        /**
+         * @dev Gas optimization: this is cheaper than asserting 'a' not being zero, but the
+         * benefit is lost if 'b' is also tested.
+         * See: https://github.com/OpenZeppelin/openzeppelin-solidity/pull/522
+         */
+        if (a == 0) {
+            return 0;
+        }
 
-	/**
-	* @dev Integer division of two numbers, truncating the quotient.
-	*/
-	function div(uint256 a, uint256 b) internal pure returns (uint256) {
-		// assert(b > 0); // Solidity automatically throws when dividing by 0
-		// uint256 c = a / b;
-		// assert(a == b * c + a % b); // There is no case in which this doesn't hold
-		return a / b;
-	}
+        c = a * b;
+        assert(c / a == b);
+        return c;
+    }
 
-	/**
-	* @dev Subtracts two numbers, throws on overflow (i.e. if subtrahend is greater than minuend).
-	*/
-	function sub(uint256 a, uint256 b) internal pure returns (uint256) {
-		assert(b <= a);
-		return a - b;
-  }
+    /**
+    * @dev Integer division of two numbers, truncating the quotient.
+    */
+    function div(uint256 a, uint256 b)
+        internal
+        pure
+        returns (uint256)
+    {
+        // assert(b > 0); // Solidity automatically throws when dividing by 0
+        // uint256 c = a / b;
+        // assert(a == b * c + a % b); // There is no case in which this doesn't hold
+        return a / b;
+    }
 
-  /**
-  * @dev Adds two numbers, throws on overflow.
-  */
-  function add(uint256 a, uint256 b) internal pure returns (uint256 c) {
-    c = a + b;
-    assert(c >= a);
-    return c;
-  }
+    /**
+    * @dev Subtracts two numbers, throws on overflow (i.e. if subtrahend is greater than minuend).
+    */
+    function sub(uint256 a, uint256 b)
+        internal
+        pure
+        returns (uint256)
+    {
+        assert(b <= a);
+        return a - b;
+    }
+
+    /**
+    * @dev Adds two numbers, throws on overflow.
+    */
+    function add(uint256 a, uint256 b)
+        internal
+        pure
+        returns (uint256 c)
+    {
+        c = a + b;
+        assert(c >= a);
+        return c;
+    }
 }
 
 /**
- * Utility library of inline functions on addresses
+ * @title AddressUtils
+ * @dev Utility library of inline functions on addresses
  */
 library AddressUtils {
 
@@ -58,10 +81,14 @@ library AddressUtils {
      * @param addr address to check
      * @return whether the target address is a contract
      */
-    function isContract(address addr) internal view returns (bool) {
+    function isContract(address addr)
+        internal
+        view
+        returns (bool)
+    {
         uint256 size;
-        // XXX Currently there is no better way to check if there is a contract in an address
-        // than to check the size of the code at that address.
+        /// @dev XXX Currently there is no better way to check if there is
+        // a contract in an address than to check the size of the code at that address.
         // See https://ethereum.stackexchange.com/a/14016/36603
         // for more details about how this works.
         // TODO Check this again before the Serenity release, because all addresses will be
@@ -70,14 +97,14 @@ library AddressUtils {
         assembly { size := extcodesize(addr) }
         return size > 0;
     }
-
 }
+
 
 /**
  * @title ERC20Interface
  * @dev https: *github.com/ethereum/EIPs/blob/master/EIPS/eip-20.md
  */
- contract ERC20Interface {
+contract ERC20Interface {
     function totalSupply() public view returns (uint256);
     function balanceOf(address tokenOwner) public view returns (uint256 balance);
     function allowance(address tokenOwner, address spender) public view returns (uint256 remaining);
@@ -94,14 +121,20 @@ library AddressUtils {
  * @dev Contract function to receive approval and execute function in one call
  */
 contract ApproveAndCallFallBack {
-    function receiveApproval(address from, uint256 tokens, address token, bytes data) public;
+    function receiveApproval(
+        address from,
+        uint256 tokens,
+        address token,
+        bytes data
+    )
+        public;
 }
 
 
 /**
  * @title Owned
  */
- contract Owned {
+contract Owned {
     address public owner;
     address public newOwner;
     mapping (address => bool) public admins;
@@ -144,52 +177,52 @@ contract ApproveAndCallFallBack {
  * @dev Base contract which allows children to implement an emergency stop mechanism.
  */
 contract Pausable is Owned {
-	event Pause();
-	event Unpause();
+    event Pause();
+    event Unpause();
 
-	bool public paused = false;
+    bool public paused = false;
 
 
-	/**
-	* @dev Modifier to make a function callable only when the contract is not paused.
-	*/
-	modifier whenNotPaused() {
-		require(!paused);
-		_;
-	}
+    /**
+    * @dev Modifier to make a function callable only when the contract is not paused.
+    */
+    modifier whenNotPaused() {
+        require(!paused);
+        _;
+    }
 
-	/**
-	* @dev Modifier to make a function callable only when the contract is paused.
-	*/
-	modifier whenPaused() {
-		require(paused);
-		_;
-	}
+    /**
+    * @dev Modifier to make a function callable only when the contract is paused.
+    */
+    modifier whenPaused() {
+        require(paused);
+        _;
+    }
 
-	/**
-	* @dev called by the owner to pause, triggers stopped state
-	*/
-	function pause() onlyAdmins whenNotPaused public {
-		paused = true;
-		emit Pause();
-	}
+    /**
+    * @dev called by the owner to pause, triggers stopped state
+    */
+    function pause() onlyAdmins whenNotPaused public {
+        paused = true;
+        emit Pause();
+    }
 
-	/**
-	* @dev called by the owner to unpause, returns to normal state
-	*/
-	function unpause() onlyAdmins whenPaused public {
-		paused = false;
-		emit Unpause();
-	}
+    /**
+    * @dev called by the owner to unpause, returns to normal state
+    */
+    function unpause() onlyAdmins whenPaused public {
+        paused = false;
+        emit Unpause();
+    }
 }
 
 /**
- * @title 
+ * @title
  * @dev ERC20 Token, with the addition of symbol, name and decimals and an initial supply
  */
 contract leblock is ERC20Interface, Pausable {
-	using SafeMath for uint256;
-	using AddressUtils for address;
+    using SafeMath for uint256;
+    using AddressUtils for address;
 
     string public symbol;
     string public  name;
@@ -199,15 +232,15 @@ contract leblock is ERC20Interface, Pausable {
     mapping(address => uint256) balances;
     mapping(address => mapping(address => uint256)) allowed;
 
-	/**
-	 * @dev 1 eth this token = price other token which in address,
-	 * @notice the decimals of price
-	 */
-	mapping(address => uint256) price;
+    /**
+     * @dev 1 eth this token = price other token which in address,
+     * @notice the decimals of price
+     */
+    mapping(address => uint256) price;
 
     /**
      * @dev Constructor
-     */ 
+     */
     constructor(string _symbol, string _name, uint256 _totalSupply) public {
         owner = msg.sender;
         admins[msg.sender] = true;
@@ -216,7 +249,7 @@ contract leblock is ERC20Interface, Pausable {
         name = _name;
         decimals = 18;
         totalSupply = _totalSupply * 10**uint(decimals);
-        balances[owner] = totalSupply;        
+        balances[owner] = totalSupply;
         emit Transfer(address(0), msg.sender, totalSupply);
     }
 
@@ -232,7 +265,7 @@ contract leblock is ERC20Interface, Pausable {
      * Transfer the balance from token owner's account to `to` account
      * - Owner's account must have sufficient balance to transfer
      * - 0 value transfers are allowed
-     */ 
+     */
     function transfer(address _to, uint256 _tokens) public whenNotPaused returns (bool success) {
         balances[msg.sender] = balances[msg.sender].sub(_tokens);
         balances[_to] = balances[_to].add(_tokens);
@@ -240,13 +273,13 @@ contract leblock is ERC20Interface, Pausable {
         return true;
     }
 
-    /** 
+    /**
      * Token owner can approve for `spender` to transferFrom(...) `tokens`
      * from the token owner's account
      *
      * https://github.com/ethereum/EIPs/blob/master/EIPS/eip-20-token-standard.md
      * recommends that there are no checks for the approval double-spend attack
-     * as this should be implemented in user interfaces 
+     * as this should be implemented in user interfaces
      */
     function approve(address _spender, uint256 _tokens) public whenNotPaused returns (bool success) {
         allowed[msg.sender][_spender] = _tokens;
@@ -256,7 +289,7 @@ contract leblock is ERC20Interface, Pausable {
 
     /**
      * Transfer `tokens` from the `from` account to the `to` account
-     * 
+     *
      * The calling account must already have sufficient tokens approve(...)-d
      * for spending from the `from` account and
      * - From account must have sufficient balance to transfer
@@ -279,7 +312,7 @@ contract leblock is ERC20Interface, Pausable {
         return allowed[_tokenOwner][_spender];
     }
 
-    /** 
+    /**
      * Token owner can approve for `spender` to transferFrom(...) `tokens`
      * from the token owner's account. The `spender` contract function
      * `receiveApproval(...)` is then executed
@@ -306,11 +339,11 @@ contract leblock is ERC20Interface, Pausable {
         revert();
     }
 
-    /** 
+    /**
      * @dev Owner can transfer out any accidentally sent ERC20 tokens
      */
     function withDrawAnyERC20Token(address tokenAddress, uint256 tokens) public onlyOwner returns (bool success) {
         require(tokenAddress.isContract());
-		return ERC20Interface(tokenAddress).transfer(owner, tokens);
+        return ERC20Interface(tokenAddress).transfer(owner, tokens);
     }
 }

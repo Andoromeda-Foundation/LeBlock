@@ -14,12 +14,12 @@ library SafeMath {
         pure 
         returns (uint256 c) 
     {
-		/**
+        /**
          * @dev Gas optimization: this is cheaper than asserting 'a' not being zero, but the
          * benefit is lost if 'b' is also tested.
          * See: https://github.com/OpenZeppelin/openzeppelin-solidity/pull/522
          */
-		if (a == 0) {
+        if (a == 0) {
             return 0;
         }
 
@@ -74,65 +74,66 @@ library SafeMath {
  * @dev SafeMath adapted for int256
  */
 library SafeMathInt {
-	function mul(int256 a, int256 b) 
+    function mul(int256 a, int256 b) 
         internal 
         pure 
         returns (int256) 
     {
-		/**
-		 * @dev Prevent overflow when multiplying INT256_MIN with -1
-		 * https://github.com/RequestNetwork/requestNetwork/issues/43
-		 */
-		assert(!(a == - 2**255 && b == -1) && !(b == - 2**255 && a == -1));
+        /**
+         * @dev Prevent overflow when multiplying INT256_MIN with -1
+         * https://github.com/RequestNetwork/requestNetwork/issues/43
+         */
+        assert(!(a == - 2**255 && b == -1) && !(b == - 2**255 && a == -1));
 
-		int256 c = a * b;
-		assert((b == 0) || (c / b == a));
-		return c;
-	}
+        int256 c = a * b;
+        assert((b == 0) || (c / b == a));
+        return c;
+    }
 
-	function div(int256 a, int256 b) internal pure returns (int256) {
-		/**
-		 * @dev Prevent overflow when dividing INT256_MIN by -1
-		 * https://github.com/RequestNetwork/requestNetwork/issues/43
-		 */
-		assert(!(a == - 2**255 && b == -1));
-		/**
-		 * @dev assert(b > 0); // Solidity automatically throws when dividing by 0
-		 * assert(a == b * c + a % b); // There is no case in which this doesn't hold
-		 */
-		int256 c = a / b;
-		return c;
-	}
+    function div(int256 a, int256 b) internal pure returns (int256) {
+        /**
+         * @dev Prevent overflow when dividing INT256_MIN by -1
+         * https://github.com/RequestNetwork/requestNetwork/issues/43
+         */
+        assert(!(a == - 2**255 && b == -1));
+        /**
+         * @dev assert(b > 0); // Solidity automatically throws when dividing by 0
+         * assert(a == b * c + a % b); // There is no case in which this doesn't hold
+         */
+        int256 c = a / b;
+        return c;
+    }
 
-	function sub(int256 a, int256 b) 
-		internal 
-		pure 
-		returns (int256) 
-	{
-		assert((b >= 0 && a - b <= a) || (b < 0 && a - b > a));
+    function sub(int256 a, int256 b) 
+        internal 
+        pure 
+        returns (int256) 
+    {
+        assert((b >= 0 && a - b <= a) || (b < 0 && a - b > a));
 
-		return a - b;
-	}
+        return a - b;
+    }
 
-	function add(int256 a, int256 b) 
-		internal 
-		pure 
-		returns (int256) 
-	{
-		int256 c = a + b;
-		assert((b >= 0 && c >= a) || (b < 0 && c < a));
-		return c;
-	}
+    function add(int256 a, int256 b) 
+        internal 
+        pure 
+        returns (int256) 
+    {
+        int256 c = a + b;
+        assert((b >= 0 && c >= a) || (b < 0 && c < a));
+        return c;
+    }
 
-	function toUint256Safe(int256 a) 
-		internal 
-		pure 
-		returns (uint256) 
-	{
-		assert(a>=0);
-		return uint256(a);
-	}
+    function toUint256Safe(int256 a) 
+        internal 
+        pure 
+        returns (uint256) 
+    {
+        assert(a>=0);
+        return uint256(a);
+    }
 }
+
 
 /**
  * @title AddressUtils
@@ -148,13 +149,13 @@ library AddressUtils {
      * @return whether the target address is a contract
      */
     function isContract(address addr) 
-		internal 
-		view 
-		returns (bool) 
-	{
+        internal 
+        view 
+        returns (bool) 
+    {
         uint256 size;
         /// @dev XXX Currently there is no better way to check if there is 
-		// a contract in an address than to check the size of the code at that address.
+        // a contract in an address than to check the size of the code at that address.
         // See https://ethereum.stackexchange.com/a/14016/36603
         // for more details about how this works.
         // TODO Check this again before the Serenity release, because all addresses will be
@@ -887,12 +888,12 @@ contract ERC721Token is SupportsInterfaceWithLookup, ERC721BasicToken, ERC721 {
     constructor(string _name, string _symbol) 
         public 
     {
-    	name_ = _name;
-    	symbol_ = _symbol;
+        name_ = _name;
+        symbol_ = _symbol;
 
-    	// register the supported interfaces to conform to ERC721 via ERC165
-    	_registerInterface(InterfaceId_ERC721Enumerable);
-    	_registerInterface(InterfaceId_ERC721Metadata);
+        // register the supported interfaces to conform to ERC721 via ERC165
+        _registerInterface(InterfaceId_ERC721Enumerable);
+        _registerInterface(InterfaceId_ERC721Metadata);
     }
 
     /**
@@ -1108,15 +1109,15 @@ contract queue {
     /**
      * @dev the number of element at the front of the queue
      */
-	function query(Queue storage q)
+    function query(Queue storage q)
         view 
         internal 
         returns (address) 
     {
-		if (q.back == q.front) 
-			return;
-		return q.data[q.front]; 
-	}
+        if (q.back == q.front) 
+            return;
+        return q.data[q.front]; 
+    }
 
     /**
      * @dev push a new element to the back of the queue
@@ -1145,104 +1146,104 @@ contract queue {
 
 contract happyBlock is ERC721Token, queue {
 
-	using SafeMathInt for int256;
+    using SafeMathInt for int256;
     
     event Recharge(
         address indexed _user, 
         uint256 indexed _amount
     );
 
-	// LeBlock types
-	enum blockTypes { type1, type2, type3, type4, type5 }
+    // LeBlock types
+    enum blockTypes { type1, type2, type3, type4, type5 }
 
     // mining machine states
     enum minerState { increase, decrease, steady }
 
-	// Mapping from player to mining machine's current miner power
-	mapping (address => uint256) userMinerPower;
+    // Mapping from player to mining machine's current miner power
+    mapping (address => uint256) userMinerPower;
 
-	// Mapping from player to account balance.(TAT)
-	mapping (address => uint256) userTatAmount;
+    // Mapping from player to account balance.(TAT)
+    mapping (address => uint256) userTatAmount;
 
-	// Mapping from player to amounts of differnet types blocks
-	mapping (address => mapping (uint256 => uint256)) userBlockAmount;
+    // Mapping from player to amounts of differnet types blocks
+    mapping (address => mapping (uint256 => uint256)) userBlockAmount;
 
-	// Mapping from player to rank of register memont
+    // Mapping from player to rank of register memont
     mapping (address => uint256) userRegistrationRank;
-	
+    
     // Mapping from blockid to blockType
-	mapping (uint256 => blockTypes) blockType;
+    mapping (uint256 => blockTypes) blockType;
 
-	// Mapping from block type to amount
-	mapping (uint256 => uint256) typesTotalBlock;
+    // Mapping from block type to amount
+    mapping (uint256 => uint256) typesTotalBlock;
 
-	// totalPlayers
-	uint256 totalplayers;
+    // totalPlayers
+    uint256 totalplayers;
 
-	// total miner machine power
-	uint256 totalMinerPower;
-	
-	/** 
-	 * @title lastTime
-	 * @dev a queue to maintain the last power change moment of a mining machine
-	 */ 
-	Queue lastTime;
+    // total miner machine power
+    uint256 totalMinerPower;
+    
+    /** 
+     * @title lastTime
+     * @dev a queue to maintain the last power change moment of a mining machine
+     */ 
+    Queue lastTime;
 
-	// Mapping from player to the moment of stability 
-	mapping (address => uint256) userLastTime;
+    // Mapping from player to the moment of stability 
+    mapping (address => uint256) userLastTime;
 
-	// mining machine parameters
-	struct Miner {
-		address owner;
-		// the mining power after recharge deposit
-		uint256 minerPower;
-		// balance of TAT in deposit room
-		uint256 depositAmount;
-		// mining machine Strength, equal to power when machine is stable
-		uint256 minerStrength;
-		// mining machine state
-		minerState state;
-		// the time of the last change in the deposit
-		uint256 lastChangeTime;
-	}
+    // mining machine parameters
+    struct Miner {
+        address owner;
+        // the mining power after recharge deposit
+        uint256 minerPower;
+        // balance of TAT in deposit room
+        uint256 depositAmount;
+        // mining machine Strength, equal to power when machine is stable
+        uint256 minerStrength;
+        // mining machine state
+        minerState state;
+        // the time of the last change in the deposit
+        uint256 lastChangeTime;
+    }
 
-	mapping (address => Miner) ownerToMiner;
+    mapping (address => Miner) ownerToMiner;
 
     
     uint256 initialRise;
     uint256 risePerSecond;	
 
-	/**
-	 * @dev _length is the length of queue lastTime
-	 */
+    /**
+     * @dev _length is the length of queue lastTime
+     */
     constructor (string _name, string _symbol, uint256 _length)
-		public
-		ERC721Token(_name, _symbol)
-	{
-		lastTime.data.length = _length;
+        public
+        ERC721Token(_name, _symbol)
+    {
+        lastTime.data.length = _length;
     }
 
-	/**
-	 * @dev using gateway provided by loom or server
-	 */
-	function recharge(address _user, uint256 _amount)
-		whenNotPaused 
-		public
-	{
+    /**
+     * @dev using gateway provided by loom or server
+     */
+    function recharge(address _user, uint256 _amount)
+        whenNotPaused 
+        public
+    {
         userTatAmount[_user] = userTatAmount[_user].add(_amount);
 
         emit Recharge(_user, _amount);
-	}
+    }
 
-	/**
-	 * @dev player recharge TAT to the deposit room
-	 * @dev power * 100 for no float number in solidity
-	 * @dev power = power + willRaisedPower * _initial%
-	 */
+    /**
+     * @dev player recharge TAT to the deposit room
+     * @dev power * 100 for no float number in solidity
+     * @dev power = power + willRaisedPower * _initial%
+     */
     function pawn(uint256 _amount) 
-		whenNotPaused 
-		public 
-	{
+        whenNotPaused 
+        public 
+    {
         require(_amount != 0);
         require(_amount <= userTatAmount[msg.sender]);
         require(_amount.div(10).mul(10) == _amount);
@@ -1253,11 +1254,11 @@ contract happyBlock is ERC721Token, queue {
         userTatAmount[msg.sender] = userTatAmount[msg.sender].sub(_amount);
         ownerToMiner[msg.sender].depositAmount = ownerToMiner[msg.sender].depositAmount.add(_amount);
 
-		ownerToMiner[msg.sender].minerPower = ownerToMiner[msg.sender].minerPower.add(_initIncreasePower);
-		ownerToMiner[msg.sender].minerStrength = ownerToMiner[msg.sender].minerStrength.add(_increasePower);
+        ownerToMiner[msg.sender].minerPower = ownerToMiner[msg.sender].minerPower.add(_initIncreasePower);
+        ownerToMiner[msg.sender].minerStrength = ownerToMiner[msg.sender].minerStrength.add(_increasePower);
 
-		// update last change time
-		ownerToMiner[msg.sender].lastChangeTime = now;
+        // update last change time
+        ownerToMiner[msg.sender].lastChangeTime = now;
     }
 
     // set parameter
@@ -1266,11 +1267,11 @@ contract happyBlock is ERC721Token, queue {
         initialRise = _initialRise;
         risePerSecond = _risePerSecond;
     }
-	
-	/**
-	 * @return currentMinerPower,currentMinerPowerChange
-	 */
-	function _computeCurrentMinerPower(
+    
+    /**
+     * @return currentMinerPower,currentMinerPowerChange
+     */
+    function _computeCurrentMinerPower(
         uint256 _startingMinerPower,
         uint256 _endingMinerPower,
         uint256 _duration,
@@ -1291,111 +1292,113 @@ contract happyBlock is ERC721Token, queue {
         }
     }
 
-	function _currentMinerPower(Miner storage _miner)
-		internal
-		view
-		returns (uint256, int256)
-	{
-		uint256 secondsPassed = now - _miner.lastChangeTime;
-		uint256 duration = uint256(_miner.minerStrength - _miner.minerPower).mul(risePerSecond);
-		uint256 currentMinterPower;
-		int256 minterPowerChange;
-		(currentMinterPower, minterPowerChange) = _computeCurrentMinerPower(
-			_miner.minerPower,
-			_miner.minerStrength,
-			duration,
-			secondsPassed
-		);
-	}
+    function _currentMinerPower(Miner storage _miner)
+        internal
+        view
+        returns (uint256, int256)
+    {
+        uint256 secondsPassed = now - _miner.lastChangeTime;
+        uint256 duration = uint256(_miner.minerStrength - _miner.minerPower).mul(risePerSecond);
+        uint256 currentMinterPower;
+        int256 minterPowerChange;
+        (currentMinterPower, minterPowerChange) = _computeCurrentMinerPower(
+            _miner.minerPower,
+            _miner.minerStrength,
+            duration,
+            secondsPassed
+        );
+    }
 
-	/**
-	 * @dev power to mine block rate
-	 */
-	function _blockPerHour(
-		uint256 _minerPower, 
-		uint256 _totalPower, 
-		uint256 supplyPerHour
-		) 
-		internal 
-		pure 
-		returns (uint256)
-	{
-		return _minerPower.mul(supplyPerHour).div(_totalPower);
-	}
+    /**
+     * @dev power to mine block rate
+     */
+    function _blockPerHour(
+        uint256 _minerPower, 
+        uint256 _totalPower, 
+        uint256 supplyPerHour
+        ) 
+        internal 
+        pure 
+        returns (uint256)
+    {
+        return _minerPower.mul(supplyPerHour).div(_totalPower);
+    }
 
-	/**
-	 * @return the random packageID 
-	 */
-	function _miner(
-		// 礼包个数
-		uint256 _packageAmount,
-		uint256 _totalPower
-		)
-		internal
-		view
-		returns (uint256[])
-	{
-		uint256 random;
-		uint256 result;
-		uint256[] memory packageId = new uint256[](_packageAmount);
+    /**
+     * @return the random packageID 
+     */
+    function _miner(
+        // 礼包个数
+        uint256 _packageAmount,
+        uint256 _totalPower
+        )
+        internal
+        view
+        returns (uint256[])
+    {
+        uint256 random;
+        uint256 result;
+        uint256[] memory packageId = new uint256[](_packageAmount);
 
-		for (uint256 i = 0; i < _packageAmount; i++) {
-			random = uint256(keccak256(abi.encodePacked(block.timestamp + block.difficulty + i))); // assume result is the random number
-			result = random % _totalPower;
-			packageId[i] = result;
-		}
-		 
-		return packageId;
-	}
+        for (uint256 i = 0; i < _packageAmount; i++) {
+            random = uint256(keccak256(abi.encodePacked(block.timestamp + block.difficulty + i))); // assume result is the random number
+            result = random % _totalPower;
+            packageId[i] = result;
+        }
+         
+        return packageId;
+    }
 
-	/**
-	 * @dev distribute package
-	 */	
-	function _getpackage(
-		uint256[] storage _userMinerPower,
-		uint256[] storage _packageId
-		)
-		internal
-		view
-		returns (uint256)
-	{
-		uint256 calculator = 0;
-		bool[] memory tempArray = new bool[](_userMinerPower.length);
-		for (uint256 i = 0; i < _userMinerPower.length; i++) {
-			tempArray[_userMinerPower[i]] = true;
-		}
+    /**
+     * @dev distribute package
+     */	
+    function _getpackage(
+        uint256[] storage _userMinerPower,
+        uint256[] storage _packageId
+        )
+        internal
+        view
+        returns (uint256)
+    {
+        uint256 calculator = 0;
+        bool[] memory tempArray = new bool[](_userMinerPower.length);
+        for (uint256 i = 0; i < _userMinerPower.length; i++) {
+            tempArray[_userMinerPower[i]] = true;
+        }
 
-		for (uint256 k = 0; k < _packageId.length; k++) {
-			if (tempArray[_packageId[i]] == true) {
-				calculator++;
-			}
-		}
-		return calculator;
-	}
+        for (uint256 k = 0; k < _packageId.length; k++) {
+            if (tempArray[_packageId[i]] == true) {
+                calculator++;
+            }
+        }
+        return calculator;
+    }
 
-	/**
-	 * @dev 
-	 */
-	function _getTotalPower() pure internal  {
-		
-	}
+    /**
+     * @dev 
+     */
+    function _getTotalPower() pure internal  {
+        
+    }
 
-	/**
-	 * @dev update queue, user power, total power
-	 */
-	function _updateQueue(
-		address _address
-		)
-		internal
-	{
-		address _addr = query(lastTime);
-		while (userLastTime[_addr] <= now) {
-			int256 temp;
-			(userMinerPower[_addr],temp) = _currentMinerPower(ownerToMiner[_addr]);
-			totalMinerPower = uint256(int256(totalMinerPower).add(temp));
-			pop(lastTime);
-			push(lastTime, _address);
-			_addr = query(lastTime);
-		}
-	}
+    /**
+     * @dev update queue, user power, total power
+     */
+    function _updateQueue(
+        address _address
+        )
+        internal
+    {
+        address _addr = query(lastTime);
+        while (userLastTime[_addr] <= now) {
+            int256 temp;
+            (userMinerPower[_addr],temp) = _currentMinerPower(ownerToMiner[_addr]);
+            totalMinerPower = uint256(int256(totalMinerPower).add(temp));
+            pop(lastTime);
+            push(lastTime, _address);
+            _addr = query(lastTime);
+        }
+    }
+
+
 }

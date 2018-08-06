@@ -185,7 +185,6 @@ interface ERC165 {
 }
 
 /**
- * @title ERC721 Non-Fungible Token Standard basic interface
  * @dev see https://github.com/ethereum/EIPs/blob/master/EIPS/eip-721.md
  */
 contract ERC721Basic is ERC165 {
@@ -231,7 +230,6 @@ contract ERC721Basic is ERC165 {
 }
 
 /**
- * @title ERC-721 Non-Fungible Token Standard, optional enumeration extension
  * @dev See https://github.com/ethereum/EIPs/blob/master/EIPS/eip-721.md
  */
 contract ERC721Enumerable is ERC721Basic {
@@ -248,7 +246,6 @@ contract ERC721Enumerable is ERC721Basic {
 }
 
 /**
- * @title ERC-721 Non-Fungible Token Standard, optional metadata extension
  * @dev See https://github.com/ethereum/EIPs/blob/master/EIPS/eip-721.md
  */
 contract ERC721Metadata is ERC721Basic {
@@ -258,14 +255,12 @@ contract ERC721Metadata is ERC721Basic {
 }
 
 /**
- * @title ERC-721 Non-Fungible Token Standard, full implementation interface
  * @dev See https://github.com/ethereum/EIPs/blob/master/EIPS/eip-721.md
  */
 contract ERC721 is ERC721Basic, ERC721Enumerable, ERC721Metadata {
 }
 
 /**
- * @title ERC721 token receiver interface
  * @dev Interface for any contract that wants to support safeTransfers
  * from ERC721 asset contracts.
  */
@@ -438,7 +433,6 @@ contract Pausable is Owned {
 }
 
 /**
- * @title ERC721 Non-Fungible Token Standard basic implementation
  * @dev see https://github.com/ethereum/EIPs/blob/master/EIPS/eip-721.md
  */
 contract ERC721BasicToken is SupportsInterfaceWithLookup, ERC721Basic, Pausable {
@@ -786,7 +780,6 @@ contract ERC721BasicToken is SupportsInterfaceWithLookup, ERC721Basic, Pausable 
 }
 
 /**
- * @title Full ERC721 Token
  * This implementation includes all the required and some optional functionality of the ERC721 standard
  * Moreover, it includes approve all functionality using operator terminology
  * @dev see https://github.com/ethereum/EIPs/blob/master/EIPS/eip-721.md

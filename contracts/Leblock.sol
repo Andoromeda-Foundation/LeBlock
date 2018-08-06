@@ -36,7 +36,7 @@ contract ApproveAndCallFallBack {
 
 
 /**
- * @title
+ * @title Leblock
  * @dev ERC20 Token, with the addition of symbol, name and decimals and an initial supply
  */
 contract Leblock is ERC20Interface, Pausable {

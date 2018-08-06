@@ -1,0 +1,3605 @@
+{
+  "contractName": "QueueStru",
+  "abi": [],
+  "bytecode": "0x6080604052348015600f57600080fd5b50603580601d6000396000f3006080604052600080fd00a165627a7a723058209c6c3c2a7efedbb3dbfd309839fb9a6b6fd22a1914b723936a734981910b7c010029",
+  "deployedBytecode": "0x6080604052600080fd00a165627a7a723058209c6c3c2a7efedbb3dbfd309839fb9a6b6fd22a1914b723936a734981910b7c010029",
+  "sourceMap": "93:1491:11:-;;;;8:9:-1;5:2;;;30:1;27;20:12;5:2;93:1491:11;;;;;;;",
+  "deployedSourceMap": "93:1491:11:-;;;;;",
+  "source": "pragma solidity ^0.4.24;\r\n\r\n/**\r\n * @title QueueStru\r\n * @dev the queue data structure\r\n */\r\ncontract QueueStru {\r\n\r\n    struct Queue {\r\n        address[] data;\r\n        uint256 front;\r\n        uint256 back;\r\n    }\r\n\r\n    /** \r\n     * @dev the number of elements stored in the queue.\r\n     */ \r\n    function length(Queue storage q) \r\n        view \r\n        internal \r\n        returns (uint256) \r\n    {\r\n        return q.back - q.front;\r\n    }\r\n\r\n    /**\r\n     * @dev the number of elements this queue can hold\r\n     */\r\n    function capacity(Queue storage q) \r\n        view \r\n        internal \r\n        returns (uint256) \r\n    {\r\n        return q.data.length - 1;\r\n    }\r\n\r\n    /**\r\n     * @dev the number of element at the front of the queue\r\n     */\r\n    function query(Queue storage q)\r\n        view \r\n        internal \r\n        returns (address) \r\n    {\r\n        if (q.back == q.front) \r\n            return;\r\n        return q.data[q.front]; \r\n    }\r\n\r\n    /**\r\n     * @dev push a new element to the back of the queue\r\n     */\r\n    function push(Queue storage q, address data) \r\n        internal\r\n    {\r\n        if ((q.back + 1) % q.data.length == q.front)\r\n            return; // throw;\r\n        q.data[q.back] = data;\r\n        q.back = (q.back + 1) % q.data.length;\r\n    }\r\n\r\n    /**\r\n     * @dev remove and return the element at the front of the queue\r\n     */\r\n    function pop(Queue storage q) \r\n        internal \r\n    {\r\n        if (q.back == q.front)\r\n            return; // throw;\r\n        delete q.data[q.front];\r\n        q.front = (q.front + 1) % q.data.length;\r\n    }\r\n}",
+  "sourcePath": "/home/flyq/workspace/LeBlock/LeBlock/contracts/QueueStru.sol",
+  "ast": {
+    "absolutePath": "/home/flyq/workspace/LeBlock/LeBlock/contracts/QueueStru.sol",
+    "exportedSymbols": {
+      "QueueStru": [
+        3601
+      ]
+    },
+    "id": 3602,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 3464,
+        "literals": [
+          "solidity",
+          "^",
+          "0.4",
+          ".24"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "0:24:11"
+      },
+      {
+        "baseContracts": [],
+        "contractDependencies": [],
+        "contractKind": "contract",
+        "documentation": "@title QueueStru\r\n@dev the queue data structure\r",
+        "fullyImplemented": true,
+        "id": 3601,
+        "linearizedBaseContracts": [
+          3601
+        ],
+        "name": "QueueStru",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "canonicalName": "QueueStru.Queue",
+            "id": 3472,
+            "members": [
+              {
+                "constant": false,
+                "id": 3467,
+                "name": "data",
+                "nodeType": "VariableDeclaration",
+                "scope": 3472,
+                "src": "145:14:11",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_array$_t_address_$dyn_storage_ptr",
+                  "typeString": "address[]"
+                },
+                "typeName": {
+                  "baseType": {
+                    "id": 3465,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "145:7:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "id": 3466,
+                  "length": null,
+                  "nodeType": "ArrayTypeName",
+                  "src": "145:9:11",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_array$_t_address_$dyn_storage_ptr",
+                    "typeString": "address[]"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 3469,
+                "name": "front",
+                "nodeType": "VariableDeclaration",
+                "scope": 3472,
+                "src": "170:13:11",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint256",
+                  "typeString": "uint256"
+                },
+                "typeName": {
+                  "id": 3468,
+                  "name": "uint256",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "170:7:11",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 3471,
+                "name": "back",
+                "nodeType": "VariableDeclaration",
+                "scope": 3472,
+                "src": "194:12:11",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint256",
+                  "typeString": "uint256"
+                },
+                "typeName": {
+                  "id": 3470,
+                  "name": "uint256",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "194:7:11",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              }
+            ],
+            "name": "Queue",
+            "nodeType": "StructDefinition",
+            "scope": 3601,
+            "src": "121:93:11",
+            "visibility": "public"
+          },
+          {
+            "body": {
+              "id": 3485,
+              "nodeType": "Block",
+              "src": "400:42:11",
+              "statements": [
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "commonType": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    },
+                    "id": 3483,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftExpression": {
+                      "argumentTypes": null,
+                      "expression": {
+                        "argumentTypes": null,
+                        "id": 3479,
+                        "name": "q",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 3474,
+                        "src": "418:1:11",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_struct$_Queue_$3472_storage_ptr",
+                          "typeString": "struct QueueStru.Queue storage pointer"
+                        }
+                      },
+                      "id": 3480,
+                      "isConstant": false,
+                      "isLValue": true,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberName": "back",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": 3471,
+                      "src": "418:6:11",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      }
+                    },
+                    "nodeType": "BinaryOperation",
+                    "operator": "-",
+                    "rightExpression": {
+                      "argumentTypes": null,
+                      "expression": {
+                        "argumentTypes": null,
+                        "id": 3481,
+                        "name": "q",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 3474,
+                        "src": "427:1:11",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_struct$_Queue_$3472_storage_ptr",
+                          "typeString": "struct QueueStru.Queue storage pointer"
+                        }
+                      },
+                      "id": 3482,
+                      "isConstant": false,
+                      "isLValue": true,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberName": "front",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": 3469,
+                      "src": "427:7:11",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      }
+                    },
+                    "src": "418:16:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "functionReturnParameters": 3478,
+                  "id": 3484,
+                  "nodeType": "Return",
+                  "src": "411:23:11"
+                }
+              ]
+            },
+            "documentation": "@dev the number of elements stored in the queue.\r",
+            "id": 3486,
+            "implemented": true,
+            "isConstructor": false,
+            "isDeclaredConst": true,
+            "modifiers": [],
+            "name": "length",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 3475,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 3474,
+                  "name": "q",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 3486,
+                  "src": "315:15:11",
+                  "stateVariable": false,
+                  "storageLocation": "storage",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_struct$_Queue_$3472_storage_ptr",
+                    "typeString": "struct QueueStru.Queue"
+                  },
+                  "typeName": {
+                    "contractScope": null,
+                    "id": 3473,
+                    "name": "Queue",
+                    "nodeType": "UserDefinedTypeName",
+                    "referencedDeclaration": 3472,
+                    "src": "315:5:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$_Queue_$3472_storage_ptr",
+                      "typeString": "struct QueueStru.Queue"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "314:17:11"
+            },
+            "payable": false,
+            "returnParameters": {
+              "id": 3478,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 3477,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 3486,
+                  "src": "385:7:11",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 3476,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "385:7:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "384:9:11"
+            },
+            "scope": 3601,
+            "src": "299:143:11",
+            "stateMutability": "view",
+            "superFunction": null,
+            "visibility": "internal"
+          },
+          {
+            "body": {
+              "id": 3499,
+              "nodeType": "Block",
+              "src": "627:43:11",
+              "statements": [
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "commonType": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    },
+                    "id": 3497,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftExpression": {
+                      "argumentTypes": null,
+                      "expression": {
+                        "argumentTypes": null,
+                        "expression": {
+                          "argumentTypes": null,
+                          "id": 3493,
+                          "name": "q",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 3488,
+                          "src": "645:1:11",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_struct$_Queue_$3472_storage_ptr",
+                            "typeString": "struct QueueStru.Queue storage pointer"
+                          }
+                        },
+                        "id": 3494,
+                        "isConstant": false,
+                        "isLValue": true,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "memberName": "data",
+                        "nodeType": "MemberAccess",
+                        "referencedDeclaration": 3467,
+                        "src": "645:6:11",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_array$_t_address_$dyn_storage",
+                          "typeString": "address[] storage ref"
+                        }
+                      },
+                      "id": 3495,
+                      "isConstant": false,
+                      "isLValue": true,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberName": "length",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": null,
+                      "src": "645:13:11",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      }
+                    },
+                    "nodeType": "BinaryOperation",
+                    "operator": "-",
+                    "rightExpression": {
+                      "argumentTypes": null,
+                      "hexValue": "31",
+                      "id": 3496,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": true,
+                      "kind": "number",
+                      "lValueRequested": false,
+                      "nodeType": "Literal",
+                      "src": "661:1:11",
+                      "subdenomination": null,
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_rational_1_by_1",
+                        "typeString": "int_const 1"
+                      },
+                      "value": "1"
+                    },
+                    "src": "645:17:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "functionReturnParameters": 3492,
+                  "id": 3498,
+                  "nodeType": "Return",
+                  "src": "638:24:11"
+                }
+              ]
+            },
+            "documentation": "@dev the number of elements this queue can hold\r",
+            "id": 3500,
+            "implemented": true,
+            "isConstructor": false,
+            "isDeclaredConst": true,
+            "modifiers": [],
+            "name": "capacity",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 3489,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 3488,
+                  "name": "q",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 3500,
+                  "src": "542:15:11",
+                  "stateVariable": false,
+                  "storageLocation": "storage",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_struct$_Queue_$3472_storage_ptr",
+                    "typeString": "struct QueueStru.Queue"
+                  },
+                  "typeName": {
+                    "contractScope": null,
+                    "id": 3487,
+                    "name": "Queue",
+                    "nodeType": "UserDefinedTypeName",
+                    "referencedDeclaration": 3472,
+                    "src": "542:5:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$_Queue_$3472_storage_ptr",
+                      "typeString": "struct QueueStru.Queue"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "541:17:11"
+            },
+            "payable": false,
+            "returnParameters": {
+              "id": 3492,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 3491,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 3500,
+                  "src": "612:7:11",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 3490,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "612:7:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "611:9:11"
+            },
+            "scope": 3601,
+            "src": "524:146:11",
+            "stateMutability": "view",
+            "superFunction": null,
+            "visibility": "internal"
+          },
+          {
+            "body": {
+              "id": 3520,
+              "nodeType": "Block",
+              "src": "856:96:11",
+              "statements": [
+                {
+                  "condition": {
+                    "argumentTypes": null,
+                    "commonType": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    },
+                    "id": 3511,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftExpression": {
+                      "argumentTypes": null,
+                      "expression": {
+                        "argumentTypes": null,
+                        "id": 3507,
+                        "name": "q",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 3502,
+                        "src": "871:1:11",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_struct$_Queue_$3472_storage_ptr",
+                          "typeString": "struct QueueStru.Queue storage pointer"
+                        }
+                      },
+                      "id": 3508,
+                      "isConstant": false,
+                      "isLValue": true,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberName": "back",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": 3471,
+                      "src": "871:6:11",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      }
+                    },
+                    "nodeType": "BinaryOperation",
+                    "operator": "==",
+                    "rightExpression": {
+                      "argumentTypes": null,
+                      "expression": {
+                        "argumentTypes": null,
+                        "id": 3509,
+                        "name": "q",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 3502,
+                        "src": "881:1:11",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_struct$_Queue_$3472_storage_ptr",
+                          "typeString": "struct QueueStru.Queue storage pointer"
+                        }
+                      },
+                      "id": 3510,
+                      "isConstant": false,
+                      "isLValue": true,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberName": "front",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": 3469,
+                      "src": "881:7:11",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      }
+                    },
+                    "src": "871:17:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "falseBody": null,
+                  "id": 3513,
+                  "nodeType": "IfStatement",
+                  "src": "867:44:11",
+                  "trueBody": {
+                    "expression": null,
+                    "functionReturnParameters": 3506,
+                    "id": 3512,
+                    "nodeType": "Return",
+                    "src": "904:7:11"
+                  }
+                },
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "baseExpression": {
+                      "argumentTypes": null,
+                      "expression": {
+                        "argumentTypes": null,
+                        "id": 3514,
+                        "name": "q",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 3502,
+                        "src": "928:1:11",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_struct$_Queue_$3472_storage_ptr",
+                          "typeString": "struct QueueStru.Queue storage pointer"
+                        }
+                      },
+                      "id": 3515,
+                      "isConstant": false,
+                      "isLValue": true,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberName": "data",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": 3467,
+                      "src": "928:6:11",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_array$_t_address_$dyn_storage",
+                        "typeString": "address[] storage ref"
+                      }
+                    },
+                    "id": 3518,
+                    "indexExpression": {
+                      "argumentTypes": null,
+                      "expression": {
+                        "argumentTypes": null,
+                        "id": 3516,
+                        "name": "q",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 3502,
+                        "src": "935:1:11",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_struct$_Queue_$3472_storage_ptr",
+                          "typeString": "struct QueueStru.Queue storage pointer"
+                        }
+                      },
+                      "id": 3517,
+                      "isConstant": false,
+                      "isLValue": true,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberName": "front",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": 3469,
+                      "src": "935:7:11",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      }
+                    },
+                    "isConstant": false,
+                    "isLValue": true,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "nodeType": "IndexAccess",
+                    "src": "928:15:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "functionReturnParameters": 3506,
+                  "id": 3519,
+                  "nodeType": "Return",
+                  "src": "921:22:11"
+                }
+              ]
+            },
+            "documentation": "@dev the number of element at the front of the queue\r",
+            "id": 3521,
+            "implemented": true,
+            "isConstructor": false,
+            "isDeclaredConst": true,
+            "modifiers": [],
+            "name": "query",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 3503,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 3502,
+                  "name": "q",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 3521,
+                  "src": "772:15:11",
+                  "stateVariable": false,
+                  "storageLocation": "storage",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_struct$_Queue_$3472_storage_ptr",
+                    "typeString": "struct QueueStru.Queue"
+                  },
+                  "typeName": {
+                    "contractScope": null,
+                    "id": 3501,
+                    "name": "Queue",
+                    "nodeType": "UserDefinedTypeName",
+                    "referencedDeclaration": 3472,
+                    "src": "772:5:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$_Queue_$3472_storage_ptr",
+                      "typeString": "struct QueueStru.Queue"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "771:17:11"
+            },
+            "payable": false,
+            "returnParameters": {
+              "id": 3506,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 3505,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 3521,
+                  "src": "841:7:11",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 3504,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "841:7:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "840:9:11"
+            },
+            "scope": 3601,
+            "src": "757:195:11",
+            "stateMutability": "view",
+            "superFunction": null,
+            "visibility": "internal"
+          },
+          {
+            "body": {
+              "id": 3565,
+              "nodeType": "Block",
+              "src": "1104:173:11",
+              "statements": [
+                {
+                  "condition": {
+                    "argumentTypes": null,
+                    "commonType": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    },
+                    "id": 3539,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftExpression": {
+                      "argumentTypes": null,
+                      "commonType": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      },
+                      "id": 3536,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "leftExpression": {
+                        "argumentTypes": null,
+                        "components": [
+                          {
+                            "argumentTypes": null,
+                            "commonType": {
+                              "typeIdentifier": "t_uint256",
+                              "typeString": "uint256"
+                            },
+                            "id": 3531,
+                            "isConstant": false,
+                            "isLValue": false,
+                            "isPure": false,
+                            "lValueRequested": false,
+                            "leftExpression": {
+                              "argumentTypes": null,
+                              "expression": {
+                                "argumentTypes": null,
+                                "id": 3528,
+                                "name": "q",
+                                "nodeType": "Identifier",
+                                "overloadedDeclarations": [],
+                                "referencedDeclaration": 3523,
+                                "src": "1120:1:11",
+                                "typeDescriptions": {
+                                  "typeIdentifier": "t_struct$_Queue_$3472_storage_ptr",
+                                  "typeString": "struct QueueStru.Queue storage pointer"
+                                }
+                              },
+                              "id": 3529,
+                              "isConstant": false,
+                              "isLValue": true,
+                              "isPure": false,
+                              "lValueRequested": false,
+                              "memberName": "back",
+                              "nodeType": "MemberAccess",
+                              "referencedDeclaration": 3471,
+                              "src": "1120:6:11",
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_uint256",
+                                "typeString": "uint256"
+                              }
+                            },
+                            "nodeType": "BinaryOperation",
+                            "operator": "+",
+                            "rightExpression": {
+                              "argumentTypes": null,
+                              "hexValue": "31",
+                              "id": 3530,
+                              "isConstant": false,
+                              "isLValue": false,
+                              "isPure": true,
+                              "kind": "number",
+                              "lValueRequested": false,
+                              "nodeType": "Literal",
+                              "src": "1129:1:11",
+                              "subdenomination": null,
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_rational_1_by_1",
+                                "typeString": "int_const 1"
+                              },
+                              "value": "1"
+                            },
+                            "src": "1120:10:11",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_uint256",
+                              "typeString": "uint256"
+                            }
+                          }
+                        ],
+                        "id": 3532,
+                        "isConstant": false,
+                        "isInlineArray": false,
+                        "isLValue": false,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "nodeType": "TupleExpression",
+                        "src": "1119:12:11",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      },
+                      "nodeType": "BinaryOperation",
+                      "operator": "%",
+                      "rightExpression": {
+                        "argumentTypes": null,
+                        "expression": {
+                          "argumentTypes": null,
+                          "expression": {
+                            "argumentTypes": null,
+                            "id": 3533,
+                            "name": "q",
+                            "nodeType": "Identifier",
+                            "overloadedDeclarations": [],
+                            "referencedDeclaration": 3523,
+                            "src": "1134:1:11",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_struct$_Queue_$3472_storage_ptr",
+                              "typeString": "struct QueueStru.Queue storage pointer"
+                            }
+                          },
+                          "id": 3534,
+                          "isConstant": false,
+                          "isLValue": true,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "memberName": "data",
+                          "nodeType": "MemberAccess",
+                          "referencedDeclaration": 3467,
+                          "src": "1134:6:11",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_array$_t_address_$dyn_storage",
+                            "typeString": "address[] storage ref"
+                          }
+                        },
+                        "id": 3535,
+                        "isConstant": false,
+                        "isLValue": true,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "memberName": "length",
+                        "nodeType": "MemberAccess",
+                        "referencedDeclaration": null,
+                        "src": "1134:13:11",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      },
+                      "src": "1119:28:11",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      }
+                    },
+                    "nodeType": "BinaryOperation",
+                    "operator": "==",
+                    "rightExpression": {
+                      "argumentTypes": null,
+                      "expression": {
+                        "argumentTypes": null,
+                        "id": 3537,
+                        "name": "q",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 3523,
+                        "src": "1151:1:11",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_struct$_Queue_$3472_storage_ptr",
+                          "typeString": "struct QueueStru.Queue storage pointer"
+                        }
+                      },
+                      "id": 3538,
+                      "isConstant": false,
+                      "isLValue": true,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberName": "front",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": 3469,
+                      "src": "1151:7:11",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      }
+                    },
+                    "src": "1119:39:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "falseBody": null,
+                  "id": 3541,
+                  "nodeType": "IfStatement",
+                  "src": "1115:65:11",
+                  "trueBody": {
+                    "expression": null,
+                    "functionReturnParameters": 3527,
+                    "id": 3540,
+                    "nodeType": "Return",
+                    "src": "1173:7:11"
+                  }
+                },
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "id": 3549,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftHandSide": {
+                      "argumentTypes": null,
+                      "baseExpression": {
+                        "argumentTypes": null,
+                        "expression": {
+                          "argumentTypes": null,
+                          "id": 3542,
+                          "name": "q",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 3523,
+                          "src": "1200:1:11",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_struct$_Queue_$3472_storage_ptr",
+                            "typeString": "struct QueueStru.Queue storage pointer"
+                          }
+                        },
+                        "id": 3546,
+                        "isConstant": false,
+                        "isLValue": true,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "memberName": "data",
+                        "nodeType": "MemberAccess",
+                        "referencedDeclaration": 3467,
+                        "src": "1200:6:11",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_array$_t_address_$dyn_storage",
+                          "typeString": "address[] storage ref"
+                        }
+                      },
+                      "id": 3547,
+                      "indexExpression": {
+                        "argumentTypes": null,
+                        "expression": {
+                          "argumentTypes": null,
+                          "id": 3544,
+                          "name": "q",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 3523,
+                          "src": "1207:1:11",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_struct$_Queue_$3472_storage_ptr",
+                            "typeString": "struct QueueStru.Queue storage pointer"
+                          }
+                        },
+                        "id": 3545,
+                        "isConstant": false,
+                        "isLValue": true,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "memberName": "back",
+                        "nodeType": "MemberAccess",
+                        "referencedDeclaration": 3471,
+                        "src": "1207:6:11",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      },
+                      "isConstant": false,
+                      "isLValue": true,
+                      "isPure": false,
+                      "lValueRequested": true,
+                      "nodeType": "IndexAccess",
+                      "src": "1200:14:11",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_address",
+                        "typeString": "address"
+                      }
+                    },
+                    "nodeType": "Assignment",
+                    "operator": "=",
+                    "rightHandSide": {
+                      "argumentTypes": null,
+                      "id": 3548,
+                      "name": "data",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 3525,
+                      "src": "1217:4:11",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_address",
+                        "typeString": "address"
+                      }
+                    },
+                    "src": "1200:21:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "id": 3550,
+                  "nodeType": "ExpressionStatement",
+                  "src": "1200:21:11"
+                },
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "id": 3563,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftHandSide": {
+                      "argumentTypes": null,
+                      "expression": {
+                        "argumentTypes": null,
+                        "id": 3551,
+                        "name": "q",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 3523,
+                        "src": "1232:1:11",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_struct$_Queue_$3472_storage_ptr",
+                          "typeString": "struct QueueStru.Queue storage pointer"
+                        }
+                      },
+                      "id": 3553,
+                      "isConstant": false,
+                      "isLValue": true,
+                      "isPure": false,
+                      "lValueRequested": true,
+                      "memberName": "back",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": 3471,
+                      "src": "1232:6:11",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      }
+                    },
+                    "nodeType": "Assignment",
+                    "operator": "=",
+                    "rightHandSide": {
+                      "argumentTypes": null,
+                      "commonType": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      },
+                      "id": 3562,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "leftExpression": {
+                        "argumentTypes": null,
+                        "components": [
+                          {
+                            "argumentTypes": null,
+                            "commonType": {
+                              "typeIdentifier": "t_uint256",
+                              "typeString": "uint256"
+                            },
+                            "id": 3557,
+                            "isConstant": false,
+                            "isLValue": false,
+                            "isPure": false,
+                            "lValueRequested": false,
+                            "leftExpression": {
+                              "argumentTypes": null,
+                              "expression": {
+                                "argumentTypes": null,
+                                "id": 3554,
+                                "name": "q",
+                                "nodeType": "Identifier",
+                                "overloadedDeclarations": [],
+                                "referencedDeclaration": 3523,
+                                "src": "1242:1:11",
+                                "typeDescriptions": {
+                                  "typeIdentifier": "t_struct$_Queue_$3472_storage_ptr",
+                                  "typeString": "struct QueueStru.Queue storage pointer"
+                                }
+                              },
+                              "id": 3555,
+                              "isConstant": false,
+                              "isLValue": true,
+                              "isPure": false,
+                              "lValueRequested": false,
+                              "memberName": "back",
+                              "nodeType": "MemberAccess",
+                              "referencedDeclaration": 3471,
+                              "src": "1242:6:11",
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_uint256",
+                                "typeString": "uint256"
+                              }
+                            },
+                            "nodeType": "BinaryOperation",
+                            "operator": "+",
+                            "rightExpression": {
+                              "argumentTypes": null,
+                              "hexValue": "31",
+                              "id": 3556,
+                              "isConstant": false,
+                              "isLValue": false,
+                              "isPure": true,
+                              "kind": "number",
+                              "lValueRequested": false,
+                              "nodeType": "Literal",
+                              "src": "1251:1:11",
+                              "subdenomination": null,
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_rational_1_by_1",
+                                "typeString": "int_const 1"
+                              },
+                              "value": "1"
+                            },
+                            "src": "1242:10:11",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_uint256",
+                              "typeString": "uint256"
+                            }
+                          }
+                        ],
+                        "id": 3558,
+                        "isConstant": false,
+                        "isInlineArray": false,
+                        "isLValue": false,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "nodeType": "TupleExpression",
+                        "src": "1241:12:11",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      },
+                      "nodeType": "BinaryOperation",
+                      "operator": "%",
+                      "rightExpression": {
+                        "argumentTypes": null,
+                        "expression": {
+                          "argumentTypes": null,
+                          "expression": {
+                            "argumentTypes": null,
+                            "id": 3559,
+                            "name": "q",
+                            "nodeType": "Identifier",
+                            "overloadedDeclarations": [],
+                            "referencedDeclaration": 3523,
+                            "src": "1256:1:11",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_struct$_Queue_$3472_storage_ptr",
+                              "typeString": "struct QueueStru.Queue storage pointer"
+                            }
+                          },
+                          "id": 3560,
+                          "isConstant": false,
+                          "isLValue": true,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "memberName": "data",
+                          "nodeType": "MemberAccess",
+                          "referencedDeclaration": 3467,
+                          "src": "1256:6:11",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_array$_t_address_$dyn_storage",
+                            "typeString": "address[] storage ref"
+                          }
+                        },
+                        "id": 3561,
+                        "isConstant": false,
+                        "isLValue": true,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "memberName": "length",
+                        "nodeType": "MemberAccess",
+                        "referencedDeclaration": null,
+                        "src": "1256:13:11",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      },
+                      "src": "1241:28:11",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      }
+                    },
+                    "src": "1232:37:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "id": 3564,
+                  "nodeType": "ExpressionStatement",
+                  "src": "1232:37:11"
+                }
+              ]
+            },
+            "documentation": "@dev push a new element to the back of the queue\r",
+            "id": 3566,
+            "implemented": true,
+            "isConstructor": false,
+            "isDeclaredConst": false,
+            "modifiers": [],
+            "name": "push",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 3526,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 3523,
+                  "name": "q",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 3566,
+                  "src": "1049:15:11",
+                  "stateVariable": false,
+                  "storageLocation": "storage",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_struct$_Queue_$3472_storage_ptr",
+                    "typeString": "struct QueueStru.Queue"
+                  },
+                  "typeName": {
+                    "contractScope": null,
+                    "id": 3522,
+                    "name": "Queue",
+                    "nodeType": "UserDefinedTypeName",
+                    "referencedDeclaration": 3472,
+                    "src": "1049:5:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$_Queue_$3472_storage_ptr",
+                      "typeString": "struct QueueStru.Queue"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 3525,
+                  "name": "data",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 3566,
+                  "src": "1066:12:11",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 3524,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1066:7:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1048:31:11"
+            },
+            "payable": false,
+            "returnParameters": {
+              "id": 3527,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "1104:0:11"
+            },
+            "scope": 3601,
+            "src": "1035:242:11",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "internal"
+          },
+          {
+            "body": {
+              "id": 3599,
+              "nodeType": "Block",
+              "src": "1427:154:11",
+              "statements": [
+                {
+                  "condition": {
+                    "argumentTypes": null,
+                    "commonType": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    },
+                    "id": 3575,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftExpression": {
+                      "argumentTypes": null,
+                      "expression": {
+                        "argumentTypes": null,
+                        "id": 3571,
+                        "name": "q",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 3568,
+                        "src": "1442:1:11",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_struct$_Queue_$3472_storage_ptr",
+                          "typeString": "struct QueueStru.Queue storage pointer"
+                        }
+                      },
+                      "id": 3572,
+                      "isConstant": false,
+                      "isLValue": true,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberName": "back",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": 3471,
+                      "src": "1442:6:11",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      }
+                    },
+                    "nodeType": "BinaryOperation",
+                    "operator": "==",
+                    "rightExpression": {
+                      "argumentTypes": null,
+                      "expression": {
+                        "argumentTypes": null,
+                        "id": 3573,
+                        "name": "q",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 3568,
+                        "src": "1452:1:11",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_struct$_Queue_$3472_storage_ptr",
+                          "typeString": "struct QueueStru.Queue storage pointer"
+                        }
+                      },
+                      "id": 3574,
+                      "isConstant": false,
+                      "isLValue": true,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberName": "front",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": 3469,
+                      "src": "1452:7:11",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      }
+                    },
+                    "src": "1442:17:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "falseBody": null,
+                  "id": 3577,
+                  "nodeType": "IfStatement",
+                  "src": "1438:43:11",
+                  "trueBody": {
+                    "expression": null,
+                    "functionReturnParameters": 3570,
+                    "id": 3576,
+                    "nodeType": "Return",
+                    "src": "1474:7:11"
+                  }
+                },
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "id": 3583,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "nodeType": "UnaryOperation",
+                    "operator": "delete",
+                    "prefix": true,
+                    "src": "1501:22:11",
+                    "subExpression": {
+                      "argumentTypes": null,
+                      "baseExpression": {
+                        "argumentTypes": null,
+                        "expression": {
+                          "argumentTypes": null,
+                          "id": 3578,
+                          "name": "q",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 3568,
+                          "src": "1508:1:11",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_struct$_Queue_$3472_storage_ptr",
+                            "typeString": "struct QueueStru.Queue storage pointer"
+                          }
+                        },
+                        "id": 3579,
+                        "isConstant": false,
+                        "isLValue": true,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "memberName": "data",
+                        "nodeType": "MemberAccess",
+                        "referencedDeclaration": 3467,
+                        "src": "1508:6:11",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_array$_t_address_$dyn_storage",
+                          "typeString": "address[] storage ref"
+                        }
+                      },
+                      "id": 3582,
+                      "indexExpression": {
+                        "argumentTypes": null,
+                        "expression": {
+                          "argumentTypes": null,
+                          "id": 3580,
+                          "name": "q",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 3568,
+                          "src": "1515:1:11",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_struct$_Queue_$3472_storage_ptr",
+                            "typeString": "struct QueueStru.Queue storage pointer"
+                          }
+                        },
+                        "id": 3581,
+                        "isConstant": false,
+                        "isLValue": true,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "memberName": "front",
+                        "nodeType": "MemberAccess",
+                        "referencedDeclaration": 3469,
+                        "src": "1515:7:11",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      },
+                      "isConstant": false,
+                      "isLValue": true,
+                      "isPure": false,
+                      "lValueRequested": true,
+                      "nodeType": "IndexAccess",
+                      "src": "1508:15:11",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_address",
+                        "typeString": "address"
+                      }
+                    },
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_tuple$__$",
+                      "typeString": "tuple()"
+                    }
+                  },
+                  "id": 3584,
+                  "nodeType": "ExpressionStatement",
+                  "src": "1501:22:11"
+                },
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "id": 3597,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftHandSide": {
+                      "argumentTypes": null,
+                      "expression": {
+                        "argumentTypes": null,
+                        "id": 3585,
+                        "name": "q",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 3568,
+                        "src": "1534:1:11",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_struct$_Queue_$3472_storage_ptr",
+                          "typeString": "struct QueueStru.Queue storage pointer"
+                        }
+                      },
+                      "id": 3587,
+                      "isConstant": false,
+                      "isLValue": true,
+                      "isPure": false,
+                      "lValueRequested": true,
+                      "memberName": "front",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": 3469,
+                      "src": "1534:7:11",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      }
+                    },
+                    "nodeType": "Assignment",
+                    "operator": "=",
+                    "rightHandSide": {
+                      "argumentTypes": null,
+                      "commonType": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      },
+                      "id": 3596,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "leftExpression": {
+                        "argumentTypes": null,
+                        "components": [
+                          {
+                            "argumentTypes": null,
+                            "commonType": {
+                              "typeIdentifier": "t_uint256",
+                              "typeString": "uint256"
+                            },
+                            "id": 3591,
+                            "isConstant": false,
+                            "isLValue": false,
+                            "isPure": false,
+                            "lValueRequested": false,
+                            "leftExpression": {
+                              "argumentTypes": null,
+                              "expression": {
+                                "argumentTypes": null,
+                                "id": 3588,
+                                "name": "q",
+                                "nodeType": "Identifier",
+                                "overloadedDeclarations": [],
+                                "referencedDeclaration": 3568,
+                                "src": "1545:1:11",
+                                "typeDescriptions": {
+                                  "typeIdentifier": "t_struct$_Queue_$3472_storage_ptr",
+                                  "typeString": "struct QueueStru.Queue storage pointer"
+                                }
+                              },
+                              "id": 3589,
+                              "isConstant": false,
+                              "isLValue": true,
+                              "isPure": false,
+                              "lValueRequested": false,
+                              "memberName": "front",
+                              "nodeType": "MemberAccess",
+                              "referencedDeclaration": 3469,
+                              "src": "1545:7:11",
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_uint256",
+                                "typeString": "uint256"
+                              }
+                            },
+                            "nodeType": "BinaryOperation",
+                            "operator": "+",
+                            "rightExpression": {
+                              "argumentTypes": null,
+                              "hexValue": "31",
+                              "id": 3590,
+                              "isConstant": false,
+                              "isLValue": false,
+                              "isPure": true,
+                              "kind": "number",
+                              "lValueRequested": false,
+                              "nodeType": "Literal",
+                              "src": "1555:1:11",
+                              "subdenomination": null,
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_rational_1_by_1",
+                                "typeString": "int_const 1"
+                              },
+                              "value": "1"
+                            },
+                            "src": "1545:11:11",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_uint256",
+                              "typeString": "uint256"
+                            }
+                          }
+                        ],
+                        "id": 3592,
+                        "isConstant": false,
+                        "isInlineArray": false,
+                        "isLValue": false,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "nodeType": "TupleExpression",
+                        "src": "1544:13:11",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      },
+                      "nodeType": "BinaryOperation",
+                      "operator": "%",
+                      "rightExpression": {
+                        "argumentTypes": null,
+                        "expression": {
+                          "argumentTypes": null,
+                          "expression": {
+                            "argumentTypes": null,
+                            "id": 3593,
+                            "name": "q",
+                            "nodeType": "Identifier",
+                            "overloadedDeclarations": [],
+                            "referencedDeclaration": 3568,
+                            "src": "1560:1:11",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_struct$_Queue_$3472_storage_ptr",
+                              "typeString": "struct QueueStru.Queue storage pointer"
+                            }
+                          },
+                          "id": 3594,
+                          "isConstant": false,
+                          "isLValue": true,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "memberName": "data",
+                          "nodeType": "MemberAccess",
+                          "referencedDeclaration": 3467,
+                          "src": "1560:6:11",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_array$_t_address_$dyn_storage",
+                            "typeString": "address[] storage ref"
+                          }
+                        },
+                        "id": 3595,
+                        "isConstant": false,
+                        "isLValue": true,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "memberName": "length",
+                        "nodeType": "MemberAccess",
+                        "referencedDeclaration": null,
+                        "src": "1560:13:11",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      },
+                      "src": "1544:29:11",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      }
+                    },
+                    "src": "1534:39:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "id": 3598,
+                  "nodeType": "ExpressionStatement",
+                  "src": "1534:39:11"
+                }
+              ]
+            },
+            "documentation": "@dev remove and return the element at the front of the queue\r",
+            "id": 3600,
+            "implemented": true,
+            "isConstructor": false,
+            "isDeclaredConst": false,
+            "modifiers": [],
+            "name": "pop",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 3569,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 3568,
+                  "name": "q",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 3600,
+                  "src": "1385:15:11",
+                  "stateVariable": false,
+                  "storageLocation": "storage",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_struct$_Queue_$3472_storage_ptr",
+                    "typeString": "struct QueueStru.Queue"
+                  },
+                  "typeName": {
+                    "contractScope": null,
+                    "id": 3567,
+                    "name": "Queue",
+                    "nodeType": "UserDefinedTypeName",
+                    "referencedDeclaration": 3472,
+                    "src": "1385:5:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$_Queue_$3472_storage_ptr",
+                      "typeString": "struct QueueStru.Queue"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1384:17:11"
+            },
+            "payable": false,
+            "returnParameters": {
+              "id": 3570,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "1427:0:11"
+            },
+            "scope": 3601,
+            "src": "1372:209:11",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "internal"
+          }
+        ],
+        "scope": 3602,
+        "src": "93:1491:11"
+      }
+    ],
+    "src": "0:1584:11"
+  },
+  "legacyAST": {
+    "absolutePath": "/home/flyq/workspace/LeBlock/LeBlock/contracts/QueueStru.sol",
+    "exportedSymbols": {
+      "QueueStru": [
+        3601
+      ]
+    },
+    "id": 3602,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 3464,
+        "literals": [
+          "solidity",
+          "^",
+          "0.4",
+          ".24"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "0:24:11"
+      },
+      {
+        "baseContracts": [],
+        "contractDependencies": [],
+        "contractKind": "contract",
+        "documentation": "@title QueueStru\r\n@dev the queue data structure\r",
+        "fullyImplemented": true,
+        "id": 3601,
+        "linearizedBaseContracts": [
+          3601
+        ],
+        "name": "QueueStru",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "canonicalName": "QueueStru.Queue",
+            "id": 3472,
+            "members": [
+              {
+                "constant": false,
+                "id": 3467,
+                "name": "data",
+                "nodeType": "VariableDeclaration",
+                "scope": 3472,
+                "src": "145:14:11",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_array$_t_address_$dyn_storage_ptr",
+                  "typeString": "address[]"
+                },
+                "typeName": {
+                  "baseType": {
+                    "id": 3465,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "145:7:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "id": 3466,
+                  "length": null,
+                  "nodeType": "ArrayTypeName",
+                  "src": "145:9:11",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_array$_t_address_$dyn_storage_ptr",
+                    "typeString": "address[]"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 3469,
+                "name": "front",
+                "nodeType": "VariableDeclaration",
+                "scope": 3472,
+                "src": "170:13:11",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint256",
+                  "typeString": "uint256"
+                },
+                "typeName": {
+                  "id": 3468,
+                  "name": "uint256",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "170:7:11",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 3471,
+                "name": "back",
+                "nodeType": "VariableDeclaration",
+                "scope": 3472,
+                "src": "194:12:11",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint256",
+                  "typeString": "uint256"
+                },
+                "typeName": {
+                  "id": 3470,
+                  "name": "uint256",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "194:7:11",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              }
+            ],
+            "name": "Queue",
+            "nodeType": "StructDefinition",
+            "scope": 3601,
+            "src": "121:93:11",
+            "visibility": "public"
+          },
+          {
+            "body": {
+              "id": 3485,
+              "nodeType": "Block",
+              "src": "400:42:11",
+              "statements": [
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "commonType": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    },
+                    "id": 3483,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftExpression": {
+                      "argumentTypes": null,
+                      "expression": {
+                        "argumentTypes": null,
+                        "id": 3479,
+                        "name": "q",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 3474,
+                        "src": "418:1:11",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_struct$_Queue_$3472_storage_ptr",
+                          "typeString": "struct QueueStru.Queue storage pointer"
+                        }
+                      },
+                      "id": 3480,
+                      "isConstant": false,
+                      "isLValue": true,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberName": "back",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": 3471,
+                      "src": "418:6:11",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      }
+                    },
+                    "nodeType": "BinaryOperation",
+                    "operator": "-",
+                    "rightExpression": {
+                      "argumentTypes": null,
+                      "expression": {
+                        "argumentTypes": null,
+                        "id": 3481,
+                        "name": "q",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 3474,
+                        "src": "427:1:11",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_struct$_Queue_$3472_storage_ptr",
+                          "typeString": "struct QueueStru.Queue storage pointer"
+                        }
+                      },
+                      "id": 3482,
+                      "isConstant": false,
+                      "isLValue": true,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberName": "front",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": 3469,
+                      "src": "427:7:11",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      }
+                    },
+                    "src": "418:16:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "functionReturnParameters": 3478,
+                  "id": 3484,
+                  "nodeType": "Return",
+                  "src": "411:23:11"
+                }
+              ]
+            },
+            "documentation": "@dev the number of elements stored in the queue.\r",
+            "id": 3486,
+            "implemented": true,
+            "isConstructor": false,
+            "isDeclaredConst": true,
+            "modifiers": [],
+            "name": "length",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 3475,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 3474,
+                  "name": "q",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 3486,
+                  "src": "315:15:11",
+                  "stateVariable": false,
+                  "storageLocation": "storage",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_struct$_Queue_$3472_storage_ptr",
+                    "typeString": "struct QueueStru.Queue"
+                  },
+                  "typeName": {
+                    "contractScope": null,
+                    "id": 3473,
+                    "name": "Queue",
+                    "nodeType": "UserDefinedTypeName",
+                    "referencedDeclaration": 3472,
+                    "src": "315:5:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$_Queue_$3472_storage_ptr",
+                      "typeString": "struct QueueStru.Queue"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "314:17:11"
+            },
+            "payable": false,
+            "returnParameters": {
+              "id": 3478,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 3477,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 3486,
+                  "src": "385:7:11",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 3476,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "385:7:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "384:9:11"
+            },
+            "scope": 3601,
+            "src": "299:143:11",
+            "stateMutability": "view",
+            "superFunction": null,
+            "visibility": "internal"
+          },
+          {
+            "body": {
+              "id": 3499,
+              "nodeType": "Block",
+              "src": "627:43:11",
+              "statements": [
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "commonType": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    },
+                    "id": 3497,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftExpression": {
+                      "argumentTypes": null,
+                      "expression": {
+                        "argumentTypes": null,
+                        "expression": {
+                          "argumentTypes": null,
+                          "id": 3493,
+                          "name": "q",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 3488,
+                          "src": "645:1:11",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_struct$_Queue_$3472_storage_ptr",
+                            "typeString": "struct QueueStru.Queue storage pointer"
+                          }
+                        },
+                        "id": 3494,
+                        "isConstant": false,
+                        "isLValue": true,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "memberName": "data",
+                        "nodeType": "MemberAccess",
+                        "referencedDeclaration": 3467,
+                        "src": "645:6:11",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_array$_t_address_$dyn_storage",
+                          "typeString": "address[] storage ref"
+                        }
+                      },
+                      "id": 3495,
+                      "isConstant": false,
+                      "isLValue": true,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberName": "length",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": null,
+                      "src": "645:13:11",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      }
+                    },
+                    "nodeType": "BinaryOperation",
+                    "operator": "-",
+                    "rightExpression": {
+                      "argumentTypes": null,
+                      "hexValue": "31",
+                      "id": 3496,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": true,
+                      "kind": "number",
+                      "lValueRequested": false,
+                      "nodeType": "Literal",
+                      "src": "661:1:11",
+                      "subdenomination": null,
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_rational_1_by_1",
+                        "typeString": "int_const 1"
+                      },
+                      "value": "1"
+                    },
+                    "src": "645:17:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "functionReturnParameters": 3492,
+                  "id": 3498,
+                  "nodeType": "Return",
+                  "src": "638:24:11"
+                }
+              ]
+            },
+            "documentation": "@dev the number of elements this queue can hold\r",
+            "id": 3500,
+            "implemented": true,
+            "isConstructor": false,
+            "isDeclaredConst": true,
+            "modifiers": [],
+            "name": "capacity",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 3489,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 3488,
+                  "name": "q",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 3500,
+                  "src": "542:15:11",
+                  "stateVariable": false,
+                  "storageLocation": "storage",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_struct$_Queue_$3472_storage_ptr",
+                    "typeString": "struct QueueStru.Queue"
+                  },
+                  "typeName": {
+                    "contractScope": null,
+                    "id": 3487,
+                    "name": "Queue",
+                    "nodeType": "UserDefinedTypeName",
+                    "referencedDeclaration": 3472,
+                    "src": "542:5:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$_Queue_$3472_storage_ptr",
+                      "typeString": "struct QueueStru.Queue"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "541:17:11"
+            },
+            "payable": false,
+            "returnParameters": {
+              "id": 3492,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 3491,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 3500,
+                  "src": "612:7:11",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 3490,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "612:7:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "611:9:11"
+            },
+            "scope": 3601,
+            "src": "524:146:11",
+            "stateMutability": "view",
+            "superFunction": null,
+            "visibility": "internal"
+          },
+          {
+            "body": {
+              "id": 3520,
+              "nodeType": "Block",
+              "src": "856:96:11",
+              "statements": [
+                {
+                  "condition": {
+                    "argumentTypes": null,
+                    "commonType": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    },
+                    "id": 3511,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftExpression": {
+                      "argumentTypes": null,
+                      "expression": {
+                        "argumentTypes": null,
+                        "id": 3507,
+                        "name": "q",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 3502,
+                        "src": "871:1:11",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_struct$_Queue_$3472_storage_ptr",
+                          "typeString": "struct QueueStru.Queue storage pointer"
+                        }
+                      },
+                      "id": 3508,
+                      "isConstant": false,
+                      "isLValue": true,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberName": "back",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": 3471,
+                      "src": "871:6:11",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      }
+                    },
+                    "nodeType": "BinaryOperation",
+                    "operator": "==",
+                    "rightExpression": {
+                      "argumentTypes": null,
+                      "expression": {
+                        "argumentTypes": null,
+                        "id": 3509,
+                        "name": "q",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 3502,
+                        "src": "881:1:11",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_struct$_Queue_$3472_storage_ptr",
+                          "typeString": "struct QueueStru.Queue storage pointer"
+                        }
+                      },
+                      "id": 3510,
+                      "isConstant": false,
+                      "isLValue": true,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberName": "front",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": 3469,
+                      "src": "881:7:11",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      }
+                    },
+                    "src": "871:17:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "falseBody": null,
+                  "id": 3513,
+                  "nodeType": "IfStatement",
+                  "src": "867:44:11",
+                  "trueBody": {
+                    "expression": null,
+                    "functionReturnParameters": 3506,
+                    "id": 3512,
+                    "nodeType": "Return",
+                    "src": "904:7:11"
+                  }
+                },
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "baseExpression": {
+                      "argumentTypes": null,
+                      "expression": {
+                        "argumentTypes": null,
+                        "id": 3514,
+                        "name": "q",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 3502,
+                        "src": "928:1:11",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_struct$_Queue_$3472_storage_ptr",
+                          "typeString": "struct QueueStru.Queue storage pointer"
+                        }
+                      },
+                      "id": 3515,
+                      "isConstant": false,
+                      "isLValue": true,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberName": "data",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": 3467,
+                      "src": "928:6:11",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_array$_t_address_$dyn_storage",
+                        "typeString": "address[] storage ref"
+                      }
+                    },
+                    "id": 3518,
+                    "indexExpression": {
+                      "argumentTypes": null,
+                      "expression": {
+                        "argumentTypes": null,
+                        "id": 3516,
+                        "name": "q",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 3502,
+                        "src": "935:1:11",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_struct$_Queue_$3472_storage_ptr",
+                          "typeString": "struct QueueStru.Queue storage pointer"
+                        }
+                      },
+                      "id": 3517,
+                      "isConstant": false,
+                      "isLValue": true,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberName": "front",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": 3469,
+                      "src": "935:7:11",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      }
+                    },
+                    "isConstant": false,
+                    "isLValue": true,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "nodeType": "IndexAccess",
+                    "src": "928:15:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "functionReturnParameters": 3506,
+                  "id": 3519,
+                  "nodeType": "Return",
+                  "src": "921:22:11"
+                }
+              ]
+            },
+            "documentation": "@dev the number of element at the front of the queue\r",
+            "id": 3521,
+            "implemented": true,
+            "isConstructor": false,
+            "isDeclaredConst": true,
+            "modifiers": [],
+            "name": "query",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 3503,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 3502,
+                  "name": "q",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 3521,
+                  "src": "772:15:11",
+                  "stateVariable": false,
+                  "storageLocation": "storage",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_struct$_Queue_$3472_storage_ptr",
+                    "typeString": "struct QueueStru.Queue"
+                  },
+                  "typeName": {
+                    "contractScope": null,
+                    "id": 3501,
+                    "name": "Queue",
+                    "nodeType": "UserDefinedTypeName",
+                    "referencedDeclaration": 3472,
+                    "src": "772:5:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$_Queue_$3472_storage_ptr",
+                      "typeString": "struct QueueStru.Queue"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "771:17:11"
+            },
+            "payable": false,
+            "returnParameters": {
+              "id": 3506,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 3505,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 3521,
+                  "src": "841:7:11",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 3504,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "841:7:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "840:9:11"
+            },
+            "scope": 3601,
+            "src": "757:195:11",
+            "stateMutability": "view",
+            "superFunction": null,
+            "visibility": "internal"
+          },
+          {
+            "body": {
+              "id": 3565,
+              "nodeType": "Block",
+              "src": "1104:173:11",
+              "statements": [
+                {
+                  "condition": {
+                    "argumentTypes": null,
+                    "commonType": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    },
+                    "id": 3539,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftExpression": {
+                      "argumentTypes": null,
+                      "commonType": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      },
+                      "id": 3536,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "leftExpression": {
+                        "argumentTypes": null,
+                        "components": [
+                          {
+                            "argumentTypes": null,
+                            "commonType": {
+                              "typeIdentifier": "t_uint256",
+                              "typeString": "uint256"
+                            },
+                            "id": 3531,
+                            "isConstant": false,
+                            "isLValue": false,
+                            "isPure": false,
+                            "lValueRequested": false,
+                            "leftExpression": {
+                              "argumentTypes": null,
+                              "expression": {
+                                "argumentTypes": null,
+                                "id": 3528,
+                                "name": "q",
+                                "nodeType": "Identifier",
+                                "overloadedDeclarations": [],
+                                "referencedDeclaration": 3523,
+                                "src": "1120:1:11",
+                                "typeDescriptions": {
+                                  "typeIdentifier": "t_struct$_Queue_$3472_storage_ptr",
+                                  "typeString": "struct QueueStru.Queue storage pointer"
+                                }
+                              },
+                              "id": 3529,
+                              "isConstant": false,
+                              "isLValue": true,
+                              "isPure": false,
+                              "lValueRequested": false,
+                              "memberName": "back",
+                              "nodeType": "MemberAccess",
+                              "referencedDeclaration": 3471,
+                              "src": "1120:6:11",
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_uint256",
+                                "typeString": "uint256"
+                              }
+                            },
+                            "nodeType": "BinaryOperation",
+                            "operator": "+",
+                            "rightExpression": {
+                              "argumentTypes": null,
+                              "hexValue": "31",
+                              "id": 3530,
+                              "isConstant": false,
+                              "isLValue": false,
+                              "isPure": true,
+                              "kind": "number",
+                              "lValueRequested": false,
+                              "nodeType": "Literal",
+                              "src": "1129:1:11",
+                              "subdenomination": null,
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_rational_1_by_1",
+                                "typeString": "int_const 1"
+                              },
+                              "value": "1"
+                            },
+                            "src": "1120:10:11",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_uint256",
+                              "typeString": "uint256"
+                            }
+                          }
+                        ],
+                        "id": 3532,
+                        "isConstant": false,
+                        "isInlineArray": false,
+                        "isLValue": false,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "nodeType": "TupleExpression",
+                        "src": "1119:12:11",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      },
+                      "nodeType": "BinaryOperation",
+                      "operator": "%",
+                      "rightExpression": {
+                        "argumentTypes": null,
+                        "expression": {
+                          "argumentTypes": null,
+                          "expression": {
+                            "argumentTypes": null,
+                            "id": 3533,
+                            "name": "q",
+                            "nodeType": "Identifier",
+                            "overloadedDeclarations": [],
+                            "referencedDeclaration": 3523,
+                            "src": "1134:1:11",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_struct$_Queue_$3472_storage_ptr",
+                              "typeString": "struct QueueStru.Queue storage pointer"
+                            }
+                          },
+                          "id": 3534,
+                          "isConstant": false,
+                          "isLValue": true,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "memberName": "data",
+                          "nodeType": "MemberAccess",
+                          "referencedDeclaration": 3467,
+                          "src": "1134:6:11",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_array$_t_address_$dyn_storage",
+                            "typeString": "address[] storage ref"
+                          }
+                        },
+                        "id": 3535,
+                        "isConstant": false,
+                        "isLValue": true,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "memberName": "length",
+                        "nodeType": "MemberAccess",
+                        "referencedDeclaration": null,
+                        "src": "1134:13:11",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      },
+                      "src": "1119:28:11",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      }
+                    },
+                    "nodeType": "BinaryOperation",
+                    "operator": "==",
+                    "rightExpression": {
+                      "argumentTypes": null,
+                      "expression": {
+                        "argumentTypes": null,
+                        "id": 3537,
+                        "name": "q",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 3523,
+                        "src": "1151:1:11",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_struct$_Queue_$3472_storage_ptr",
+                          "typeString": "struct QueueStru.Queue storage pointer"
+                        }
+                      },
+                      "id": 3538,
+                      "isConstant": false,
+                      "isLValue": true,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberName": "front",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": 3469,
+                      "src": "1151:7:11",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      }
+                    },
+                    "src": "1119:39:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "falseBody": null,
+                  "id": 3541,
+                  "nodeType": "IfStatement",
+                  "src": "1115:65:11",
+                  "trueBody": {
+                    "expression": null,
+                    "functionReturnParameters": 3527,
+                    "id": 3540,
+                    "nodeType": "Return",
+                    "src": "1173:7:11"
+                  }
+                },
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "id": 3549,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftHandSide": {
+                      "argumentTypes": null,
+                      "baseExpression": {
+                        "argumentTypes": null,
+                        "expression": {
+                          "argumentTypes": null,
+                          "id": 3542,
+                          "name": "q",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 3523,
+                          "src": "1200:1:11",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_struct$_Queue_$3472_storage_ptr",
+                            "typeString": "struct QueueStru.Queue storage pointer"
+                          }
+                        },
+                        "id": 3546,
+                        "isConstant": false,
+                        "isLValue": true,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "memberName": "data",
+                        "nodeType": "MemberAccess",
+                        "referencedDeclaration": 3467,
+                        "src": "1200:6:11",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_array$_t_address_$dyn_storage",
+                          "typeString": "address[] storage ref"
+                        }
+                      },
+                      "id": 3547,
+                      "indexExpression": {
+                        "argumentTypes": null,
+                        "expression": {
+                          "argumentTypes": null,
+                          "id": 3544,
+                          "name": "q",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 3523,
+                          "src": "1207:1:11",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_struct$_Queue_$3472_storage_ptr",
+                            "typeString": "struct QueueStru.Queue storage pointer"
+                          }
+                        },
+                        "id": 3545,
+                        "isConstant": false,
+                        "isLValue": true,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "memberName": "back",
+                        "nodeType": "MemberAccess",
+                        "referencedDeclaration": 3471,
+                        "src": "1207:6:11",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      },
+                      "isConstant": false,
+                      "isLValue": true,
+                      "isPure": false,
+                      "lValueRequested": true,
+                      "nodeType": "IndexAccess",
+                      "src": "1200:14:11",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_address",
+                        "typeString": "address"
+                      }
+                    },
+                    "nodeType": "Assignment",
+                    "operator": "=",
+                    "rightHandSide": {
+                      "argumentTypes": null,
+                      "id": 3548,
+                      "name": "data",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 3525,
+                      "src": "1217:4:11",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_address",
+                        "typeString": "address"
+                      }
+                    },
+                    "src": "1200:21:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "id": 3550,
+                  "nodeType": "ExpressionStatement",
+                  "src": "1200:21:11"
+                },
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "id": 3563,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftHandSide": {
+                      "argumentTypes": null,
+                      "expression": {
+                        "argumentTypes": null,
+                        "id": 3551,
+                        "name": "q",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 3523,
+                        "src": "1232:1:11",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_struct$_Queue_$3472_storage_ptr",
+                          "typeString": "struct QueueStru.Queue storage pointer"
+                        }
+                      },
+                      "id": 3553,
+                      "isConstant": false,
+                      "isLValue": true,
+                      "isPure": false,
+                      "lValueRequested": true,
+                      "memberName": "back",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": 3471,
+                      "src": "1232:6:11",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      }
+                    },
+                    "nodeType": "Assignment",
+                    "operator": "=",
+                    "rightHandSide": {
+                      "argumentTypes": null,
+                      "commonType": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      },
+                      "id": 3562,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "leftExpression": {
+                        "argumentTypes": null,
+                        "components": [
+                          {
+                            "argumentTypes": null,
+                            "commonType": {
+                              "typeIdentifier": "t_uint256",
+                              "typeString": "uint256"
+                            },
+                            "id": 3557,
+                            "isConstant": false,
+                            "isLValue": false,
+                            "isPure": false,
+                            "lValueRequested": false,
+                            "leftExpression": {
+                              "argumentTypes": null,
+                              "expression": {
+                                "argumentTypes": null,
+                                "id": 3554,
+                                "name": "q",
+                                "nodeType": "Identifier",
+                                "overloadedDeclarations": [],
+                                "referencedDeclaration": 3523,
+                                "src": "1242:1:11",
+                                "typeDescriptions": {
+                                  "typeIdentifier": "t_struct$_Queue_$3472_storage_ptr",
+                                  "typeString": "struct QueueStru.Queue storage pointer"
+                                }
+                              },
+                              "id": 3555,
+                              "isConstant": false,
+                              "isLValue": true,
+                              "isPure": false,
+                              "lValueRequested": false,
+                              "memberName": "back",
+                              "nodeType": "MemberAccess",
+                              "referencedDeclaration": 3471,
+                              "src": "1242:6:11",
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_uint256",
+                                "typeString": "uint256"
+                              }
+                            },
+                            "nodeType": "BinaryOperation",
+                            "operator": "+",
+                            "rightExpression": {
+                              "argumentTypes": null,
+                              "hexValue": "31",
+                              "id": 3556,
+                              "isConstant": false,
+                              "isLValue": false,
+                              "isPure": true,
+                              "kind": "number",
+                              "lValueRequested": false,
+                              "nodeType": "Literal",
+                              "src": "1251:1:11",
+                              "subdenomination": null,
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_rational_1_by_1",
+                                "typeString": "int_const 1"
+                              },
+                              "value": "1"
+                            },
+                            "src": "1242:10:11",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_uint256",
+                              "typeString": "uint256"
+                            }
+                          }
+                        ],
+                        "id": 3558,
+                        "isConstant": false,
+                        "isInlineArray": false,
+                        "isLValue": false,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "nodeType": "TupleExpression",
+                        "src": "1241:12:11",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      },
+                      "nodeType": "BinaryOperation",
+                      "operator": "%",
+                      "rightExpression": {
+                        "argumentTypes": null,
+                        "expression": {
+                          "argumentTypes": null,
+                          "expression": {
+                            "argumentTypes": null,
+                            "id": 3559,
+                            "name": "q",
+                            "nodeType": "Identifier",
+                            "overloadedDeclarations": [],
+                            "referencedDeclaration": 3523,
+                            "src": "1256:1:11",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_struct$_Queue_$3472_storage_ptr",
+                              "typeString": "struct QueueStru.Queue storage pointer"
+                            }
+                          },
+                          "id": 3560,
+                          "isConstant": false,
+                          "isLValue": true,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "memberName": "data",
+                          "nodeType": "MemberAccess",
+                          "referencedDeclaration": 3467,
+                          "src": "1256:6:11",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_array$_t_address_$dyn_storage",
+                            "typeString": "address[] storage ref"
+                          }
+                        },
+                        "id": 3561,
+                        "isConstant": false,
+                        "isLValue": true,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "memberName": "length",
+                        "nodeType": "MemberAccess",
+                        "referencedDeclaration": null,
+                        "src": "1256:13:11",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      },
+                      "src": "1241:28:11",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      }
+                    },
+                    "src": "1232:37:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "id": 3564,
+                  "nodeType": "ExpressionStatement",
+                  "src": "1232:37:11"
+                }
+              ]
+            },
+            "documentation": "@dev push a new element to the back of the queue\r",
+            "id": 3566,
+            "implemented": true,
+            "isConstructor": false,
+            "isDeclaredConst": false,
+            "modifiers": [],
+            "name": "push",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 3526,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 3523,
+                  "name": "q",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 3566,
+                  "src": "1049:15:11",
+                  "stateVariable": false,
+                  "storageLocation": "storage",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_struct$_Queue_$3472_storage_ptr",
+                    "typeString": "struct QueueStru.Queue"
+                  },
+                  "typeName": {
+                    "contractScope": null,
+                    "id": 3522,
+                    "name": "Queue",
+                    "nodeType": "UserDefinedTypeName",
+                    "referencedDeclaration": 3472,
+                    "src": "1049:5:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$_Queue_$3472_storage_ptr",
+                      "typeString": "struct QueueStru.Queue"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 3525,
+                  "name": "data",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 3566,
+                  "src": "1066:12:11",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 3524,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1066:7:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1048:31:11"
+            },
+            "payable": false,
+            "returnParameters": {
+              "id": 3527,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "1104:0:11"
+            },
+            "scope": 3601,
+            "src": "1035:242:11",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "internal"
+          },
+          {
+            "body": {
+              "id": 3599,
+              "nodeType": "Block",
+              "src": "1427:154:11",
+              "statements": [
+                {
+                  "condition": {
+                    "argumentTypes": null,
+                    "commonType": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    },
+                    "id": 3575,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftExpression": {
+                      "argumentTypes": null,
+                      "expression": {
+                        "argumentTypes": null,
+                        "id": 3571,
+                        "name": "q",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 3568,
+                        "src": "1442:1:11",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_struct$_Queue_$3472_storage_ptr",
+                          "typeString": "struct QueueStru.Queue storage pointer"
+                        }
+                      },
+                      "id": 3572,
+                      "isConstant": false,
+                      "isLValue": true,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberName": "back",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": 3471,
+                      "src": "1442:6:11",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      }
+                    },
+                    "nodeType": "BinaryOperation",
+                    "operator": "==",
+                    "rightExpression": {
+                      "argumentTypes": null,
+                      "expression": {
+                        "argumentTypes": null,
+                        "id": 3573,
+                        "name": "q",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 3568,
+                        "src": "1452:1:11",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_struct$_Queue_$3472_storage_ptr",
+                          "typeString": "struct QueueStru.Queue storage pointer"
+                        }
+                      },
+                      "id": 3574,
+                      "isConstant": false,
+                      "isLValue": true,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberName": "front",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": 3469,
+                      "src": "1452:7:11",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      }
+                    },
+                    "src": "1442:17:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "falseBody": null,
+                  "id": 3577,
+                  "nodeType": "IfStatement",
+                  "src": "1438:43:11",
+                  "trueBody": {
+                    "expression": null,
+                    "functionReturnParameters": 3570,
+                    "id": 3576,
+                    "nodeType": "Return",
+                    "src": "1474:7:11"
+                  }
+                },
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "id": 3583,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "nodeType": "UnaryOperation",
+                    "operator": "delete",
+                    "prefix": true,
+                    "src": "1501:22:11",
+                    "subExpression": {
+                      "argumentTypes": null,
+                      "baseExpression": {
+                        "argumentTypes": null,
+                        "expression": {
+                          "argumentTypes": null,
+                          "id": 3578,
+                          "name": "q",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 3568,
+                          "src": "1508:1:11",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_struct$_Queue_$3472_storage_ptr",
+                            "typeString": "struct QueueStru.Queue storage pointer"
+                          }
+                        },
+                        "id": 3579,
+                        "isConstant": false,
+                        "isLValue": true,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "memberName": "data",
+                        "nodeType": "MemberAccess",
+                        "referencedDeclaration": 3467,
+                        "src": "1508:6:11",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_array$_t_address_$dyn_storage",
+                          "typeString": "address[] storage ref"
+                        }
+                      },
+                      "id": 3582,
+                      "indexExpression": {
+                        "argumentTypes": null,
+                        "expression": {
+                          "argumentTypes": null,
+                          "id": 3580,
+                          "name": "q",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 3568,
+                          "src": "1515:1:11",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_struct$_Queue_$3472_storage_ptr",
+                            "typeString": "struct QueueStru.Queue storage pointer"
+                          }
+                        },
+                        "id": 3581,
+                        "isConstant": false,
+                        "isLValue": true,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "memberName": "front",
+                        "nodeType": "MemberAccess",
+                        "referencedDeclaration": 3469,
+                        "src": "1515:7:11",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      },
+                      "isConstant": false,
+                      "isLValue": true,
+                      "isPure": false,
+                      "lValueRequested": true,
+                      "nodeType": "IndexAccess",
+                      "src": "1508:15:11",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_address",
+                        "typeString": "address"
+                      }
+                    },
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_tuple$__$",
+                      "typeString": "tuple()"
+                    }
+                  },
+                  "id": 3584,
+                  "nodeType": "ExpressionStatement",
+                  "src": "1501:22:11"
+                },
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "id": 3597,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftHandSide": {
+                      "argumentTypes": null,
+                      "expression": {
+                        "argumentTypes": null,
+                        "id": 3585,
+                        "name": "q",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 3568,
+                        "src": "1534:1:11",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_struct$_Queue_$3472_storage_ptr",
+                          "typeString": "struct QueueStru.Queue storage pointer"
+                        }
+                      },
+                      "id": 3587,
+                      "isConstant": false,
+                      "isLValue": true,
+                      "isPure": false,
+                      "lValueRequested": true,
+                      "memberName": "front",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": 3469,
+                      "src": "1534:7:11",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      }
+                    },
+                    "nodeType": "Assignment",
+                    "operator": "=",
+                    "rightHandSide": {
+                      "argumentTypes": null,
+                      "commonType": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      },
+                      "id": 3596,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "leftExpression": {
+                        "argumentTypes": null,
+                        "components": [
+                          {
+                            "argumentTypes": null,
+                            "commonType": {
+                              "typeIdentifier": "t_uint256",
+                              "typeString": "uint256"
+                            },
+                            "id": 3591,
+                            "isConstant": false,
+                            "isLValue": false,
+                            "isPure": false,
+                            "lValueRequested": false,
+                            "leftExpression": {
+                              "argumentTypes": null,
+                              "expression": {
+                                "argumentTypes": null,
+                                "id": 3588,
+                                "name": "q",
+                                "nodeType": "Identifier",
+                                "overloadedDeclarations": [],
+                                "referencedDeclaration": 3568,
+                                "src": "1545:1:11",
+                                "typeDescriptions": {
+                                  "typeIdentifier": "t_struct$_Queue_$3472_storage_ptr",
+                                  "typeString": "struct QueueStru.Queue storage pointer"
+                                }
+                              },
+                              "id": 3589,
+                              "isConstant": false,
+                              "isLValue": true,
+                              "isPure": false,
+                              "lValueRequested": false,
+                              "memberName": "front",
+                              "nodeType": "MemberAccess",
+                              "referencedDeclaration": 3469,
+                              "src": "1545:7:11",
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_uint256",
+                                "typeString": "uint256"
+                              }
+                            },
+                            "nodeType": "BinaryOperation",
+                            "operator": "+",
+                            "rightExpression": {
+                              "argumentTypes": null,
+                              "hexValue": "31",
+                              "id": 3590,
+                              "isConstant": false,
+                              "isLValue": false,
+                              "isPure": true,
+                              "kind": "number",
+                              "lValueRequested": false,
+                              "nodeType": "Literal",
+                              "src": "1555:1:11",
+                              "subdenomination": null,
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_rational_1_by_1",
+                                "typeString": "int_const 1"
+                              },
+                              "value": "1"
+                            },
+                            "src": "1545:11:11",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_uint256",
+                              "typeString": "uint256"
+                            }
+                          }
+                        ],
+                        "id": 3592,
+                        "isConstant": false,
+                        "isInlineArray": false,
+                        "isLValue": false,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "nodeType": "TupleExpression",
+                        "src": "1544:13:11",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      },
+                      "nodeType": "BinaryOperation",
+                      "operator": "%",
+                      "rightExpression": {
+                        "argumentTypes": null,
+                        "expression": {
+                          "argumentTypes": null,
+                          "expression": {
+                            "argumentTypes": null,
+                            "id": 3593,
+                            "name": "q",
+                            "nodeType": "Identifier",
+                            "overloadedDeclarations": [],
+                            "referencedDeclaration": 3568,
+                            "src": "1560:1:11",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_struct$_Queue_$3472_storage_ptr",
+                              "typeString": "struct QueueStru.Queue storage pointer"
+                            }
+                          },
+                          "id": 3594,
+                          "isConstant": false,
+                          "isLValue": true,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "memberName": "data",
+                          "nodeType": "MemberAccess",
+                          "referencedDeclaration": 3467,
+                          "src": "1560:6:11",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_array$_t_address_$dyn_storage",
+                            "typeString": "address[] storage ref"
+                          }
+                        },
+                        "id": 3595,
+                        "isConstant": false,
+                        "isLValue": true,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "memberName": "length",
+                        "nodeType": "MemberAccess",
+                        "referencedDeclaration": null,
+                        "src": "1560:13:11",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      },
+                      "src": "1544:29:11",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      }
+                    },
+                    "src": "1534:39:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "id": 3598,
+                  "nodeType": "ExpressionStatement",
+                  "src": "1534:39:11"
+                }
+              ]
+            },
+            "documentation": "@dev remove and return the element at the front of the queue\r",
+            "id": 3600,
+            "implemented": true,
+            "isConstructor": false,
+            "isDeclaredConst": false,
+            "modifiers": [],
+            "name": "pop",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 3569,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 3568,
+                  "name": "q",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 3600,
+                  "src": "1385:15:11",
+                  "stateVariable": false,
+                  "storageLocation": "storage",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_struct$_Queue_$3472_storage_ptr",
+                    "typeString": "struct QueueStru.Queue"
+                  },
+                  "typeName": {
+                    "contractScope": null,
+                    "id": 3567,
+                    "name": "Queue",
+                    "nodeType": "UserDefinedTypeName",
+                    "referencedDeclaration": 3472,
+                    "src": "1385:5:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$_Queue_$3472_storage_ptr",
+                      "typeString": "struct QueueStru.Queue"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1384:17:11"
+            },
+            "payable": false,
+            "returnParameters": {
+              "id": 3570,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "1427:0:11"
+            },
+            "scope": 3601,
+            "src": "1372:209:11",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "internal"
+          }
+        ],
+        "scope": 3602,
+        "src": "93:1491:11"
+      }
+    ],
+    "src": "0:1584:11"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.4.24+commit.e67f0147.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "2.0.1",
+  "updatedAt": "2018-08-06T09:17:23.423Z"
+}

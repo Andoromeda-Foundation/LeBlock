@@ -3,6 +3,7 @@ pragma solidity ^0.4.24;
 /**
  * @title QueueStru
  * @dev the queue data structure
+ * @dev https://github.com/chriseth/solidity-examples/blob/master/queue.sol
  */
 contract QueueStru {
 

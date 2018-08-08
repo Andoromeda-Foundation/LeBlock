@@ -5,6 +5,10 @@ import "./AddressUtils.sol";
 import "./Pausable.sol";
 
 /**
+ * @dev https://github.com/OpenZeppelin/openzeppelin-solidity/tree/master/contracts/token/ERC721
+ */
+ 
+/**
  * @title ERC165
  * @dev https://github.com/ethereum/EIPs/blob/master/EIPS/eip-165.md
  */

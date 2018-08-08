@@ -1,5 +1,9 @@
 pragma solidity ^0.4.24;
 
+/**
+ * @dev view more https://www.jianshu.com/p/d16797e8de59
+ */
+
 library BytesUtils {
     bytes constant ALPHABET = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
 
@@ -8,7 +12,11 @@ library BytesUtils {
      * @param _source Bytes data
      * @return Encoded bytes data
      */
-    function base58Address(bytes _source) internal pure returns (bytes) {
+    function base58Address(bytes _source) 
+        internal 
+        pure 
+        returns (bytes) 
+    {
         uint8[] memory digits = new uint8[](_source.length * 136/100 + 1);
         digits[0] = 0;
         uint8 digitlength = 1;
@@ -35,7 +43,11 @@ library BytesUtils {
      * @param _length The target length of the `_array`
      * @return The truncated array 
      */
-    function truncate(uint8[] _array, uint8 _length) internal pure returns (uint8[]) {
+    function truncate(uint8[] _array, uint8 _length)
+        internal 
+        pure 
+        returns (uint8[]) 
+    {
         uint8[] memory output = new uint8[](_length);
         for (uint i = 0; i < _length; i++) {
             output[i] = _array[i];
@@ -48,7 +60,11 @@ library BytesUtils {
      * @param _input The source array 
      * @return The reversed array 
      */
-    function reverse(uint8[] _input) internal pure returns (uint8[]) {
+    function reverse(uint8[] _input) 
+        internal 
+        pure 
+        returns (uint8[]) 
+    {
         uint8[] memory output = new uint8[](_input.length);
         for (uint i = 0; i < _input.length; i++) {
             output[i] = _input[_input.length - 1 - i];
@@ -61,7 +77,11 @@ library BytesUtils {
      * @param _indices The indices of alphabet
      * @return The alphabets
      */
-    function toAlphabet(uint8[] _indices) internal pure returns (bytes) {
+    function toAlphabet(uint8[] _indices) 
+        internal 
+        pure 
+        returns (bytes) 
+    {
         bytes memory output = new bytes(_indices.length);
         for (uint i = 0; i < _indices.length; i++) {
             output[i] = ALPHABET[_indices[i]];
@@ -74,7 +94,11 @@ library BytesUtils {
      * @param _input The source bytes32
      * @return The bytes
      */
-    function toBytes(bytes32 _input) internal pure returns (bytes) {
+    function toBytes(bytes32 _input) 
+        internal 
+        pure 
+        returns (bytes) 
+    {
         bytes memory output = new bytes(32);
         for (uint8 i = 0; i < 32; i++) {
             output[i] = _input[i];
@@ -88,7 +112,11 @@ library BytesUtils {
      * @param _byteArray2 The second bytes
      * @return The concated bytes
      */
-    function concat(bytes _byteArray, bytes _byteArray2) internal pure returns (bytes) {
+    function concat(bytes _byteArray, bytes _byteArray2) 
+        internal 
+        pure 
+        returns (bytes) 
+    {
         bytes memory returnArray = new bytes(_byteArray.length + _byteArray2.length);
         for (uint16 i = 0; i < _byteArray.length; i++) {
             returnArray[i] = _byteArray[i];

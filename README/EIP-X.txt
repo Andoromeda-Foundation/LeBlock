@@ -1,0 +1,7 @@
+kh.:
+/* contract */
+	[addr, _hash, sig, "Hello"] -d-> [addr, _hash, "Hello"]
+	[addr, _hash, "Hello"] -?-> [addr, "Hello"] //剔除
+
+testing gas:	
+	/* 1 q gas = 1 * erc20.transfer() */

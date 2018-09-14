@@ -1,9 +1,15 @@
-1、部署warehouse.sol 
+1、部署warehouse.sol
+
+
 2、部署AB，即ERC20。文件为Leblock.sol。构造函数输入如下
     1) "AB1","ABlock1",1000    
-    2) "AB2","ABlock2",1000  
+    2) "AB2","ABlock2",1000
+
+
 3、部署BP，即ERC721，文件为ERC721Token.sol。
     "Blueprint“,"BP"
+
+
 4、调用warehouse合约，把AB,BP的地址设置进去
     1) 用owner地址调用addABaddress()两次，把AB1和AB2合约地址传入
     2) 用owner地址调用changeBPaddress()一次，把BP合约地址传入
@@ -21,11 +27,17 @@
 1、部署warehouse.sol 
     1) owner:0xbd70d89667a3e1bd341ac235259c5f2dde8172a9
     2) 地址: https://ropsten.etherscan.io/address/0xbe2628d45c8371cbb76746427e0867240600b6f1#code
+
+
 2、部署AB，即ERC20
     1) "AB1","ABlock1",1000     owner同上   https://ropsten.etherscan.io/address/0xb3a309d3406b7a114a4eb91d31e5f3dc0e827fab#code
     2) "AB2","ABlock2",1000     owner同上   https://ropsten.etherscan.io/address/0xe47a682ae5f74f8677a6509abcb07290eaecf33b#code
+
+
 3、部署BP，即ERC721
     "Blueprint“,"BP"            https://ropsten.etherscan.io/address/0x37b0ec8dd237a5038720c84c324c44713b314ba0#code
+
+
 4、调用warehouse合约，把AB,BP的地址设置进去
     1) 用owner地址调用addABaddress()两次，把AB1和AB2合约地址传入
     2) 用owner地址调用changeBPaddress()一次，把BP合约地址传入

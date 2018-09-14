@@ -69,7 +69,7 @@ contract WareHouse is Owned {
         // 假设返回的不同AB使用数量和addressOf保存的AB地址是对应的
         for (uint256 i = 0; i < arr.length; i++) {
             ERC20 AB = ERC20(addressOf[i]);
-            if(AB.transfer(this, arr[i])) {
+            if(AB.transferFrom(msg.sender,this, arr[i])) {
                 depositOf[msg.sender][i] = arr[i];
             }         
         }
@@ -92,7 +92,12 @@ contract WareHouse is Owned {
         view
         returns(uint256[])
     {
+        uint256[] memory a;
+        for (uint256 i = 0; i < 2; i++) {
+            a[i] = (i+1) * 1 ether;
+        }
 
+        return a;
     }
 
     function checkBalance(uint256[] _array)

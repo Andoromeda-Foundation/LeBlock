@@ -632,8 +632,6 @@ contract ERC721Token is SupportsInterfaceWithLookup, ERC721BasicToken, ERC721 {
     {
         name_ = _name;
         symbol_ = _symbol;
-        owner = msg.sender;
-        admins[msg.sender] = true;
 
         // register the supported interfaces to conform to ERC721 via ERC165
         _registerInterface(InterfaceId_ERC721Enumerable);
@@ -818,18 +816,4 @@ contract ERC721Token is SupportsInterfaceWithLookup, ERC721BasicToken, ERC721 {
         allTokensIndex[_tokenId] = 0;
         allTokensIndex[lastToken] = tokenIndex;
     }
-
-    /**
-     * @dev Just for test function to mint a new token
-     * Reverts if the given token ID already exists
-     * @param _to address the beneficiary that will own the minted token
-     * @param _tokenId uint256 ID of the token to be minted by the msg.sender
-     */
-    function mint(address _to, uint256 _tokenId) 
-        public
-        onlyAdmins
-    {
-        _mint(_to, _tokenId);
-    }
-    
 }

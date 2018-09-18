@@ -11,7 +11,6 @@ contract BP is ERC721Token {
     // Mapping from maker to list of maked token IDs
     mapping(address => uint256[]) makedTokens;
     // Mapping from token ID to index of the maker tokens list
-    // 任何没有初始化的值会映射到0，所以要求0不能作为index
     mapping(uint256 => uint256) makedTokensIndex;
 
 

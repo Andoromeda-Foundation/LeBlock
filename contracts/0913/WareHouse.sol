@@ -2,9 +2,11 @@ pragma solidity ^0.4.24;
 
 import "./Owned.sol";
 import "./AddressUtils.sol";
+import "./SafeMath.sol";
 
 contract WareHouse is Owned {
     using AddressUtils for address;
+    using SafeMath for uint256;
     
     mapping(address => mapping(uint256 => uint256)) depositOf; // 玩家在这个合约里面质押了多少ERC20
     mapping(string => bool) isLocked;
@@ -81,22 +83,22 @@ contract WareHouse is Owned {
         uint256 _totalSupply = bp.totalSupply();
         uint256 _tokenId = _totalSupply;
 
-        if(!bp.exists(_index)) {
+        if(!bp.exists(_tokenId)) {
             bp.mint(owner, _tokenId, msg.sender);
             indexOfBPhash[BPhash] = _tokenId;
         }
 
-        emit Compose(_index);
+        emit Compose(_tokenId);
 
     }
 
     function deCompose(string BPhash)
         public
     {
-        BP bp = BP(BPhash);
+        BP bp = BP(BPaddress);
         uint256 _tokenId = indexOfBPhash[BPhash];
 
-        require(bp.exists(_tokenId);
+        require(bp.exists(_tokenId));
         require(msg.sender == bp.makerOf(_tokenId));
 
         uint256[] memory arr = estimate(BPhash);
@@ -187,5 +189,4 @@ interface BP {
     function exists(uint256 _tokenId) external view returns (bool _exists);    
     function makerOf(uint256 _tokenId) external view returns (address);
     function ownerOf(uint256 _tokenId) external view returns (address);
-    
 }

@@ -7,10 +7,13 @@ contract WareHouse is Owned {
     using AddressUtils for address;
     
     mapping(address => mapping(uint256 => uint256)) depositOf; // 玩家在这个合约里面质押了多少ERC20
+    mapping(string => bool) isLocked;
 
     // 代表AB种类的合约地址；
     address[] public addressOf;
     address public BPaddress;
+
+    mapping(string => uint256) indexOfBPhash;
 
     event AddABaddress(uint256 indexed _indexed, address _ABaddress);
     event DelABaddress(uint256 indexed _indexed, address _BeforeAddress, address _nowAddress, uint256 _length);
@@ -66,24 +69,46 @@ contract WareHouse is Owned {
 
         require(checkBalance(arr));
         
-        // 假设返回的不同AB使用数量和addressOf保存的AB地址是对应的
+        // 假设返回的不同AB使用数量和addressOf保存的AB地址是对应的。因此arr的长度肯定和addressOf长度一致。
         for (uint256 i = 0; i < arr.length; i++) {
             ERC20 AB = ERC20(addressOf[i]);
             if(AB.transferFrom(msg.sender,this, arr[i])) {
-                depositOf[msg.sender][i] = arr[i];
+                depositOf[msg.sender][i] = depositOf[msg.sender][i].add(arr[i]);
             }         
         }
 
-        ERC721 BP = ERC721(BPaddress);
-        uint256 _totalSupply = BP.totalSupply();
-        uint256 _index = _totalSupply - 1;
+        BP bp = BP(BPaddress);
+        uint256 _totalSupply = bp.totalSupply();
+        uint256 _tokenId = _totalSupply;
 
-        if(!BP.exists(_index)) {
-            BP.mint(msg.sender, _index);
+        if(!bp.exists(_index)) {
+            bp.mint(owner, _tokenId, msg.sender);
+            indexOfBPhash[BPhash] = _tokenId;
         }
 
         emit Compose(_index);
 
+    }
+
+    function deCompose(string BPhash)
+        public
+    {
+        BP bp = BP(BPhash);
+        uint256 _tokenId = indexOfBPhash[BPhash];
+
+        require(bp.exists(_tokenId);
+        require(msg.sender == bp.makerOf(_tokenId));
+
+        uint256[] memory arr = estimate(BPhash);
+        for (uint256 i = 0; i < arr.length; i++) {
+            ERC20 AB = ERC20(addressOf[i]);
+            if(AB.transfer(msg.sender,arr[i])) {
+                depositOf[msg.sender][i] = depositOf[msg.sender][i].sub(arr[i]);
+            }
+        }
+
+        address _owner = bp.ownerOf(_tokenId);
+        bp.burn(_owner, _tokenId, msg.sender);
     }
 
     // oracle
@@ -120,7 +145,15 @@ contract WareHouse is Owned {
         view
         returns(uint256)
     {
-        return addressOf.length - 1;
+        return addressOf.length;
+    }
+
+    function getTokenId(string BPhash)
+        public
+        view
+        returns(uint256)
+    {
+        return indexOfBPhash[BPhash];
     }
 
     function getERC20(address _ABaddress, address _toAddress, uint256 _amount)
@@ -132,6 +165,7 @@ contract WareHouse is Owned {
 
         emit GetAB(_ABaddress, _toAddress, _amount);
     }
+
 }
 
 interface  ERC20 {
@@ -146,8 +180,12 @@ interface  ERC20 {
     event Approval(address indexed tokenOwner, address indexed spender, uint256 tokens);
 }
 
-interface ERC721 {
-    function mint(address _to, uint256 _tokenId) external;
+interface BP {
+    function mint(address _to, uint256 _tokenId, address _maker) external;
+    function burn(address _owner, uint256 _tokenId, address _maker) external;
     function totalSupply() external view returns (uint256);
     function exists(uint256 _tokenId) external view returns (bool _exists);    
+    function makerOf(uint256 _tokenId) external view returns (address);
+    function ownerOf(uint256 _tokenId) external view returns (address);
+    
 }

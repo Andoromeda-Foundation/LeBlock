@@ -110,7 +110,7 @@ contract BP is ERC721Token {
         uint256 _makerLastTokenIndex = makedTokens[_maker].length.sub(1);
         uint256 _makerLastToken = makedTokens[_maker][_makerLastTokenIndex];
         makedTokens[_maker][_makerTokenIndex] = _makerLastToken;
-        makedTokens[_maker][_makerLastTokenIndex] = 0
+        makedTokens[_maker][_makerLastTokenIndex] = 0;
         makedTokens[_maker].length--;
         makedTokensIndex[_tokenId] = 0;
         makedTokensIndex[_makerLastToken] = _makerTokenIndex;

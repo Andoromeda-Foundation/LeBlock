@@ -7,10 +7,9 @@ import "./SafeMath.sol";
 contract WareHouse is Owned {
     using AddressUtils for address;
     using SafeMath for uint256;
-    
-    mapping(address => mapping(uint256 => uint256)) depositOf; // 玩家在这个合约里面质押了多少ERC20
-    mapping(string => bool) isLocked;
 
+    mapping(address => mapping(uint256 => uint256)) depositOf; // 玩家在这个合约里面质押了多少ERC20
+    mapping(string => bool) isLock;
     // 代表AB种类的合约地址；
     address[] public addressOf;
     address public BPaddress;
@@ -60,7 +59,7 @@ contract WareHouse is Owned {
         require(_new.isContract());
         address _before = BPaddress;
         BPaddress = _new;
-    
+        
         emit ChangeBPaddress(_before, BPaddress);
     }
 
@@ -69,8 +68,8 @@ contract WareHouse is Owned {
     {
         uint256[] memory arr = estimate(BPhash);
 
-        require(checkBalance(arr));
-        
+        require(canCompose(BPhash));
+            
         // 假设返回的不同AB使用数量和addressOf保存的AB地址是对应的。因此arr的长度肯定和addressOf长度一致。
         for (uint256 i = 0; i < arr.length; i++) {
             ERC20 AB = ERC20(addressOf[i]);
@@ -92,14 +91,29 @@ contract WareHouse is Owned {
 
     }
 
+    function canCompose(string BPhash)
+        internal
+        view
+        returns(bool)
+    {
+        uint256[] memory arr = estimate(BPhash);
+        BP bp = BP(BPaddress);
+        uint256 _tokenId = indexOfBPhash[BPhash];
+
+        if(checkBalance(arr) && !bp.exists(_tokenId)) {
+            return true;
+        } else {
+            return false;
+        }        
+    }
+
     function deCompose(string BPhash)
         public
     {
         BP bp = BP(BPaddress);
         uint256 _tokenId = indexOfBPhash[BPhash];
 
-        require(bp.exists(_tokenId));
-        require(msg.sender == bp.makerOf(_tokenId));
+        require(canDeCompose(BPhash));
 
         uint256[] memory arr = estimate(BPhash);
         for (uint256 i = 0; i < arr.length; i++) {
@@ -111,6 +125,21 @@ contract WareHouse is Owned {
 
         address _owner = bp.ownerOf(_tokenId);
         bp.burn(_owner, _tokenId, msg.sender);
+    }
+
+    function canDeCompose(string BPhash)
+        internal
+        view
+        returns(bool)
+    {
+        BP bp = BP(BPaddress);
+        uint256 _tokenId = indexOfBPhash[BPhash];
+
+        if(bp.exists(_tokenId) && msg.sender == bp.makerOf(_tokenId) && !isLock[BPhash]) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     // oracle
@@ -126,6 +155,22 @@ contract WareHouse is Owned {
 
         return a;
     }
+
+    function setLock(string BPhash, bool lock)
+        public
+        onlyAdmins
+    {
+        isLock[BPhash] = lock;
+    }
+
+    function lockState(string BPhash)
+        public
+        view
+        returns(bool)
+    {
+        return isLock[BPhash];    
+    }
+
 
     function checkBalance(uint256[] _array)
         internal

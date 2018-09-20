@@ -47,7 +47,7 @@ contract CopyrightCenter is Owned {
     }
 
     function canShelf(string BPHash, address BPmaker)
-        internal
+        public
         view
         returns(bool)
     {
@@ -88,7 +88,7 @@ contract CopyrightCenter is Owned {
     }
     
     function canUnshelf(string BPHash)
-        internal
+        public
         view
         returns(bool)
     {

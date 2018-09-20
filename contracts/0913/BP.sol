@@ -2,6 +2,10 @@ pragma solidity ^0.4.24;
 
 import "./ERC721Token.sol";
 
+/*
+ * BP是继承了一个
+ */
+
 contract BP is ERC721Token {
 
     // Mapping from token ID to maker
@@ -49,7 +53,6 @@ contract BP is ERC721Token {
         returns (address) 
     {
         address maker = tokenMaker[_tokenId];
-        require(maker != address(0));
         return maker;
     }
 

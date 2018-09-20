@@ -300,7 +300,6 @@ contract ERC721BasicToken is SupportsInterfaceWithLookup, ERC721Basic, Pausable 
         returns (address) 
     {
         address owner = tokenOwner[_tokenId];
-        require(owner != address(0));
         return owner;
     }
 

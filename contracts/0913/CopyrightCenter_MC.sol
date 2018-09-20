@@ -6,8 +6,6 @@ import "./AddressUtils.sol";
 contract CopyrightCenter is Owned {
     using AddressUtils for address;
 
-    address BPaddress; // BP, ERC721
-    address WHaddress; // WareHouse
     address CRaddress; // Copyright用户注册好版权的地方。XBP,代码和BP一样，存储数据不同。
 
     mapping(string => uint256) indexOfCRhash;
@@ -22,22 +20,6 @@ contract CopyrightCenter is Owned {
         admins[msg.sender] = true;
     }
 
-    function setBPAddress(address _addr)
-        public
-        onlyAdmins
-    {
-        require(_addr.isContract());
-        BPaddress = _addr;
-    }
-
-    function setWHaddress(address _addr)
-        public
-        onlyAdmins
-    {
-        require(_addr.isContract());
-        WHaddress = _addr;
-    }
-
     function setCRaddress(address _addr)
         public
         onlyAdmins
@@ -46,39 +28,33 @@ contract CopyrightCenter is Owned {
         CRaddress = _addr;
     }
 
-    function canShelf(string BPHash, address BPmaker)
+    function canShelf(string BPHash)
         public
         view
         returns(bool)
     {
-        BP bp = BP(BPaddress);
-        BP cr = BP(BPaddress);
-        WareHouse wh = WareHouse(WHaddress);
-        uint256 _indexOfBP = wh.getTokenId(BPHash);
+        BP cr = BP(CRaddress);
         uint256 _indexOfCR = indexOfCRhash[BPHash];
 
-        if(bp.exists(_indexOfBP) && bp.makerOf(_indexOfBP) == BPmaker && !cr.exists(_indexOfCR) && !wh.lockState(BPHash)) {
+        if(!cr.exists(_indexOfCR)) {
             return true;
         } else {
             return false;
         }
     }
 
-    function shelf(string BPHash, address _maker)
+    function shelf(string BPHash, address _maker, uint256 _tokenIdOfBP)
         public
         onlyAdmins
     {
-        require(canShelf(BPHash, _maker));
+        require(canShelf(BPHash));
         BP cr = BP(CRaddress);
-        WareHouse wh = WareHouse(WHaddress);
 
         uint256 _tokenIdOfCR = cr.totalSupply();
 
-        uint256 _tokenIdOfBP = wh.getTokenId(BPHash);
 
         if(!cr.exists(_tokenIdOfCR)) {
             cr.mint(msg.sender, _tokenIdOfCR , _maker);
-            wh.setLock(BPHash, true);
 
             indexOfCRhash[BPHash] = _tokenIdOfCR;
 
@@ -92,12 +68,11 @@ contract CopyrightCenter is Owned {
         view
         returns(bool)
     {
-        BP cr = BP(CRaddress);
-        WareHouse wh = WareHouse(WHaddress);
         uint256 _tokenId = indexOfCRhash[BPHash];
-        address _maker = cr.makerOf(_tokenId);
+        
+        BP cr = BP(CRaddress);
 
-        if(cr.exists(_tokenId) && msg.sender == _maker && wh.lockState(BPHash)) {
+        if(cr.exists(_tokenId)) {
             return true;
         } else {
             return false;
@@ -105,15 +80,12 @@ contract CopyrightCenter is Owned {
     }
 
 
-    function unshelf(string BPHash)
+    function unshelf(string BPHash, uint256 _tokenIdOfBP)
         public
         onlyAdmins
     {
         BP cr = BP(CRaddress);
-        WareHouse wh = WareHouse(WHaddress);
-
         uint256 _tokenIdOfCR = indexOfCRhash[BPHash];
-        uint256 _tokenIdOfBP = wh.getTokenId(BPHash);
 
         require(canUnshelf(BPHash));
         address _owner = cr.ownerOf(_tokenIdOfCR);
@@ -121,10 +93,7 @@ contract CopyrightCenter is Owned {
 
         cr.burn(_owner, _tokenIdOfCR, _maker);
 
-        wh.setLock(BPHash, false);
-
         emit Unshelf(_maker, _tokenIdOfBP, _tokenIdOfCR, BPHash);
-
     }
 
     function haveShelf(string BPHash)
@@ -158,10 +127,4 @@ interface BP {
     function exists(uint256 _tokenId) external view returns (bool _exists);    
     function makerOf(uint256 _tokenId) external view returns (address);
     function ownerOf(uint256 _tokenId) external view returns (address);
-}
-
-interface WareHouse {
-    function getTokenId(string BPhash) external view returns(uint256);
-    function setLock(string BPhash, bool isLock) external;
-    function lockState(string BPhash) external view returns(bool);
 }

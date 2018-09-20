@@ -130,14 +130,13 @@ contract CopyrightCenter is Owned {
     function haveShelf(string BPHash)
         public
         view
-        returns(bool)
+        returns(bool, uint256)
     {
-        BP cr = BP(CRaddress);
         uint256 _tokenIdOfCR = indexOfCRhash[BPHash];
-        if(cr.ownerOf(_tokenIdOfCR) != address(0)) {
-            return true;
+        if(_tokenIdOfCR ==0) {
+            return (true, _tokenIdOfCR);
         } else {
-            return false;
+            return (false, _tokenIdOfCR);
         }
     }
 

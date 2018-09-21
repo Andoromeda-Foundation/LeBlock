@@ -50,7 +50,8 @@ contract CopyrightCenter_MC is Owned {
         require(canShelf(BPHash));
         BP cr = BP(CRaddress);
 
-        uint256 _tokenIdOfCR = cr.totalSupply();
+        // tokenId 不能为0，tokenId不能选择为0的数，否则exist(tokenId)会判定BPhash不存在的为存在。
+        uint256 _tokenIdOfCR = cr.totalSupply().add(1);
 
 
         if(!cr.exists(_tokenIdOfCR)) {

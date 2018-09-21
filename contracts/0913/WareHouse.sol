@@ -79,8 +79,9 @@ contract WareHouse is Owned {
         }
 
         BP bp = BP(BPaddress);
+        // tokenId 不为零
         uint256 _totalSupply = bp.totalSupply();
-        uint256 _tokenId = _totalSupply;
+        uint256 _tokenId = _totalSupply.add(1);
 
         if(!bp.exists(_tokenId)) {
             bp.mint(owner, _tokenId, msg.sender);

@@ -71,8 +71,9 @@ contract CopyrightCenter is Owned {
         require(canShelf(BPHash, _maker));
         BP cr = BP(CRaddress);
         WareHouse wh = WareHouse(WHaddress);
-
-        uint256 _tokenIdOfCR = cr.totalSupply();
+        
+        // tokenId 不能为0
+        uint256 _tokenIdOfCR = cr.totalSupply().add(1);
 
         uint256 _tokenIdOfBP = wh.getTokenId(BPHash);
 

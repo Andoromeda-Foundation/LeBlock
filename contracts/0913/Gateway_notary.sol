@@ -13,6 +13,10 @@ contract Gateway_notary is Owned {
     mapping(address => mapping(address => uint256)) withdrawOfERC20;
     mapping(address => mapping(address => uint256[])) withdrawOfERC721;
 
+    // 如果是部署在侧链上，那么只保存在主链上存操作的txhash
+    // 如果是部署在主链上，那么只保存在侧链上存操作的txhash
+    mapping(bytes32 => bool) isTraded; 
+
     event Deposit(address user, address tokenAddr, uint256 amountOrId);
     event Withdraw(address user, address tokenAddr, uint256 amountOrId);
 
@@ -46,25 +50,30 @@ contract Gateway_notary is Owned {
     }    
 
     // 20
-    function withdraw20(uint256 amount, address erc20Address, address to)
+    function withdraw20(uint256 amount, address erc20Address, address to, bytes32 txhash)
         public
         onlyAdmins
     {
         ERC20 token = ERC20(erc20Address);
+        require(!isTraded[txhash]);
         if(token.transfer(to, amount)) {
             withdrawOfERC20[to][erc20Address] = withdrawOfERC20[msg.sender][erc20Address].add(amount);
+            isTraded[txhash] = true;
+
             emit Withdraw(to, erc20Address, amount);
         }
     }
 
-    function withdraw721(uint256 tokenId, address erc721Address, address to)
+    function withdraw721(uint256 tokenId, address erc721Address, address to, bytes32 txhash)
         public
         onlyAdmins
     {
+        require(!isTraded[txhash]);
         ERC721 token = ERC721(erc721Address);
         token.transferFrom(address(this), to, tokenId);
 
         withdrawOfERC721[to][erc721Address].push(tokenId);
+        isTraded[txhash] = true;
 
         emit Withdraw(to, erc721Address, tokenId);
     }

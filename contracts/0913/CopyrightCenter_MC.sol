@@ -3,7 +3,7 @@ pragma solidity ^0.4.24;
 import "./Owned.sol";
 import "./AddressUtils.sol";
 
-contract CopyrightCenter is Owned {
+contract CopyrightCenter_MC is Owned {
     using AddressUtils for address;
 
     address CRaddress; // Copyright用户注册好版权的地方。XBP,代码和BP一样，存储数据不同。

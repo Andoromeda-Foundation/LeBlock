@@ -31,6 +31,7 @@ contract Gateway_notary is Owned {
     function deposit20(uint256 amount, address erc20Address)
         public
     {
+        require(erc20Address.isContract());
         ERC20 token = ERC20(erc20Address);
         if(token.transferFrom(msg.sender, address(this), amount)) {
             depositOfERC20[msg.sender][erc20Address] = depositOfERC20[msg.sender][erc20Address].add(amount);
@@ -42,6 +43,7 @@ contract Gateway_notary is Owned {
     function deposit721(uint256 tokenId, address erc721Address)
         public
     {
+        require(erc721Address.isContract());
         ERC721 token = ERC721(erc721Address);
         token.transferFrom(msg.sender, address(this), tokenId);
         depositOfERC721[msg.sender][erc721Address].push(tokenId);
@@ -54,6 +56,7 @@ contract Gateway_notary is Owned {
         public
         onlyAdmins
     {
+        require(erc20Address.isContract());
         ERC20 token = ERC20(erc20Address);
         require(!isTraded[txhash]);
         if(token.transfer(to, amount)) {
@@ -68,6 +71,7 @@ contract Gateway_notary is Owned {
         public
         onlyAdmins
     {
+        require(erc721Address.isContract());    
         require(!isTraded[txhash]);
         ERC721 token = ERC721(erc721Address);
         token.transferFrom(address(this), to, tokenId);
@@ -110,10 +114,6 @@ contract Gateway_notary is Owned {
     {
         return withdrawOfERC721[user][erc721Address];
     }
-
-
-
-
 }
 
 interface  ERC20 {

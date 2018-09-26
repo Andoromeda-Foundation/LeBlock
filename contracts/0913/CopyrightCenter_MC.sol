@@ -2,16 +2,18 @@ pragma solidity ^0.4.24;
 
 import "./Owned.sol";
 import "./AddressUtils.sol";
+import "./SafeMath.sol";
 
-contract CopyrightCenter_MC is Owned {
+contract CopyrightCenterMC is Owned {
     using AddressUtils for address;
+    using SafeMath for uint256;
 
     address CRaddress; // Copyright用户注册好版权的地方。XBP,代码和BP一样，存储数据不同。
 
     mapping(string => uint256) indexOfCRhash;
 
-    event Shelf(address _maker, uint256 indexed _tokenIdOfBP, uint256 indexed _tokenIdOfCR, string _BPHash);
-    event Unshelf(address _maker, uint256 indexed _tokenIdOfBP, uint256 indexed _tokenIdOfCR, string _BPHash);
+    event Shelf(address _maker, uint256 indexed _tokenIdOfCR, string _BPHash);
+    event Unshelf(address _maker, uint256 indexed _tokenIdOfCR, string _BPHash);
 
     constructor()
         public
@@ -43,15 +45,18 @@ contract CopyrightCenter_MC is Owned {
         }
     }
 
-    function shelf(string BPHash, address _maker, uint256 _tokenIdOfBP)
+    function shelf(string BPHash, address _maker)
         public
         onlyAdmins
     {
         require(canShelf(BPHash));
+
         BP cr = BP(CRaddress);
+
 
         // tokenId 不能为0，tokenId不能选择为0的数，否则exist(tokenId)会判定BPhash不存在的为存在。
         uint256 _tokenIdOfCR = cr.totalSupply().add(1);
+        
 
 
         if(!cr.exists(_tokenIdOfCR)) {
@@ -59,7 +64,7 @@ contract CopyrightCenter_MC is Owned {
 
             indexOfCRhash[BPHash] = _tokenIdOfCR;
 
-            emit Shelf(_maker, _tokenIdOfBP, _tokenIdOfCR, BPHash);
+            emit Shelf(_maker, _tokenIdOfCR, BPHash);
         }
 
     }
@@ -81,7 +86,7 @@ contract CopyrightCenter_MC is Owned {
     }
 
 
-    function unshelf(string BPHash, uint256 _tokenIdOfBP)
+    function unshelf(string BPHash)
         public
         onlyAdmins
     {
@@ -94,7 +99,7 @@ contract CopyrightCenter_MC is Owned {
 
         cr.burn(_owner, _tokenIdOfCR, _maker);
 
-        emit Unshelf(_maker, _tokenIdOfBP, _tokenIdOfCR, BPHash);
+        emit Unshelf(_maker, _tokenIdOfCR, BPHash);
     }
 
     function haveShelf(string BPHash)

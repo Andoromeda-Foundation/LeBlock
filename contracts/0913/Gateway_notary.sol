@@ -15,7 +15,7 @@ contract Gateway_notary is Owned {
 
     // 如果是部署在侧链上，那么只保存在主链上存操作的txhash
     // 如果是部署在主链上，那么只保存在侧链上存操作的txhash
-    mapping(bytes32 => bool) isTraded; 
+    mapping(string => bool) isTraded; 
 
     event Deposit(address user, address tokenAddr, uint256 amountOrId);
     event Withdraw(address user, address tokenAddr, uint256 amountOrId);
@@ -54,7 +54,7 @@ contract Gateway_notary is Owned {
     }    
 
     // 20
-    function withdraw20(uint256 amount, address erc20Address, address to, bytes32 txhash)
+    function withdraw20(uint256 amount, address erc20Address, address to, string txhash)
         public
         onlyAdmins
     {
@@ -70,13 +70,13 @@ contract Gateway_notary is Owned {
         }
     }
 
-    function withdraw721(uint256 tokenId, address erc721Address, address to, bytes32 txhash)
+    function withdraw721(uint256 tokenId, address erc721Address, address to, string txhash)
         public
         onlyAdmins
     {
         require(erc721Address.isContract());    
         require(!isTraded[txhash]);
-        
+
         ERC721 token = ERC721(erc721Address);
         token.transferFrom(address(this), to, tokenId);
 

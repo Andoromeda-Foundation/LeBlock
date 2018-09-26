@@ -2,9 +2,11 @@ pragma solidity ^0.4.24;
 
 import "./Owned.sol";
 import "./AddressUtils.sol";
+import "./SafeMath.sol";
 
 contract CopyrightCenter is Owned {
     using AddressUtils for address;
+    using SafeMath for uint256;
 
     address BPaddress; // BP, ERC721
     address WHaddress; // WareHouse

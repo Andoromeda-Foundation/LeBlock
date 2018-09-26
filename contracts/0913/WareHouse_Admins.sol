@@ -4,15 +4,13 @@ import "./Owned.sol";
 import "./AddressUtils.sol";
 import "./SafeMath.sol";
 
-contract WareHouse is Owned {
+contract WareHouse_Admins is Owned {
     using AddressUtils for address;
     using SafeMath for uint256;
 
     mapping(address => mapping(uint256 => uint256)) depositOf; // 玩家在这个合约里面质押了多少ERC20
     mapping(address => mapping(uint256 => mapping(address => uint256))) usedOf; // 某个玩家在某个BP上花费某种AB的数量
-    
-    
-    mapping(string => bool) isLock;
+    mapping(string => bool) isLock; // 在主链上
     // 代表AB种类的合约地址；
     address[] public addressOf;
     address public BPaddress;
@@ -24,6 +22,7 @@ contract WareHouse is Owned {
     event ChangeBPaddress(address _before, address _now);
     event Compose(uint256 _BPindex, string _BPhash);
     event DeCompose(uint256 _BPindex, string _BPhash);
+    
     event GetAB(address _ABaddress, address _toAddress, uint256 _amount);
 
     constructor() 
@@ -50,7 +49,6 @@ contract WareHouse is Owned {
         onlyAdmins
     {
         require(addressOf[_index] == _ABaddress);
-        
         addressOf[_index] = addressOf[addressOf.length - 1];
         delete addressOf[addressOf.length - 1];
         addressOf.length--;
@@ -63,35 +61,38 @@ contract WareHouse is Owned {
         onlyAdmins
     {
         require(_new.isContract());
-
         address _before = BPaddress;
         BPaddress = _new;
         
         emit ChangeBPaddress(_before, BPaddress);
     }
 
-    function compose(string BPhash)
-        public 
+    function compose(string BPhash, address maker, uint256[] cost)
+        public
+        onlyAdmins
     {
-        uint256[] memory arr = estimate(BPhash);
+        uint256[] memory arr = cost;
 
-        require(canCompose(BPhash));
-        
+        require(canCompose(BPhash, cost, maker));
+
         BP bp = BP(BPaddress);
         // tokenId 不为零
         uint256 _totalSupply = bp.totalSupply();
-        uint256 _tokenId = _totalSupply.add(1);        
+        uint256 _tokenId = _totalSupply.add(1);
             
         // 假设返回的不同AB使用数量和addressOf保存的AB地址是对应的。因此arr的长度肯定和addressOf长度一致。
         for (uint256 i = 0; i < arr.length; i++) {
             ERC20 AB = ERC20(addressOf[i]);
-            AB.transferFrom(msg.sender,this, arr[i]);
-            depositOf[msg.sender][i] = depositOf[msg.sender][i].add(arr[i]);
-            usedOf[msg.sender][_tokenId][addressOf[i]] = usedOf[msg.sender][_tokenId][addressOf[i]].add(arr[i]);
+            AB.transferFrom(maker,this, arr[i]);
+            depositOf[maker][i] = depositOf[maker][i].add(arr[i]);
+            usedOf[maker][_tokenId][addressOf[i]] = usedOf[maker][_tokenId][addressOf[i]].add(arr[i]);
+        
         }
 
+
+
         if(!bp.exists(_tokenId)) {
-            bp.mint(owner, _tokenId, msg.sender);
+            bp.mint(owner, _tokenId, maker);
             indexOfBPhash[BPhash] = _tokenId;
         }
 
@@ -99,15 +100,16 @@ contract WareHouse is Owned {
 
     }
 
-    function canCompose(string BPhash)
+    function canCompose(string BPhash, uint256[] cost, address maker)
         public
         view
         returns(bool)
     {
-        uint256[] memory arr = estimate(BPhash);
+
+        BP bp = BP(BPaddress);
         uint256 _tokenId = indexOfBPhash[BPhash];
 
-        if(checkBalance(arr) && _tokenId == 0) {
+        if(checkBalance(cost, maker) && !bp.exists(_tokenId)) {
             return true;
         } else {
             return false;
@@ -121,12 +123,10 @@ contract WareHouse is Owned {
         uint256 _tokenId = indexOfBPhash[BPhash];
 
         require(canDeCompose(BPhash));
-    
-        uint256 _length = addressOf.length;
 
-        for (uint256 i = 0; i < _length; i++) {
+        for (uint256 i = 0; i < addressOf.length; i++) {
             ERC20 AB = ERC20(addressOf[i]);
-            AB.transfer(msg.sender, usedOf[msg.sender][_tokenId][addressOf[i]]);
+            AB.transfer(msg.sender,usedOf[msg.sender][_tokenId][addressOf[i]]);
             depositOf[msg.sender][i] = depositOf[msg.sender][i].sub(usedOf[msg.sender][_tokenId][addressOf[i]]);
             usedOf[msg.sender][_tokenId][addressOf[i]] = 0;
         }
@@ -135,7 +135,7 @@ contract WareHouse is Owned {
         bp.burn(_owner, _tokenId, msg.sender);
         delete indexOfBPhash[BPhash];
 
-        emit DeCompose(_tokenId, BPhash);
+        emit DeCompose(_tokenId, BPhash);     
     }
 
     function canDeCompose(string BPhash)
@@ -151,21 +151,6 @@ contract WareHouse is Owned {
         } else {
             return false;
         }
-    }
-
-    // oracle
-    function estimate(string BPhash)
-        public
-        view
-        returns(uint256[])
-    {
-        uint256 k = 2; // oracle
-        uint256[] memory a = new uint256[](k);
-        for (uint256 i = 0; i < a.length; i++) {
-            a[i] = (i+1) * 1 ether;
-        }
-
-        return a;
     }
 
     function setLock(string BPhash, bool lock)
@@ -184,14 +169,14 @@ contract WareHouse is Owned {
     }
 
 
-    function checkBalance(uint256[] _array)
+    function checkBalance(uint256[] _array, address maker)
         public
         view
         returns(bool)
     {
         for(uint256 i = 0; i < _array.length; i++) {
             ERC20 AB = ERC20(addressOf[i]);
-            if (AB.balanceOf(msg.sender) < _array[i]) {
+            if (AB.balanceOf(maker) < _array[i]) {
                 return false;
             } 
         }
@@ -215,7 +200,6 @@ contract WareHouse is Owned {
         require(_index < addressOf.length);
         return addressOf[_index];
     }
-    
 
     function getTokenId(string BPhash)
         public
@@ -223,22 +207,6 @@ contract WareHouse is Owned {
         returns(uint256)
     {
         return indexOfBPhash[BPhash];
-    }
-    
-    function getDepositOf(address _owner, uint256 ABtokenIndex)
-        public
-        view
-        returns(uint256)
-    {
-        return depositOf[_owner][ABtokenIndex];
-    }
-    
-    function getUsedOf(address _owner, uint256 _tokenId, address _ABaddress)
-        public
-        view
-        returns(uint256)
-    {
-        return usedOf[_owner][_tokenId][_ABaddress];
     }
 
     function getERC20(address _ABaddress, address _toAddress, uint256 _amount)

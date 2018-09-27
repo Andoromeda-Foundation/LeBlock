@@ -14,6 +14,9 @@ contract CopyrightCenter is Owned {
 
     mapping(string => uint256) indexOfCRhash;
 
+    uint256 tokenId;
+
+
     event Shelf(address _maker, uint256 indexed _tokenIdOfBP, uint256 indexed _tokenIdOfCR, string _BPHash);
     event Unshelf(address _maker, uint256 indexed _tokenIdOfBP, uint256 indexed _tokenIdOfCR, string _BPHash);
 
@@ -22,6 +25,7 @@ contract CopyrightCenter is Owned {
     {
         owner = msg.sender;
         admins[msg.sender] = true;
+        tokenId = 1;
     }
 
     function setBPAddress(address _addr)
@@ -75,19 +79,18 @@ contract CopyrightCenter is Owned {
         WareHouse wh = WareHouse(WHaddress);
         
         // tokenId 不能为0
-        uint256 _tokenIdOfCR = cr.totalSupply().add(1);
+        uint256 _tokenIdOfCR = tokenId;
 
         uint256 _tokenIdOfBP = wh.getTokenId(BPHash);
 
-        if(!cr.exists(_tokenIdOfCR)) {
-            cr.mint(msg.sender, _tokenIdOfCR , _maker);
-            wh.setLock(BPHash, true);
 
-            indexOfCRhash[BPHash] = _tokenIdOfCR;
+        cr.mint(msg.sender, _tokenIdOfCR , _maker);
+        wh.setLock(BPHash, true);
 
-            emit Shelf(_maker, _tokenIdOfBP, _tokenIdOfCR, BPHash);
-        }
-
+        indexOfCRhash[BPHash] = _tokenIdOfCR;
+        tokenId = tokenId.add(1);
+        emit Shelf(_maker, _tokenIdOfBP, _tokenIdOfCR, BPHash);
+        
     }
     
     function canUnshelf(string BPHash)

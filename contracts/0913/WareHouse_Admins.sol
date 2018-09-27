@@ -15,6 +15,8 @@ contract WareHouse_Admins is Owned {
     address[] public addressOf;
     address public BPaddress;
 
+    uint256 tokenId;
+
     mapping(string => uint256) indexOfBPhash;
 
     event AddABaddress(uint256 indexed _indexed, address _ABaddress);
@@ -30,6 +32,7 @@ contract WareHouse_Admins is Owned {
     {
         owner = msg.sender;
         admins[msg.sender] = true;
+        tokenId = 1;
     }
 
     function addABaddress(address _ABaddress)
@@ -77,8 +80,7 @@ contract WareHouse_Admins is Owned {
 
         BP bp = BP(BPaddress);
         // tokenId 不为零
-        uint256 _totalSupply = bp.totalSupply();
-        uint256 _tokenId = _totalSupply.add(1);
+        uint256 _tokenId = tokenId;
             
         // 假设返回的不同AB使用数量和addressOf保存的AB地址是对应的。因此arr的长度肯定和addressOf长度一致。
         for (uint256 i = 0; i < arr.length; i++) {
@@ -91,10 +93,11 @@ contract WareHouse_Admins is Owned {
 
 
 
-        if(!bp.exists(_tokenId)) {
-            bp.mint(owner, _tokenId, maker);
-            indexOfBPhash[BPhash] = _tokenId;
-        }
+
+        bp.mint(owner, _tokenId, maker);
+        indexOfBPhash[BPhash] = _tokenId;
+        
+        tokenId = tokenId.add(1);
 
         emit Compose(_tokenId, BPhash);
 

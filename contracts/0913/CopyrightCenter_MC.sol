@@ -12,6 +12,8 @@ contract CopyrightCenterMC is Owned {
 
     mapping(string => uint256) indexOfCRhash;
 
+    uint256 tokenId;
+
     event Shelf(address _maker, uint256 indexed _tokenIdOfCR, string _BPHash);
     event Unshelf(address _maker, uint256 indexed _tokenIdOfCR, string _BPHash);
 
@@ -20,6 +22,7 @@ contract CopyrightCenterMC is Owned {
     {
         owner = msg.sender;
         admins[msg.sender] = true;
+        tokenId = 1;
     }
 
     function setCRaddress(address _addr)
@@ -55,18 +58,17 @@ contract CopyrightCenterMC is Owned {
 
 
         // tokenId 不能为0，tokenId不能选择为0的数，否则exist(tokenId)会判定BPhash不存在的为存在。
-        uint256 _tokenIdOfCR = cr.totalSupply().add(1);
+        uint256 _tokenIdOfCR = tokenId;
         
 
 
-        if(!cr.exists(_tokenIdOfCR)) {
-            cr.mint(msg.sender, _tokenIdOfCR , _maker);
+        cr.mint(msg.sender, _tokenIdOfCR , _maker);
 
-            indexOfCRhash[BPHash] = _tokenIdOfCR;
+        indexOfCRhash[BPHash] = _tokenIdOfCR;
 
-            emit Shelf(_maker, _tokenIdOfCR, BPHash);
-        }
+        tokenId = tokenId.add(1);
 
+        emit Shelf(_maker, _tokenIdOfCR, BPHash);
     }
     
     function canUnshelf(string BPHash)

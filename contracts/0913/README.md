@@ -44,7 +44,7 @@
 ### 基于Admin版本（没有Oracle）
 侧链:  
 1. 在侧链上部署两个合约`Leblock.sol`, 其名称为`ab1`, `ab2`(注意其他量的初始化). 玩家地址A下有`ab1`, `ab2`各`10 * 10^18`.  
-2. 在侧链上部署`WareHouse.sol`, 地址为`wh`.  
+2. 在侧链上部署`WareHouse_Admins.sol`, 地址为`wh`.  
 3. 在侧链上部署`BP.sol`, 地址为`bp`(注意初始化量, 名字, 符合).  
 4. 玩家A调用`ab1`, `ab2`的`approve`函数, 参数为`wh`, `10 * 10^18`(其实estmate没有要求这么多，第一个`1 * 10^18`, 第二个`2 * 10^18`).  
 5. 玩家上传数据到IPFS, 并得到一个`BPhash`(链下).  
@@ -84,10 +84,4 @@
 4. 官方(`owner`)调用`cr`的`addAdmin`, 传入`cc_mc`, 把`cc_mc`设置为`cr`的admin.
 5. 官方(`owner`)调用`cc_mc`的`shelf`, 传入上述步骤的`BPhash`, `玩家A`的地址, 就会锁住`BPhash`对应的`bp`, 生成一个`cr`
 6. 官方(`owner`)调用`cc`的`unshelf`, 传入`BPhash`, 就会解锁对应的`bp`, 删除一个`cr`
-
-
-
-
-
-
 

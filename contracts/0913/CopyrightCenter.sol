@@ -61,7 +61,7 @@ contract CopyrightCenter is Owned {
         BP bp = BP(BPaddress);
         BP cr = BP(BPaddress);
         WareHouse wh = WareHouse(WHaddress);
-        uint256 _indexOfBP = wh.getTokenId(BPHash);
+        uint256 _indexOfBP = wh.getTokenIdFrombBPhash(BPHash);
         uint256 _indexOfCR = indexOfCRhash[BPHash];
 
         if(bp.exists(_indexOfBP) && bp.makerOf(_indexOfBP) == BPmaker && !cr.exists(_indexOfCR) && !wh.lockState(BPHash)) {
@@ -82,7 +82,7 @@ contract CopyrightCenter is Owned {
         // tokenId 不能为0
         uint256 _tokenIdOfCR = tokenId;
 
-        uint256 _tokenIdOfBP = wh.getTokenId(BPHash);
+        uint256 _tokenIdOfBP = wh.getTokenIdFrombBPhash(BPHash);
 
 
         cr.mint(msg.sender, _tokenIdOfCR , _maker);
@@ -123,7 +123,7 @@ contract CopyrightCenter is Owned {
         WareHouse wh = WareHouse(WHaddress);
 
         uint256 _tokenIdOfCR = indexOfCRhash[BPHash];
-        uint256 _tokenIdOfBP = wh.getTokenId(BPHash);
+        uint256 _tokenIdOfBP = wh.getTokenIdFrombBPhash(BPHash);
 
         require(canUnshelf(BPHash));
         address _owner = cr.ownerOf(_tokenIdOfCR);
@@ -224,7 +224,7 @@ interface BP {
 }
 
 interface WareHouse {
-    function getTokenId(string BPhash) external view returns(uint256);
+    function getTokenIdFrombBPhash(string BPhash) external view returns(uint256);
     function setLock(string BPhash, bool isLock) external;
     function lockState(string BPhash) external view returns(bool);
 }

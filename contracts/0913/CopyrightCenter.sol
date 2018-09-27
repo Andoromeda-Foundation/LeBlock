@@ -156,6 +156,38 @@ contract CopyrightCenter is Owned {
         return indexOfCRhash[BPHash];    
     }
 
+    function getBPaddress()
+        public
+        view
+        returns(address)
+    {
+        return BPaddress;
+    }
+
+    function getWHaddress()
+        public
+        view
+        returns(address)
+    {
+        return WHaddress;
+    }
+
+    function getCRaddress()
+        public
+        view
+        returns(address)
+    {
+        return CRaddress;
+    }
+
+    function getTokenId() 
+        public
+        view
+        returns(uint256)
+    {
+        return tokenId;
+    }
+
 }
 
 interface BP {

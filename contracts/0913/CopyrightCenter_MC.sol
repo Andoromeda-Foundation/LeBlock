@@ -127,6 +127,22 @@ contract CopyrightCenterMC is Owned {
         return indexOfCRhash[BPHash];    
     }
 
+    function getCRaddress()
+        public
+        view
+        returns(address)
+    {
+        return CRaddress;
+    }
+
+    function getTokenId() 
+        public
+        view
+        returns(uint256)
+    {
+        return tokenId;
+    }
+
 }
 
 interface BP {

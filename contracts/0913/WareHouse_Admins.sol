@@ -204,12 +204,20 @@ contract WareHouse_Admins is Owned {
         return addressOf[_index];
     }
 
-    function getTokenId(string BPhash)
+    function getTokenIdFrombBPhash(string BPhash)
         public
         view
         returns(uint256)
     {
         return indexOfBPhash[BPhash];
+    }
+    
+    function getTokenId()
+        public
+        view
+        returns(uint256)
+    {
+        return tokenId;
     }
 
     function getERC20(address _ABaddress, address _toAddress, uint256 _amount)

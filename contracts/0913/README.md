@@ -86,3 +86,59 @@
 5. 官方(`owner`)调用`cc_mc`的`shelf`, 传入上述步骤的`BPhash`, `玩家A`的地址, 就会锁住`BPhash`对应的`bp`, 生成一个`cr`
 6. 官方(`owner`)调用`cc`的`unshelf`, 传入`BPhash`, 就会解锁对应的`bp`, 删除一个`cr`
 
+
+
+
+ropsten测试环境：  
+`ab1`:      
+0x200A363b71b84F6120C1D112774E11A51B79a49b  
+  
+`ab2`:  
+0xE090EEd19A0a1CC26B31624cf0BfCF529c19bd2f  
+  
+`WareHouse_Admins`:   
+0x5dCE0e6C6Bb37cB0448c956BAA4c31Fa1749Bba1  
+  
+`BP`:  
+0x53195e895326b90983d40425301BeF4d749DF5B6  
+  
+`CopyrightCenter`:  
+0x40c80d17d16f50cc672d55bde8c6661ef6ec0833  
+  
+`CR`:  
+0xb4392c63dd85dc6edd43dca9201435437388afc2  
+    
+以下对同一个BPhash操作:  
+第一次`WareHouse_Admins.compose`:  
+`bphash`: "a", `maker`: 0xbd70d89667a3e1bd341ac235259c5f2dde8172a9
+https://ropsten.etherscan.io/tx/0x1def319b47d95b88ef6a1b2b9793b914c857c0807214788f211854c707ad515f  
+
+然后`CopyrightCenter.shelf`:
+https://ropsten.etherscan.io/tx/0xa136aaf26df53d62726f766af92add338a1a63546a5c58871237a250b5ea59e1  
+此时:  
+`WareHouse_Admins`的`canDecompose`返回`false`.    
+`CopyrightCenter`的`canShelf`也返回`false`, `canUnshelf`返回`true`, `getTokenIdOfCR`返回`1`,   
+再去`cr`下面查询`makerOf(1)`, `exists(1)`等结果, 符合条件
+
+接着`CopyrightCenter.unshelf`:
+https://ropsten.etherscan.io/tx/0x166cbea1dcdd8f591ced8093d94c36ba7595042d99117b7b1b2bfeef2339a912  
+此时:  
+`WareHouse_Admins`的`canDecompose`返回`true`
+`copyrightcenter`的`canShelf`返回`true`, `canUnshelf`返回`false`, `getTokenIdOfCR`返回`0`(0表示没有初始化, 不存在)
+
+接着又`CopyrightCenter.shelf`:
+https://ropsten.etherscan.io/tx/0x5f3dc18a0d230424eb24bc25caaa212b20bfbaff4d0fc9cf543f462c3a82caab  
+此时:  
+`WareHouse_Admins`的`canDecompose`返回`false`.  
+`copyrightcenter`的`canShelf`也返回`false`, `canUnshelf`返回`true`, `getTokenIdOfCR`返回`2`, 
+再去cr下面查询makerOf(2), exists(2)等结果, 符合条件
+
+
+接着再次`CopyrightCenter.unshelf`:
+https://ropsten.etherscan.io/tx/0x727d29d1dbea1e98b51e4245dce8a693647fe6150e9d5e691d952c62abfd6297  
+此时:  
+`WareHouse_Admins`的`canDecompose`返回`true`
+`copyrightcenter`的`canShelf`返回`true`, `canUnshelf`返回`false`, `getTokenIdOfCR`返回`0`(0表示没有初始化, 不存在)
+
+最后调用`WareHouse_Admins.deCompose`:  
+https://ropsten.etherscan.io/tx/0x0e7a165e1dc13c9289f8f8e116ec534ca47bb20da2d944a90b21e66d3bf8f3d4  

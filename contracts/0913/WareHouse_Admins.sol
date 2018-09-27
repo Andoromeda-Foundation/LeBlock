@@ -10,7 +10,7 @@ contract WareHouse_Admins is Owned {
 
     mapping(address => mapping(uint256 => uint256)) depositOf; // 玩家在这个合约里面质押了多少ERC20
     mapping(address => mapping(uint256 => mapping(address => uint256))) usedOf; // 某个玩家在某个BP上花费某种AB的数量
-    mapping(string => bool) isLock; // 在主链上
+    mapping(string => bool) isLock; // 当BP上了版权中心的时候
     // 代表AB种类的合约地址；
     address[] public addressOf;
     address public BPaddress;
@@ -18,6 +18,7 @@ contract WareHouse_Admins is Owned {
     uint256 tokenId;
 
     mapping(string => uint256) indexOfBPhash;
+    mapping(address => mapping(uint256 => string)) BPhashOfBPTokenId; // [maker][BPid] => BPhash
 
     event AddABaddress(uint256 indexed _indexed, address _ABaddress);
     event DelABaddress(uint256 indexed _indexed, address _BeforeAddress, address _nowAddress, uint256 _length);
@@ -76,11 +77,13 @@ contract WareHouse_Admins is Owned {
     {
         uint256[] memory arr = cost;
 
-        require(canCompose(BPhash, cost, maker));
-
-        BP bp = BP(BPaddress);
         // tokenId 不为零
         uint256 _tokenId = tokenId;
+
+        require(canCompose(BPhash, cost, maker, _tokenId));
+
+        BP bp = BP(BPaddress);
+
             
         // 假设返回的不同AB使用数量和addressOf保存的AB地址是对应的。因此arr的长度肯定和addressOf长度一致。
         for (uint256 i = 0; i < arr.length; i++) {
@@ -92,10 +95,9 @@ contract WareHouse_Admins is Owned {
         }
 
 
-
-
         bp.mint(owner, _tokenId, maker);
         indexOfBPhash[BPhash] = _tokenId;
+        BPhashOfBPTokenId[maker][_tokenId] = BPhash;
         
         tokenId = tokenId.add(1);
 
@@ -103,16 +105,15 @@ contract WareHouse_Admins is Owned {
 
     }
 
-    function canCompose(string BPhash, uint256[] cost, address maker)
+    function canCompose(string BPhash, uint256[] cost, address maker, uint256 _tokenId)
         public
         view
         returns(bool)
     {
 
         BP bp = BP(BPaddress);
-        uint256 _tokenId = indexOfBPhash[BPhash];
 
-        if(checkBalance(cost, maker) && !bp.exists(_tokenId)) {
+        if(checkBalance(cost, maker) && !bp.exists(_tokenId) && indexOfBPhash[BPhash] == 0) {
             return true;
         } else {
             return false;
@@ -137,6 +138,7 @@ contract WareHouse_Admins is Owned {
         address _owner = bp.ownerOf(_tokenId);
         bp.burn(_owner, _tokenId, msg.sender);
         delete indexOfBPhash[BPhash];
+        delete BPhashOfBPTokenId[msg.sender][_tokenId];
 
         emit DeCompose(_tokenId, BPhash);     
     }
@@ -155,6 +157,14 @@ contract WareHouse_Admins is Owned {
             return false;
         }
     }
+
+    // 如果以后换合约可能用到，要保证k，大于k以后的整数都没有被用作tokenId
+    function setTokenId(uint256 k)
+        public
+        onlyAdmins
+    {
+        tokenId = k;
+    }    
 
     function setLock(string BPhash, bool lock)
         public
@@ -210,6 +220,14 @@ contract WareHouse_Admins is Owned {
         returns(uint256)
     {
         return indexOfBPhash[BPhash];
+    }
+
+    function getBPhashFromBPTokenId(address _maker, uint256 _tokenId)
+        public
+        view
+        returns(string)
+    {
+        return BPhashOfBPTokenId[_maker][_tokenId];
     }
     
     function getTokenId()

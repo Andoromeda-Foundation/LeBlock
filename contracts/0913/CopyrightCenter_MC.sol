@@ -8,9 +8,11 @@ contract CopyrightCenterMC is Owned {
     using AddressUtils for address;
     using SafeMath for uint256;
 
-    address CRaddress; // Copyright用户注册好版权的地方。XBP,代码和BP一样，存储数据不同。
+    address CRaddress; // Copyright用户注册好版权的地方。cr,代码和BP一样，存储数据不同。
 
     mapping(string => uint256) indexOfCRhash;
+    mapping(address => mapping(uint256 => string)) CRhashOfCRTokenId;
+
 
     uint256 tokenId;
 
@@ -65,6 +67,7 @@ contract CopyrightCenterMC is Owned {
         cr.mint(msg.sender, _tokenIdOfCR , _maker);
 
         indexOfCRhash[BPHash] = _tokenIdOfCR;
+        CRhashOfCRTokenId[_maker][_tokenIdOfCR] = BPHash; 
 
         tokenId = tokenId.add(1);
 
@@ -101,8 +104,17 @@ contract CopyrightCenterMC is Owned {
 
         cr.burn(_owner, _tokenIdOfCR, _maker);
         delete indexOfCRhash[BPHash];
+        delete CRhashOfCRTokenId[_maker][_tokenIdOfCR];
 
         emit Unshelf(_maker, _tokenIdOfCR, BPHash);
+    }
+
+    // 如果以后换合约可能用到，要保证k，大于k以后的整数都没有被用作tokenId
+    function setTokenId(uint256 k)
+        public
+        onlyAdmins
+    {
+        tokenId = k;
     }
 
     function haveShelf(string BPHash)
@@ -126,6 +138,14 @@ contract CopyrightCenterMC is Owned {
     {
         return indexOfCRhash[BPHash];    
     }
+
+    function getCRhashOfCRTokenId(address _addr, uint256 _tokenId)
+        public
+        view
+        returns(string)
+    {
+        return CRhashOfCRTokenId[_addr][_tokenId];    
+    }        
 
     function getCRaddress()
         public

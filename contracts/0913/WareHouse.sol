@@ -20,6 +20,7 @@ contract WareHouse is Owned {
     uint256 tokenId;    
 
     mapping(string => uint256) indexOfBPhash;
+    mapping(address => mapping(uint256 => string)) BPhashOfBPTokenId;
 
     event AddABaddress(uint256 indexed _indexed, address _ABaddress);
     event DelABaddress(uint256 indexed _indexed, address _BeforeAddress, address _nowAddress, uint256 _length);
@@ -95,7 +96,8 @@ contract WareHouse is Owned {
 
         bp.mint(owner, _tokenId, msg.sender);
         indexOfBPhash[BPhash] = _tokenId;
-        
+        BPhashOfBPTokenId[msg.sender][_tokenId] = BPhash;
+
         emit Compose(_tokenId, BPhash);
 
     }
@@ -135,6 +137,7 @@ contract WareHouse is Owned {
         address _owner = bp.ownerOf(_tokenId);
         bp.burn(_owner, _tokenId, msg.sender);
         delete indexOfBPhash[BPhash];
+        delete BPhashOfBPTokenId[msg.sender][_tokenId];
 
         emit DeCompose(_tokenId, BPhash);
     }
@@ -153,6 +156,14 @@ contract WareHouse is Owned {
             return false;
         }
     }
+
+    // 如果以后换合约可能用到，要保证：k，大于k的整数都没有被用作tokenId
+    function setTokenId(uint256 k)
+        public
+        onlyAdmins
+    {
+        tokenId = k;
+    }    
 
     // oracle
     function estimate(string BPhash)
@@ -218,12 +229,28 @@ contract WareHouse is Owned {
     }
     
 
-    function getTokenId(string BPhash)
+    function getTokenIdFromBPhash(string BPhash)
         public
         view
         returns(uint256)
     {
         return indexOfBPhash[BPhash];
+    }
+
+    function getTokenId()
+        public
+        view
+        returns(uint256)
+    {
+        return tokenId;
+    }
+
+    function getBPhashOfBPTokenId(address _addr, uint256 _tokenId)
+        public
+        view
+        returns(string)
+    {
+        return BPhashOfBPTokenId[_addr][_tokenId];
     }
     
     function getDepositOf(address _owner, uint256 ABtokenIndex)

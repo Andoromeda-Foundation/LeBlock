@@ -98,6 +98,7 @@ contract CopyrightCenterMC is Owned {
         address _maker = cr.makerOf(_tokenIdOfCR);
 
         cr.burn(_owner, _tokenIdOfCR, _maker);
+        delete indexOfCRhash[BPHash];
 
         emit Unshelf(_maker, _tokenIdOfCR, BPHash);
     }

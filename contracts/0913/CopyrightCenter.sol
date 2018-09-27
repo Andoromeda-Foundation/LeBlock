@@ -123,6 +123,7 @@ contract CopyrightCenter is Owned {
         address _maker = cr.makerOf(_tokenIdOfCR);
 
         cr.burn(_owner, _tokenIdOfCR, _maker);
+        delete indexOfCRhash[BPHash];
 
         wh.setLock(BPHash, false);
 

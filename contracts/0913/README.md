@@ -26,7 +26,7 @@
 和上面类似  
 
 
-## 逻辑（主链路）
+## WareHouse的compose和deCompose
 ### 基于Oracle版本
 侧链：
 1. 在侧链上部署两个合约`Leblock.sol`, 其名称为`ab1`, `ab2`(注意其他量的初始化). 玩家地址A下有`ab1`, `ab2`各`10 * 10^18`. 
@@ -53,6 +53,41 @@
 8. 玩家A调用发起请求给PS,将`BPHash`传给PS(链下).
 9. 官方(`owner`)去调用`wh`的`compose`, 传入`BPhash`, `玩家A地址`, `对应BP消耗的` 正常执行. 至此`compose`流程走完. 玩家A将减少`1 * 10^18`的`ab1`以及`2 * 10^18`的`ab2`, 将得到一个BP.  
 
-9. 玩家A调用`wh`的`deCompose`, 传入`8步骤`里面的`BPhash`, 即能销毁BP，得到AB  
+10. 玩家A调用`wh`的`deCompose`, 传入`8步骤`里面的`BPhash`, 即能销毁BP，得到AB  
+
+
+## CopyrightCenter的shelf和unshelf
+### 侧链
+`(1-9)`和基于`Admin`版本的`compose`的`(1-9)`相同
+1. 在侧链上部署两个合约`Leblock.sol`, 其名称为`ab1`, `ab2`(注意其他量的初始化). 玩家地址A下有`ab1`, `ab2`各`10 * 10^18`.  
+2. 在侧链上部署`WareHouse.sol`, 地址为`wh`.  
+3. 在侧链上部署`BP.sol`, 地址为`bp`(注意初始化量, 名字, 符合).  
+4. 玩家A调用`ab1`, `ab2`的`approve`函数, 参数为`wh`, `10 * 10^18`(其实estmate没有要求这么多，第一个`1 * 10^18`, 第二个`2 * 10^18`).  
+5. 玩家上传数据到IPFS, 并得到一个`BPhash`(链下).  
+6. 官方(`owner`)调用`wh`上的`addABaddress`两次, 以此把`ab1`, `ab2`地址传进去. 最好调用`getABaddress`check一下.  
+7. 官方(`owner`)调用`wh`上的`changeBPaddress`, 把`bp`传进去.  
+8. 玩家A调用发起请求给PS,将`BPHash`传给PS(链下).
+9. 官方(`owner`)去调用`wh`的`compose`, 传入`BPhash`, `玩家A地址`, `对应BP消耗的` 正常执行. 至此`compose`流程走完. 玩家A将减少`1 * 10^18`的`ab1`以及`2 * 10^18`的`ab2`, 将得到一个BP.
+
+10. 在侧链上部署`CopyrightCenter.sol`, 地址为`cc`.
+11. 在侧链上部署`BP.sol`, 并初始化("CR","cr"), 地址为`cr`, 作为侧链上的版权作品中心.
+12. 官方(`owner`)调用`cc`的`setBPaddress`, `setCRaddress`, `setWHaddress`, 分别传入`bp`, `cr`, `wh`.
+13. 官方(`owner`)调用`cr`的`addAdmin`, 传入`cc`, 把`cc`设置为`cr`的admin.
+14. 官方(`owner`)调用`wh`的`addAdmin`, 传入`cc`, 把`cc`设置为`wh`的admin.
+15. 官方(`owner`)调用`cc`的`shelf`, 传入上述步骤的`BPhash`, `玩家A`的地址, 就会锁住`BPhash`对应的`bp`, 生成一个`cr`
+16. 官方(`owner`)调用`cc`的`unshelf`, 传入`BPhash`, 就会解锁对应的`bp`, 删除一个`cr`
+
+### 主链
+1. 在侧链上部署`BP.sol`, 并初始化("CR","cr"), 地址为`cr`, 作为主链上的版权作品中心.
+2. 在侧链上部署`CopyrightCenter_MC.sol`, 地址为`cc_mc`.
+3. 官方(`owner`)调用`cc_mc`的`setCRaddress`传入`cr`.
+4. 官方(`owner`)调用`cr`的`addAdmin`, 传入`cc_mc`, 把`cc_mc`设置为`cr`的admin.
+5. 官方(`owner`)调用`cc_mc`的`shelf`, 传入上述步骤的`BPhash`, `玩家A`的地址, 就会锁住`BPhash`对应的`bp`, 生成一个`cr`
+6. 官方(`owner`)调用`cc`的`unshelf`, 传入`BPhash`, 就会解锁对应的`bp`, 删除一个`cr`
+
+
+
+
+
 
 

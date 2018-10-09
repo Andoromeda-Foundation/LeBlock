@@ -1,0 +1,15 @@
+1.
+ab的string => address
+get：单个，全集
+set
+remove
+
+2.去掉bp
+
+
+后续：
+minter挖矿
+
+染色
+
+instance

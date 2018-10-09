@@ -1,0 +1,35 @@
+summary:
+    1、不能通过查看owneOf的地址是否为0来判断是否tokenId对于的token存在，因为ownerOf要求地址不能为0；
+    2、tokenId不能选择为0的数，否则exist(tokenId)会判定BPhash不存在的为存在。
+    3. 一定要注意没有初始化的动态数组长度是为0的.
+    4. 动态数组不能当作mapping的key, string是动态数组
+    5. 如果一个721token又能加，又能删，注意tokenId的选取，尽量不要用和totalsupply相关的
+    6. 测试一些push等对状态变量的操作，如果没被打包，操作后状态变量的值的大小（在同一函数中）
+        
+    // oracle
+    function estimate(string BPhash)
+        public
+        view
+        returns(uint256[])
+    {
+        uint256[] memory a = new uint256[](2);
+        for (uint256 i = 0; i < a.length; i++) {
+            a[i] = (i+1) * 1 ether;
+        }
+
+        return a;
+    }
+    
+    // 报错,因为a此时的长度为0
+    function estimate(string BPhash)
+        public
+        view
+        returns(uint256[])
+    {
+        uint256[] memory a;
+        for (uint256 i = 0; i < 2; i++) {
+            a[i] = (i+1) * 1 ether;
+        }
+
+        return a;
+    }

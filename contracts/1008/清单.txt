@@ -1,0 +1,11 @@
+1、修改WareHouse_Admin.sol
+    a. 将ab地址由数组保存改为映射保存
+    b. 将保存bp的逻辑加入其中
+2、修改CopyrightCenter_MC.sol
+    a. 将保存主链xbp的逻辑加入其中
+3、修改CopyrightCenter.sol
+    a. 将保存侧链xbp的逻辑加入其中
+
+4、写minter.sol，大概要实现全局抵押TAT获取基础乐块（基础乐块是ERC20）具体要根据需求文档来和接口来
+5、写instance.sol，别人根据版权中心的拼搭物二次创作，具体要根据需求文档来和接口来
+6、写染色坊，基础乐块（ERC20）在染色坊染色变成另一种基础乐块（ERC20），具体要根据需求文档来和接口来

@@ -49,6 +49,7 @@ contract WareHouse_Admins is Owned {
     {
         require(_ABaddress.isContract());
         require(addressOf[_ABname] == address(0));
+        require(!isEmptyString(_ABname));
 
         addressOf[_ABname] = _ABaddress;
         ABname.push(_ABname);
@@ -132,7 +133,7 @@ contract WareHouse_Admins is Owned {
         view
         returns(address[])
     {
-        address[] memory addresses;
+        address[] memory addresses = new address[](ABname.length);
         string memory _tempName;
         for(uint256 i = 0; i < ABname.length; i++) {
             _tempName = ABname[i];
@@ -141,6 +142,8 @@ contract WareHouse_Admins is Owned {
 
         return addresses;
     }
+
+
 
 
     // 要求输入的cost元素的顺序和ABname里面的AB是一一对应的
@@ -163,6 +166,10 @@ contract WareHouse_Admins is Owned {
             require(_tempAddress.isContract());
 
             ERC20 AB = ERC20(_tempAddress);
+            if (arr[i] == 0) {
+                continue;
+            }
+            
             AB.transferFrom(maker,this, arr[i]);
             depositOf[maker][_tempAddress] = depositOf[maker][_tempAddress].add(arr[i]);
             usedOf[maker][BPhash][_tempAddress] = usedOf[maker][BPhash][_tempAddress].add(arr[i]);

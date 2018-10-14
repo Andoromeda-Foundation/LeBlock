@@ -623,6 +623,8 @@ contract ERC721Token is SupportsInterfaceWithLookup, ERC721BasicToken, ERC721 {
     // Optional mapping for token URIs
     mapping(uint256 => string) internal tokenURIs;
 
+    mapping(uint256 => string) internal BPhashOf;
+
     /**
      * @dev Constructor function
      */
@@ -720,6 +722,14 @@ contract ERC721Token is SupportsInterfaceWithLookup, ERC721BasicToken, ERC721 {
         return allTokens[_index];
     }
 
+    function getBPhashOf(uint256 _tokenId)
+        public
+        view
+        returns(string) 
+    {
+        return BPhashOf[_tokenId];    
+    }
+
     /**
      * @dev Internal function to set the token URI for a given token
      * Reverts if the token ID does not exist
@@ -778,13 +788,15 @@ contract ERC721Token is SupportsInterfaceWithLookup, ERC721BasicToken, ERC721 {
      * @param _to address the beneficiary that will own the minted token
      * @param _tokenId uint256 ID of the token to be minted by the msg.sender
      */
-    function _mint(address _to, uint256 _tokenId) 
-        internal 
+    function mint(address _to, uint256 _tokenId, string _BPhash) 
+        public
+        onlyAdmins 
     {
         super._mint(_to, _tokenId);
 
         allTokensIndex[_tokenId] = allTokens.length;
         allTokens.push(_tokenId);
+        BPhashOf[_tokenId] = _BPhash;
     }
 
     /**

@@ -438,22 +438,22 @@ contract Miner is Owned {
         view
         returns(uint256[])
     {
-        uint256[] memory _ABamount = new uint256[](abs.length);
-        uint256[] memory _userGet = new uint256[](abs.length);
-        uint256[] memory _userGetAllTime = new uint256[](abs.length);
-
         uint256 _DropIndex = getDropIndex();
-        uint256 _times = _DropIndex.sub(lastGainIndex[msg.sender]);          
-        
-        for (uint256 i = 0; i < abs.length; i++) {
-            _ABamount[i] = abs[i].dropRate.mul(totalBlock).div(1000);
+        uint256 _times = _DropIndex.sub(lastGainIndex[_user]);
+        require(_times != 0);
+        uint256 i;
 
-            _userGet[i] = _ABamount[i].mul(calForceOf[_user]).div(totalCalForce);
+        uint256[] memory _dropRate = new uint256[](abs.length);
 
-            _userGetAllTime[i] = _userGet[i].mul(_times);
-        }
+        for (i = 0; i < abs.length; i++) {
+            _dropRate[i] = abs[i].dropRate;
+        }            
 
-        return _userGetAllTime;
+        DropAlgorithms _dropAlgorithms = DropAlgorithms(dropAlgoAddr);
+
+        uint256[] memory _userGetOfAll = _dropAlgorithms.expected(_times, _dropRate, totalBlock, calForceOf[_user], totalCalForce);
+
+        return _userGetOfAll;
     }
 
 

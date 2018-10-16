@@ -1,10 +1,10 @@
 pragma solidity ^0.4.24;
 
-import "./Owned.sol";
+import "./Pausable.sol";
 import "./AddressUtils.sol";
 import "./SafeMath.sol";
 
-contract Miner is Owned {
+contract Miner is Pausable {
     using AddressUtils for address;
     using SafeMath for uint256;
 
@@ -45,7 +45,7 @@ contract Miner is Owned {
 
     uint256 totalBlock; // 总共产块数
 
-    uint256 calMax;     // 算力上限    
+    uint256 public calMax;     // 算力上限    
 
     struct Token {
         address addressToken;
@@ -56,9 +56,14 @@ contract Miner is Owned {
     Token[] tokens; // 所有token    
 
     mapping(address => mapping(address => uint256)) pledgeAmount; // 某用户质押某token的数量
+    
+    // 10TAT=1算力，则1TAT = 10^18 wei TAT = 10^17 wei 算力 = 0.1 算力。
+    // 就是说算力值在合约里面数值很大，但是前端显示的时候很小。
+
     mapping(address => uint256) calForceOf; // 某用户的所有算力
     mapping(address => mapping(address => uint256)) tokenCalForceOf; // 某用户从某类质押的token上得到的算力
     
+    mapping(address => bool) public isPledged; // 某用户之前是否充值过
 
     uint256 totalCalForce;  // 全网总算力
     mapping(address => uint256) pledgeTokenOf; // 全网某类token质押的总数
@@ -75,11 +80,10 @@ contract Miner is Owned {
     event UnAssignToken(address _tokenAddress, uint256 indexed _rate, uint256 indexed _numMax);
     event PledgeToken(address indexed _user, address _tokenAddress, uint256 _amount);
     event UnPledgeToken(address indexed _user, address _tokenAddress, uint256 _amount);
+    event TriggerDrop(address indexed _user);
 
 
     // 发块
-
-
     struct AB {
         address addressAB;
         uint256 dropRate;   // 概率是1000倍保存
@@ -103,6 +107,7 @@ contract Miner is Owned {
         admins[msg.sender] = true;
     }
 
+    // _time为某一个时刻Unix时间戳
     function setBeginTime(uint256 _time)
         public
         onlyAdmins
@@ -113,6 +118,7 @@ contract Miner is Owned {
     }
 
     // 全局设置每人最大算力值。
+    // 注意要将前端显示的数据*10^18
     function assignPledge(uint256 _calMax)
         public
         onlyAdmins
@@ -129,6 +135,15 @@ contract Miner is Owned {
     {
         dropAlgoAddr = _addr;
     }
+
+    // 设置每一轮的总投块数
+    function setTotalBlock(uint256 _totalBlock)
+        public
+        onlyAdmins
+    {
+        totalBlock = _totalBlock;
+    }
+
 
 
 
@@ -213,11 +228,19 @@ contract Miner is Owned {
     // 质押Token，把token转进来
     function pledgeToken(address _tokenAddress, uint256 _amount)
         public
+        whenNotPaused
     {   
         // 检测token地址在不在列表
         for (uint256 i = 0; i < tokens.length; i++) {
             if (tokens[i].addressToken == _tokenAddress) {
-                triggerDrop();            
+                if(isPledged[msg.sender]) {
+                    // 不是第一次充值
+                    triggerDrop();
+                } else {
+                    // 第一次充值
+                    isPledged[msg.sender] = true;
+                    lastGainIndex[msg.sender] = getDropIndex().sub(1);
+                }
 
                 uint256 _rate = tokens[i].rate;
                 uint256 _numMax = tokens[i].numMax;
@@ -244,23 +267,23 @@ contract Miner is Owned {
                 return;
             }
         }
-
-        revert("error _tokenAddress");
     }
 
     // 取消质押
     function unpledgeToken(address _tokenAddress, uint256 _amount)
         public
+        whenNotPaused
     {
         // 检测token地址是不是再列表里面
         for (uint256 i = 0; i < tokens.length; i++) {
             if (tokens[i].addressToken == _tokenAddress) {
-                triggerDrop();
 
                 uint256 _rate = tokens[i].rate;
                 uint256 _subCalForce = _amount.div(_rate);
 
-                require(pledgeAmount[msg.sender][_tokenAddress] > _amount); 
+                require(pledgeAmount[msg.sender][_tokenAddress] >= _amount); 
+
+                triggerDrop();
 
                 pledgeAmount[msg.sender][_tokenAddress] = pledgeAmount[msg.sender][_tokenAddress].sub(_amount);
 
@@ -284,8 +307,6 @@ contract Miner is Owned {
                 return;
             }
         }
-
-        revert("error _tokenAddress");
 
     }
 
@@ -333,14 +354,6 @@ contract Miner is Owned {
         return calForceOf[_user];
     }
 
-    // 全网算力
-    function getTotalCalForce()
-        public
-        view
-        returns(uint256)
-    {
-        return totalCalForce;
-    }
 
 
 
@@ -405,12 +418,18 @@ contract Miner is Owned {
     }
 
     // 玩家领取乐块AB
+    // 如果玩家能领取的数量为0，就返回，不执行。因此后续的区块链上的数据也没有被更改。
     function triggerDrop()
         public
+        whenNotPaused
     {
         uint256 _DropIndex = getDropIndex();
         uint256 _times = _DropIndex.sub(lastGainIndex[msg.sender]);
-        require(_times != 0);
+
+        if(_times == 0 || totalCalForce == 0) {
+            return;
+        }
+
         uint256 i;
 
         uint256[] memory _dropRate = new uint256[](abs.length);
@@ -426,10 +445,14 @@ contract Miner is Owned {
         for (i = 0; i < abs.length; i++) {
             ERC20Interface _ab = ERC20Interface(abs[i].addressAB);
 
-            _ab.mintToken(msg.sender, _userGetOfAll[i]);          
+            if(_userGetOfAll[i] != 0) {
+                _ab.mintToken(msg.sender, _userGetOfAll[i]);
+            }
         }
 
         lastGainIndex[msg.sender] = _DropIndex;
+
+        emit TriggerDrop(msg.sender);
     }
 
     // 某一个时刻某玩家能够领取数量
@@ -527,6 +550,24 @@ contract Miner is Owned {
         }
 
         return addr;
+    }
+
+    // 查看每一轮的总投块数
+    function getTotalBlock()
+        public
+        view
+        returns(uint256)
+    {
+        return totalBlock;
+    }
+
+    // 查看全网总算力
+    function getTotalCalForce()
+        public
+        view
+        returns(uint256)
+    {
+        return totalCalForce;
     }
 }
 

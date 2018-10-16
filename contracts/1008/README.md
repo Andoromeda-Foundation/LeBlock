@@ -171,3 +171,338 @@ https://ropsten.etherscan.io/tx/0xb9a7aa291446a5d4e4d38765905adef31967787f714d49
 
 3. shelf("A",0xbd70d89667a3e1bd341ac235259c5f2dde8172a9)    
 https://ropsten.etherscan.io/tx/0xa85290e8adba61b4f18978b89489ed5ed709990a7f62b3da1a3120051dd9a493
+
+
+
+
+
+Miner_part.sol Rinkeby 测试
+1. `owner`: 0xbd70d89667a3e1bd341ac235259c5f2dde8172a9  
+
+2. `玩家A`: 0x9a63ca719b9433c0cdbc5aeee130614634163279
+
+3. `owner`部署`Miner_part.sol`: https://rinkeby.etherscan.io/address/0xc4b88465b23594b17032049eec7448929b09c610  
+
+4. `owner`部署`DropAlgorithms.sol`：https://rinkeby.etherscan.io/address/0x4a5cbaef2e1c1c0ff2370291af3e439fd779082d  
+
+5. `owner`部署`Leblock.sol`两次, 代表TAT这样的token:
+部署时初始化:("T1","Token1",1000): https://rinkeby.etherscan.io/address/0x854b0732410491005a2724ba5d6646c493972c80  
+部署时初始化:("T2","Token2",1000): https://rinkeby.etherscan.io/address/0x58eb248ae9a3cd58731f7e2e0cfc20ac66444520  
+
+6. `owner`部署`Leblock.sol`两次, 代表产出的AB:  
+部署时初始化：("ab1","AB1",1000): https://rinkeby.etherscan.io/address/0xec73a7539588a1555bfdcb9b8dc44687dd82c481  
+部署时初始化：("ab2","AB2",1000): https://rinkeby.etherscan.io/address/0x16383d64635503a02f05d9e8a6fa34c907e5e407
+
+
+7. `owner`调用:  
+`Miner_part.setBeginTime`(1539570299):  
+10.15上午某一刻开始  
+`Miner_part.assignPledge`(10^20):  
+玩家算力上限是100
+`Miner_part.setDropAlgoAddr`(0x4a5cbaef2e1c1c0ff2370291af3e439fd779082d):  
+设置计算掉落ab数量的合约地址
+`Miner_part.assignToken`(0x854b0732410491005a2724ba5d6646c493972c80,10,100*10^18):   
+T1 token, 10 T1 token = 1 算力。玩家最多能够质押100个T1 token  
+`Miner_part.assignToken`(0x58eb248ae9a3cd58731f7e2e0cfc20ac66444520,5,100*10^18):    
+T2 token, 5 T2 token = 1 算力。玩家最多能够质押100个T1 token  
+`Miner_part.assignAB`(0xec73a7539588a1555bfdcb9b8dc44687dd82c481, 400, 1000*10^18):   
+ab1, 在掉落的块中占40%, 一轮投放最多掉落1000*10^18  
+`Miner_part.assignAB`(0x16383d64635503a02f05d9e8a6fa34c907e5e407, 600, 1000*10^18):    
+ab2, 在掉落的块中占60%, 一轮投放最多掉落1000*10^18  
+注意, 必须所有AB的掉率之和加起来等于1000
+
+8. owner 调用AB1和AB2的addAdmin将Miner_part地址设置为admins
+
+8. view:  
+`Miner_part.abList`  
+0: address[]: 0xec73a7539588A1555bfdCb9b8Dc44687dD82c481,  0x16383d64635503a02f05D9E8A6fA34C907E5e407  
+`beginTime`  
+0: uint256: 1539570299 // 2018/10/15 10:24:59  
+`dropAlgoAddr`  
+0: address: 0x4a5CbAEF2E1C1C0FF2370291Af3E439fD779082D  
+`dropInfo`  
+0: uint256: 3600  
+`getDropIndex`  
+0: uint256: 2 //我在12点06查询的, 过了处在第二轮
+`getGainIndex`(0xbd70d89667a3e1bd341ac235259c5f2dde8172a9)  
+0: uint256: 0  
+`getTotalCalForce`  
+0: uint256: 0  
+`lastChangeDropIndex`  
+0: uint256: 0  
+`lastChangeSpanTime`  
+0: uint256: 0  
+`tokenInfo`(0x854b0732410491005a2724ba5d6646c493972c80)  
+0: address: 0x854B0732410491005a2724BA5D6646C493972c80  
+1: uint256: 10  
+2: uint256: 100000000000000000000  
+`tokenInfo`(0x58eb248ae9a3cd58731f7e2e0cfc20ac66444520)  
+0: address: 0x58EB248Ae9A3CD58731f7E2E0Cfc20ac66444520  
+1: uint256: 5  
+2: uint256: 100000000000000000000   
+`tokenInfo`(0xbd70d89667A3E1bD341AC235259c5f2dDE8172A9)  
+0: address: 0x0000000000000000000000000000000000000000  
+1: uint256: 0  
+2: uint256: 0  
+`tokenList`
+0: address[]: 0x854B0732410491005a2724BA5D6646C493972c80,0x58EB248Ae9A3CD58731f7E2E0Cfc20ac66444520
+`totalPledge`(0x854B0732410491005a2724BA5D6646C493972c80)
+0: uint256: _num 0  
+1: uint256: _calForcePledge 0  
+`totalPledgeOf`(0xbd70d89667a3e1bd341ac235259c5f2dde8172a9)
+0: uint256: 0
+
+9. owner转1000 t1给 A, 转1000 t2给 B：
+Leblock.transfer(0x9a63ca719b9433c0cdbc5aeee130614634163279, 1000*10^18)
+
+10. owner调用t1,t2的mintToken, 给自己增发1000 t1和t2(因为发现owner没有token了)
+Leblock.mintToken(0xbd70d89667a3e1bd341ac235259c5f2dde8172a9,1000000000000000000000)
+
+11. owner设置每轮总AB发行了总数是100个
+Miner_part.setTotalBlock(100*10^18)
+
+12. A在Miner_part里面充值t1,t2:
+Miner_part.pledgeToken(0x854B0732410491005a2724BA5D6646C493972c80, 100*10^18)
+Miner_part.pledgeToken(0x58EB248Ae9A3CD58731f7E2E0Cfc20ac66444520, 100*10^18)
+那么玩家A将得到10+20=30算力，合约里面是30*10^18 wei 算力。
+
+13. owner在Miner_part里面充值t1,t2:
+Miner_part.pledgeToken(0x854B0732410491005a2724BA5D6646C493972c80, 50*10^18)
+Miner_part.pledgeToken(0x58EB248Ae9A3CD58731f7E2E0Cfc20ac66444520, 200*10^18)
+那么owner将得到5+40=45算力，合约里面是45*10^18 wei 算力
+
+第12，13的时候revert, 因为triggerDrop之前处理时是如果没有可以领取的，就直接revert。改为直接return。再次部署试试。
+
+
+
+上面的步骤同上，但是miner_part地址需要更改
+
+
+
+
+
+Miner_part.sol Rinkeby 测试
+// 第二部署时忘记切换metamask的账户了，所以Miner_part的owner时 玩家A；
+1. `owner`: 0xbd70d89667a3e1bd341ac235259c5f2dde8172a9  
+
+2. `玩家A`: 0x9a63ca719b9433c0cdbc5aeee130614634163279
+
+3. `owner`部署`Miner_part.sol`: https://rinkeby.etherscan.io/address/0x55c1547094f90caa85dde7baa110df1cdb427d3d   
+
+4. `owner`部署`DropAlgorithms.sol`：https://rinkeby.etherscan.io/address/0x4a5cbaef2e1c1c0ff2370291af3e439fd779082d  
+
+5. `owner`部署`Leblock.sol`两次, 代表TAT这样的token:
+部署时初始化:("T1","Token1",1000): https://rinkeby.etherscan.io/address/0x854b0732410491005a2724ba5d6646c493972c80  
+部署时初始化:("T2","Token2",1000): https://rinkeby.etherscan.io/address/0x58eb248ae9a3cd58731f7e2e0cfc20ac66444520  
+
+6. `owner`部署`Leblock.sol`两次, 代表产出的AB:  
+部署时初始化：("ab1","AB1",1000): https://rinkeby.etherscan.io/address/0xec73a7539588a1555bfdcb9b8dc44687dd82c481  
+部署时初始化：("ab2","AB2",1000): https://rinkeby.etherscan.io/address/0x16383d64635503a02f05d9e8a6fa34c907e5e407
+
+
+7. `owner`调用:  
+`Miner_part.setBeginTime`(1539570299):  
+10.15上午某一刻开始  
+`Miner_part.assignPledge`(10^22):  
+玩家算力上限是10000
+`Miner_part.setDropAlgoAddr`(0x4a5cbaef2e1c1c0ff2370291af3e439fd779082d):  
+设置计算掉落ab数量的合约地址
+`Miner_part.assignToken`(0x854b0732410491005a2724ba5d6646c493972c80,10,1000*10^18):   
+T1 token, 10 T1 token = 1 算力。玩家最多能够质押1000个T1 token  
+`Miner_part.assignToken`(0x58eb248ae9a3cd58731f7e2e0cfc20ac66444520,5,1000*10^18):    
+T2 token, 5 T2 token = 1 算力。玩家最多能够质押1000个T1 token  
+`Miner_part.assignAB`(0xec73a7539588a1555bfdcb9b8dc44687dd82c481, 400, 10000*10^18):   
+ab1, 在掉落的块中占40%, 一轮投放最多掉落10000*10^18  
+`Miner_part.assignAB`(0x16383d64635503a02f05d9e8a6fa34c907e5e407, 600, 10000*10^18):    
+ab2, 在掉落的块中占60%, 一轮投放最多掉落10000*10^18  
+注意, 必须所有AB的掉率之和加起来等于1000
+
+8. owner 调用AB1和AB2的addAdmin将Miner_part地址设置为admins
+
+9. owner和玩家A分别都调用T1,T2的approve函数，允许Miner_part转移token。
+approve(0x55c1547094f90caa85dde7baa110df1cdb427d3d,1000000000000000000000)
+
+
+8. view:  
+`Miner_part.abList`  
+0: address[]: 0xec73a7539588A1555bfdCb9b8Dc44687dD82c481,  0x16383d64635503a02f05D9E8A6fA34C907E5e407  
+`beginTime`  
+0: uint256: 1539570299 // 2018/10/15 10:24:59  
+`dropAlgoAddr`  
+0: address: 0x4a5CbAEF2E1C1C0FF2370291Af3E439fD779082D  
+`dropInfo`  
+0: uint256: 3600  
+`getDropIndex`  
+0: uint256: 2 //我在12点06查询的, 过了处在第二轮
+`getGainIndex`(0xbd70d89667a3e1bd341ac235259c5f2dde8172a9)  
+0: uint256: 0  
+`getTotalCalForce`  
+0: uint256: 0  
+`lastChangeDropIndex`  
+0: uint256: 0  
+`lastChangeSpanTime`  
+0: uint256: 0  
+`tokenInfo`(0x854b0732410491005a2724ba5d6646c493972c80)  
+0: address: 0x854B0732410491005a2724BA5D6646C493972c80  
+1: uint256: 10  
+2: uint256: 100000000000000000000  
+`tokenInfo`(0x58eb248ae9a3cd58731f7e2e0cfc20ac66444520)  
+0: address: 0x58EB248Ae9A3CD58731f7E2E0Cfc20ac66444520  
+1: uint256: 5  
+2: uint256: 100000000000000000000   
+`tokenInfo`(0xbd70d89667A3E1bD341AC235259c5f2dDE8172A9)  
+0: address: 0x0000000000000000000000000000000000000000  
+1: uint256: 0  
+2: uint256: 0  
+`tokenList`
+0: address[]: 0x854B0732410491005a2724BA5D6646C493972c80,0x58EB248Ae9A3CD58731f7E2E0Cfc20ac66444520
+`totalPledge`(0x854B0732410491005a2724BA5D6646C493972c80)
+0: uint256: _num 0  
+1: uint256: _calForcePledge 0  
+`totalPledgeOf`(0xbd70d89667a3e1bd341ac235259c5f2dde8172a9)
+0: uint256: 0
+
+9. owner转1000 t1给 A, 转1000 t2给 B：
+Leblock.transfer(0x9a63ca719b9433c0cdbc5aeee130614634163279, 1000*10^18)
+
+10. owner调用t1,t2的mintToken, 给自己增发1000 t1和t2(因为发现owner没有token了)
+Leblock.mintToken(0xbd70d89667a3e1bd341ac235259c5f2dde8172a9,1000000000000000000000)
+
+11. owner设置每轮总AB发行了总数是100个
+Miner_part.setTotalBlock(100*10^18)
+
+12. A在Miner_part里面充值t1,t2:
+Miner_part.pledgeToken(0x854B0732410491005a2724BA5D6646C493972c80, 100*10^18)
+Miner_part.pledgeToken(0x58EB248Ae9A3CD58731f7E2E0Cfc20ac66444520, 100*10^18)
+那么玩家A将得到10+20=30算力，合约里面是30*10^18 wei 算力。
+
+13. owner在Miner_part里面充值t1,t2:
+Miner_part.pledgeToken(0x854B0732410491005a2724BA5D6646C493972c80, 50*10^18)
+Miner_part.pledgeToken(0x58EB248Ae9A3CD58731f7E2E0Cfc20ac66444520, 200*10^18)
+那么owner将得到5+40=45算力，合约里面是45*10^18 wei 算力
+
+14. view
+Miner_part:
+
+abDropInfo
+
+0xec73a7539588A1555bfdCb9b8Dc44687dD82c481
+0: address: 0xec73a7539588A1555bfdCb9b8Dc44687dD82c481
+1: uint256: 400
+2: uint256: 10000000000000000000000
+
+abDropInfo
+
+0x16383d64635503a02f05D9E8A6fA34C907E5e407
+0: address: 0x16383d64635503a02f05D9E8A6fA34C907E5e407
+1: uint256: 600
+2: uint256: 10000000000000000000000
+
+abList
+0: address[]: 0xec73a7539588A1555bfdCb9b8Dc44687dD82c481,0x16383d64635503a02f05D9E8A6fA34C907E5e407
+
+beginTime
+0: uint256: 1539570299
+
+dropAlgoAddr
+0: address: 0x4a5CbAEF2E1C1C0FF2370291Af3E439fD779082D
+
+dropInfo
+0: uint256: 3600
+
+getDropIndex
+0: uint256: 5
+
+getGainIndex
+
+0x9a63ca719b9433c0cdbc5aeee130614634163279
+0: uint256: 5
+
+// 每次投放100个块(AB总数)
+getTotalBlock
+0: uint256: 100000000000000000000
+
+// 总算力
+getTotalCalForce
+0: uint256: 75000000000000000000
+
+getTriggerInfo
+
+0xbd70d89667a3e1bd341ac235259c5f2dde8172a9
+0: uint256[]:
+
+lastChangeDropIndex
+0: uint256: 0
+
+lastChangeSpanTime
+0: uint256: 0
+
+owner
+0: address: 0x9a63CA719b9433c0cdBc5AeeE130614634163279
+
+
+pledgeOf
+
+"0x9a63CA719b9433c0cdBc5AeeE130614634163279","0x854B0732410491005a2724BA5D6646C493972c80"
+0: uint256: 100000000000000000000 // 充值了这么多t1 100
+1: uint256: 10000000000000000000  // 以上t1产生了这么多算力 10
+
+pledgeOf
+
+"0x9a63CA719b9433c0cdBc5AeeE130614634163279","0x58EB248Ae9A3CD58731f7E2E0Cfc20ac66444520"
+0: uint256: 100000000000000000000 // 充值了这么多t2 100
+1: uint256: 20000000000000000000 // 这么多t2产生了这么多算力 20
+所以玩家A 有30算力
+
+Owner：
+pledgeOf
+
+"0xbd70d89667a3e1bd341ac235259c5f2dde8172a9","0x854B0732410491005a2724BA5D6646C493972c80"
+0: uint256: 50000000000000000000
+1: uint256: 5000000000000000000
+
+pledgeOf
+
+"0xbd70d89667a3e1bd341ac235259c5f2dde8172a9","0x58EB248Ae9A3CD58731f7E2E0Cfc20ac66444520"
+0: uint256: 200000000000000000000
+1: uint256: 40000000000000000000
+
+所以玩家owner 有45算力
+
+totalPledgeOf
+
+0xbd70d89667a3e1bd341ac235259c5f2dde8172a9
+0: uint256: 45000000000000000000
+
+totalPledge
+
+0x854B0732410491005a2724BA5D6646C493972c80
+0: uint256: _num 150000000000000000000
+1: uint256: _calForcePledge 15000000000000000000
+
+totalPledge
+
+0x58EB248Ae9A3CD58731f7E2E0Cfc20ac66444520
+0: uint256: _num 300000000000000000000
+1: uint256: _calForcePledge 60000000000000000000
+
+
+一段时间过去了，发块投放到了第六轮，但是玩家上次是领取了第五轮。
+getDropIndex
+0: uint256: 6
+
+getGainIndex(0x9a63ca719b9433c0cdbc5aeee130614634163279)
+0: uint256: 5
+
+因此可以得到玩家owner可领取的的量：
+getTriggerInfo(0xbd70d89667a3e1bd341ac235259c5f2dde8172a9)
+0: uint256[]: 24000000000000000000,36000000000000000000
+
+玩家A可领取的量：
+getTriggerInfo(0x9a63ca719b9433c0cdbc5aeee130614634163279)
+0: uint256[]: 16000000000000000000,24000000000000000000
+
+调用triggerDrop()正常领取
+
+玩家提取t1：
+正常

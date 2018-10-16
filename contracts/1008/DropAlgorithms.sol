@@ -20,9 +20,10 @@ contract DropAlgorithms {
 
             _ABamount[i] = _dropRate[i].mul(_totalBlock).div(1000);
 
-            _userGetOfAll[i] = _ABamount[i].mul(_userForce).div(_totalForce).mul(_times);
+            _userGetOfAll[i] = _ABamount[i].mul(_userForce).mul(_times).div(_totalForce);
 
         }
-    }
 
+        return _userGetOfAll;
+    }
 }

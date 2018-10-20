@@ -506,3 +506,147 @@ getTriggerInfo(0x9a63ca719b9433c0cdbc5aeee130614634163279)
 
 玩家提取t1：
 正常
+
+
+
+
+## 部署Dye流程
+1. `玩家A`: 0xbd70d89667a3e1bd341ac235259c5f2dde8172a9  
+
+2. `玩家B`: 0xbAaf27aEdFB5c70bfA48c2C05EcA8621fF410E16
+
+3. `玩家B`: 部署
+Dye.sol: 0x0d4e53306d7be7988c30a632342331a2c6e273fc
+
+DyeABprice.sol: 0x8ac327b99c9590f3a1ffe47a4cba7b1b534d32c4
+
+Leblock.sol: "sab1","Sab1",1000: 0xCa2F200813B49A38a21f288347058f50E5963532
+
+Leblock.sol: "sab2","Sab2",1000: 0x5b4EE083baE62d75c4435FB929C1910a9A20b3c7
+
+Leblock.sol: "dyeab1","DYEab1",1000 0xb5512a15FFc1A4D4547f5834eDBe503d34bAB354
+
+Leblock.sol: "dyeab2","DYEab2",1000 0xcd5A1376E1541176769Af4bb64D60322f8312115
+
+Leblock.sol: "TAT","TonArts",1000
+0x6cFFD5EdbA0B70130e8539C4b9b97eBBFC97C790
+
+4. `玩家B`: 调用DyeABprice.assignDyeAB(0xb5512a15FFc1A4D4547f5834eDBe503d34bAB354,500), 表示 1000 tat能够染500 dyeab1
+ `玩家B`: 调用DyeABprice.assignDyeAB(0xcd5A1376E1541176769Af4bb64D60322f8312115,2000), 表示 1000 tat能够染2000 dyeab2
+
+如果没有在DyeABprice.sol注册的token，那么就是1000 tat只能染0 个token, 这是对玩家不利的，因此从一方面规避玩家用假dyeab。另一方面是Dye.sol里面规定了只能产生哪些dyeab，而且price为0会会revert。
+
+5. `玩家B`: 调用
+Dye.setDyeABpriceAddress(0x8ac327b99c9590f3a1ffe47a4cba7b1b534d32c4)
+
+Dye.assignDyeRule("0xb5512a15FFc1A4D4547f5834eDBe503d34bAB354",["0xCa2F200813B49A38a21f288347058f50E5963532","0x5b4EE083baE62d75c4435FB929C1910a9A20b3c7"])
+
+Dye.assignDyeRule("0xcd5A1376E1541176769Af4bb64D60322f8312115",["0xCa2F200813B49A38a21f288347058f50E5963532","0x5b4EE083baE62d75c4435FB929C1910a9A20b3c7"])
+
+
+Dye.assignSourceAB(0xCa2F200813B49A38a21f288347058f50E5963532)
+Dye.assignSourceAB(0x5b4EE083baE62d75c4435FB929C1910a9A20b3c7)
+
+Dye.assignTATaddress(0x6cFFD5EdbA0B70130e8539C4b9b97eBBFC97C790)
+
+6. 玩家B调用对应函数让Dye.sol地址成为dyeab1和dyeab2的admins：
+dyeab1.addAdmin(0x0d4e53306d7be7988c30a632342331a2c6e273fc)
+dyeab2.addAdmin(0x0d4e53306d7be7988c30a632342331a2c6e273fc)
+
+100000000000000000000
+100000000000000000000
+100000000000000000000
+7. 玩家B转100 TAT给玩家A：
+TAT.transfer(0xbd70d89667a3e1bd341ac235259c5f2dde8172a9,100000000000000000000)
+
+玩家B转100 sab1给玩家A：
+sab1.transfer(0xbd70d89667a3e1bd341ac235259c5f2dde8172a9,100000000000000000000)
+
+玩家B转100 sab1给玩家A：
+sab2.transfer(0xbd70d89667a3e1bd341ac235259c5f2dde8172a9,100000000000000000000)
+
+
+8. 玩家A 此时有100 TAT，100sab1，100sab2，
+玩家A先调用TAT和sab1和sab2的函数，允许Dye合约从对应的合约把玩家A的 100 token转移到Dye合约下面。
+
+TAT.approve(0x0d4e53306d7be7988c30a632342331a2c6e273fc,100000000000000000000)
+sab1.approve(0x0d4e53306d7be7988c30a632342331a2c6e273fc,100000000000000000000)
+sab2.approve(0x0d4e53306d7be7988c30a632342331a2c6e273fc,100000000000000000000)
+
+9. 玩家A 去染色。调用染色色块。如果不符合条件，交易是能通过，但是交易不会改变区块链上的任何状态。
+下面这个是正常染色：
+https://ropsten.etherscan.io/tx/0x5c9c1bfc8c4e031c32f9454238d7608f540ad1df281b8de296b016485009e876
+
+
+
+## instance
+
+Kovan 测试网：
+玩家A:
+0xbd70d89667A3E1bD341AC235259c5f2dDE8172A9
+玩家B：
+0xbAaf27aEdFB5c70bfA48c2C05EcA8621fF410E16
+
+玩家B部署：
+Instance.sol:
+0x68c15EE421403d3FeF4237D6F30467bEa2f07F77
+Leblock.sol:（TAT）
+0x2f4Cb4D383Dd2C18761CEB13d95E21dD9Bc315D7
+CopyrightCenter_MC.sol:
+0x01cbd264ba6da74edcf185026d71c2323a8bf2d0
+ERC721Instance.sol：
+0x723c157d189b2b08f003766065e095dcf1379a59
+BPprice.sol
+0xbf73107f7b4cd37112402e2a0e57405452c6210c
+
+玩家B(Admins)在Instance合约里设置好Leblock,CC,ERC721,BPprice的合约地址：
+Instance.setBPpriceAddress(0xbf73107f7b4cd37112402e2a0e57405452c6210c)
+Instance.setCCAddress(0x01cbd264ba6da74edcf185026d71c2323a8bf2d0)
+Instance.setERC721address(0x723c157d189b2b08f003766065e095dcf1379a59)
+Instance.setTATaddress(0x2f4Cb4D383Dd2C18761CEB13d95E21dD9Bc315D7)
+
+
+玩家B(owner)在ERC721Instance中添加Instance的合约地址为admin:
+ERC721Instance.addAdmin(0x68c15ee421403d3fef4237d6f30467bea2f07f77);
+https://kovan.etherscan.io/tx/0xd1389651f0f4ddaad2e48b024f88df638797f369f1bac19c7432525a8181975c
+
+玩家B(admins)在版权中心shelf一个BPhash：
+CopyrightCenter_MC.shelf("testBPhash",0xbAaf27aEdFB5c70bfA48c2C05EcA8621fF410E16)
+https://kovan.etherscan.io/tx/0xb85dab221bde4e7eed66d0ece603ea8d7b953438c3f24522f41f14fb20a6e592
+
+玩家B(admins)在BPprice设置BPhash的价格是10 tat:
+BPprice.set("testBPhash",10000000000000000000)
+https://kovan.etherscan.io/tx/0x799a7758ccf1cd75cc2288f66d5ed51593a53c4000e2ded83ae8d9bd0260c787
+
+
+玩家B给玩家A 转100TAT
+Leblock.tansfer(0xbd70d89667A3E1bD341AC235259c5f2dDE8172A9,100000000000000000000)
+https://kovan.etherscan.io/tx/0x7507a1e43d9acfc4a21dcc862fa08d62ff3e23d9b81f96cda874c4649c845c6f
+
+
+玩家A允许Instance合约花费他的TAT:
+Leblock.approve(0x68c15ee421403d3fef4237d6f30467bea2f07f77,100000000000000000000)
+https://kovan.etherscan.io/tx/0xafcbc11f9be0ff763ea24f1153d05b552f9dc352eaa1808cc3f536635f36deb5
+
+玩家A调用Instance的合约
+makeInstance("testBPhash")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

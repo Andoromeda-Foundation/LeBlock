@@ -143,7 +143,7 @@ contract Leblock is ERC20Interface, Pausable {
         return true;
     }
 
-    function mintToken(address _target, uint256 _mintedAmount) public onlyAdmins whenNotPaused{
+    function mintToken(address _target, uint256 _mintedAmount) public onlyAdmins whenNotPaused {
         balances[_target] = balances[_target].add(_mintedAmount);
         totalSupply = totalSupply.add(_mintedAmount);
         emit Transfer(0, owner, _mintedAmount);

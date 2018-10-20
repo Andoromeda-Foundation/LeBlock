@@ -6,7 +6,7 @@ import "./SafeMath.sol";
 contract DyeABprice is Owned {
     using SafeMath for uint256;
 
-    mapping(address => uint256) dyeABprice; // 1000 TAT 能够兑换多少dyeAB
+    mapping(address => uint256) dyeABprice; // 1000 TAT 能够交付 染出多少dyeAB的手续费
 
     address[] dyeAddress;   // dyeAddress 白名单
 
@@ -14,6 +14,13 @@ contract DyeABprice is Owned {
     event AssignDyeAB(address _dyeABaddress, uint256 _dyeABprice);
     event ChangeDyeAB(address _dyeABaddress, uint256 _beforePrice, uint256 _newPrice);
     event UnAssignDyeAB(address _dyeABaddress, uint256 _dyeABprice);
+
+    constructor() 
+        public
+    {
+        owner = msg.sender;
+        admins[msg.sender] = true;
+    }
 
 
     // 增加dyeAB地址以及价格。如果存在就覆盖修改

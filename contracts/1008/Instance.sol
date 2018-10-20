@@ -1,16 +1,59 @@
 pragma solidity ^0.4.24;
 
-contract Instance {
+import "./SafeMath.sol";
+import "./Pausable.sol";
 
+contract Instance is Pausable {
+    using SafeMath for uint256;
 
     address CCAddress; // CopyrightCenter address
     address TATaddress; // 侧链镜像TAT的地址
     address ERC721address; // ERC721的地址
-    address BPpriceAddress;
+    address BPpriceAddress; // 
+
+    event MakeInstance(string indexed _BPhash, address indexed _user, uint256 indexed _tokenId);
+
+    
+    constructor()
+        public
+    {
+        owner = msg.sender;
+        admins[msg.sender] = true;
+    }
+
+    function setCCAddress(address _CCAddress)
+        public
+        onlyAdmins
+    {
+        CCAddress = _CCAddress;
+    }
+
+    function setTATaddress(address _TATaddress)
+        public
+        onlyAdmins
+    {
+        TATaddress = _TATaddress;
+    }
+
+    function setERC721address(address _erc721address)
+        public
+        onlyAdmins
+    {
+        ERC721address = _erc721address;
+    }
+
+    function BPpriceAddress(address _bpPriceAddress)
+        public
+        onlyAdmins
+    {
+        BPpriceAddress = _bpPriceAddress;
+    }
+
 
     // 因为在整条逻辑链的传输过程，BPhash == CRhash
     function makeInstance(string _BPhash)
         public
+        whenNotPaused
     {
         CopyrightCenter cc = CopyrightCenter(CCAddress);
         require(cc.exists(_BPhash));
@@ -21,12 +64,17 @@ contract Instance {
         uint256 _tokenId = _erc721instance.totalSupply().add(1);
         _erc721instance.mint(msg.sender, _tokenId, _BPhash);
 
+
         BPprice _bpPrice = BPprice(BPpriceAddress);
 
-        uint256 _price = _bpPrice.getBPprice(_BPhash);
+        require(_bpPrice.getBPisSet(_BPhash));
+
+        uint256 _price = _bpPrice.getBPhashPrice(_BPhash);
 
         ERC20 token =  ERC20(TATaddress);
         token.transferFrom(msg.sender, _maker, _price);
+
+        emit MakeInstance(_BPhash, msg.sender, _tokenId);
     }
 }
 
@@ -54,5 +102,6 @@ interface ERC721Instance {
 }
 
 interface BPprice {
-    function getBPprice(string _BPhash) external view returns(uint256);
+    function getBPhashPrice(string BPhash) external view returns(uint256);
+    function getBPisSet(string BPhash) external view returns(bool);   
 }
